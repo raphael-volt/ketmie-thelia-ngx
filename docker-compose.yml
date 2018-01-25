@@ -1,0 +1,43 @@
+version: '2'
+services:
+  ketmie_t:
+    container_name: ketmie_t
+    build: .
+    ports:
+      - 4501:80
+    volumes:
+      - ./www:/var/www/html:rw
+    links:
+      - ketmie_t_db
+    restart: 'no'
+  ketmie_t_pma:
+    container_name: ketmie_t_pma
+    image: phpmyadmin/phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+     - PMA_HOST=ketmie_t_db
+     - PMA_USER=ketmieuser
+     - PMA_PASSWORD=k3tM1aDm1n
+    ports:
+      - 4503:80
+    links:
+      - ketmie_t_db
+    depends_on:
+      - ketmie_t
+      - ketmie_t_db
+    restart: 'no'
+  memcached:
+    image: memcached
+    restart: 'no'
+  ketmie_t_db:
+    container_name: ketmie_t_db
+    image: mysql:5.5
+    ports:
+      - 4502:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=ketmieuser  
+      - MYSQL_USER=ketmieuser
+      - MYSQL_PASSWORD=k3tM1aDm1n
+    restart: 'no'
+

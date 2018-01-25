@@ -1,0 +1,19 @@
+<ul class="panel popUp h30" id="panierPopup">
+	<li class="titleBar">Confimer</li>
+	<li class="content">
+		<p>::produitajoutepanier::</p>
+		<p>::quefaire::</p>
+	</li>
+	<li class="buttonBar">
+		<form action="#VARIABLE(urlsite)" method="get">
+			<input type="hidden" name="fond" value="produit"/>
+			<input type="hidden" name="id_produit" value="#ENV{id_produit}"/>
+			<input type="hidden" name="id_rubrique" value="#ENV{id_rubrique}"/>
+			<button type="submit">::poursuivreachats::</button>
+		</form>
+		<form action="#VARIABLE(urlsite)" method="get">
+			<input type="hidden" name="fond" value="panier"/>
+			<button type="submit">::validerpanier::</button>
+		</form>
+	</li>
+</ul>

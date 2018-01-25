@@ -1,0 +1,46 @@
+<form action="#URLFOND(ajax/modifierconnexion)" method="post" class="popUpForm">
+	<ul id="connectUpdatePanel" class="panel popUp h30">
+		<li class="titleBar">::connexionmodifier::</li>
+		<li class="content">
+			<input type="hidden" name="client_id" value="#CLIENT_ID"/> 
+			<table class="connectForm formLayout">
+			    <tr>
+			    	<td class="formLabel">
+						<label>::monemail::</label>
+			        </td>
+			        <td>
+						<input tabindex="2" type="text" name="email1" class="email emailSrc" value="#CLIENT_EMAIL"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+          				<label>::confirmationemail::</label>
+          			</td>
+          			<td>
+          				<input tabindex="3" type="text" name="email2" class="email emailValid" value="#CLIENT_EMAIL"/>
+          			</td>
+				</tr>
+			    <tr>
+			    	<td class="formLabel">
+			        	<label>::monmdp::</label>
+					</td>
+			        <td>
+				        <input tabindex="4" name="motdepasse1" type="password" class="pwdUp pwdSrc"/>
+			        </td>
+				</tr>
+			    <tr>
+			    	<td class="formLabel">
+			        	<label>::confirmationmdp::</label>
+					</td>
+			        <td>
+				        <input tabindex="5" name="motdepasse2" type="password" class="pwdUp pwdValid"/>
+			        </td>
+				</tr>
+		    </table>
+		</li>
+		<li class="buttonBar">
+			<button type="button" class="cancelBtn">::annuler:: | ::fermer::</button>
+			<button type="submit" class="submitBtn">::valider::</button>
+		</li>
+	</ul>
+</form>

@@ -1,0 +1,62 @@
+<div class="mail-body">
+<h2 class="mail-title">Une nouvelle commande a été passée</h2>
+<h3 class="mail-title">N° __COMMANDE_REF__ du <span style="font-size:80%">__COMMANDE_DATE__</span></h3>
+<table class="table-detail">
+<caption>Détail de la commande</caption>
+<thead class="detail-head">
+<tr>
+<th colspan="2" class="detail-th">Désignation</th> 
+<th class="detail-th">Référence</th> 
+<th class="detail-th">P.U. ::euro::</th> 
+<th class="detail-th">Qté</th>
+</tr>
+</thead>
+<tbody>
+<VENTEPROD>
+<tr>
+<td class="cellprod-img"><span></span></td>
+<td class="cellprod-title">__VENTEPROD_TITRE__</td>
+<td class="cellprod-ref">__VENTEPROD_REF__</td>
+<td class="cellprod">__VENTEPROD_PRIXU__</td>
+<td class="cellprod">__VENTEPROD_QUANTITE__</td>
+</tr>
+</VENTEPROD>
+<tr>
+<td class="cellprod-right" colspan="4">Montant total avant remise  ::euro::</td>
+<td class="cellprod-right">__COMMANDE_TOTAL__</td>
+</tr>
+<tr>
+<td class="cellprod-right" colspan="4">Remise  ::euro::</td>
+<td class="cellprod-right">__COMMANDE_REMISE__</td>
+</tr>
+<tr>
+<td class="cellprod-right" colspan="4">Port  ::euro::</td>
+<td class="cellprod-right">__COMMANDE_PORT__</td>
+</tr>
+<tr>
+<td class="cellprod-right-last" colspan="4">Montant total de la commande ::euro::</td>
+<td class="cellprod-right-last">__COMMANDE_TOTALPORT__</td>
+</tr>
+</tbody>
+</table>
+<table class="table-base">
+<caption>Livraison</caption>
+<tbody>
+<tr><td class="right">Transporteur : </td><td>__COMMANDE_TRANSPORT__</td></tr>
+<tr><td class="right">Nom : </td><td>__COMMANDE_LIVRRAISON__ __COMMANDE_LIVRPRENOM__ __COMMANDE_LIVRNOM__</td></tr>
+<tr><td class="right">Adresse : </td><td>__ADRESSE_LIVRAISON__<br/>__COMMANDE_LIVRCPOSTAL__ __COMMANDE_LIVRVILLE__</td></tr>
+<tr><td class="right">Pays : </td><td>__COMMANDE_LIVRPAYS__</td></tr>
+</tbody>
+</table>
+<table class="table-base">
+<caption>Facturation</caption>
+<tbody>
+<tr><td class="right">paiement par : </td><td>__COMMANDE_PAIEMENT__</td></tr>
+<tr><td class="right">N° de client : </td><td>__CLIENT_REF__</td></tr>
+<tr><td class="right">Nom : </td><td>__CIVILITE__  __PRENOM__ __NOM__</td></tr>
+<tr><td class="right">Adresse : </td><td>__ADRESSE__<br/>__CPOSTAL__ __VILLE__</td></tr>
+<tr><td class="right">Pays : </td><td>__PAYS__</td></tr>
+</tbody>
+</table>
+<h2>AU BOULOT !!!</h2>
+</div>

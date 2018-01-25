@@ -1,0 +1,23 @@
+#PARAM_FOND_nopageret=1 #SET{urlsite, #VARIABLE(urlsite)}
+					<ul class="ajaxProdList">
+					<TEST_count variable="#ENV{count}" test="egal" valeur="1">
+						<THELIA_prod type="PRODUIT" nouveaute="0" classement="date">
+						#NOUVEAU[][#SET{count,#__COMPTEUR__}]
+						</THELIA_prod>
+					<input type="hidden" name="count" value="#GET{count}"/>
+					</TEST_count>
+					<//TEST_count>
+					<THELIA_prod type="PRODUIT" nouveaute="0" classement="date" deb="#ENV{start}" num="#ENV{num}">
+						<li>
+							<a href="#URL">
+							<T_IMAGE>
+							<THELIA_IMAGE type="IMAGE" num="1" produit="#ID" hauteur="90" largeur="90">
+								<img src="#GET{urlpref}/#IMAGE" alt="#PRODTITRE" title="#PRODTITRE"/>
+							</THELIA_IMAGE>
+							</T_IMAGE>
+								<img src="#GET{urlpref}/template/_gfx/no-image.png" alt="Pas d'image disponible" />
+							<//T_IMAGE>
+							</a>
+						</li>
+					</THELIA_prod>
+					</ul>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <descriptif lang="fr">
+    <titre>TinyMCE 4</titre>
+    <chapo>Utiliser TinyMCE 4 et ResponsiveFilemanager 9 dans votre interface d'administration</chapo>
+    <description>Module de TinyMCE4.</description>
+    <postscriptum></postscriptum>
+  </descriptif>
+  <version>1.0.0</version>
+  <auteur>
+    <nom>Benoit Asselin</nom>
+    <societe></societe>
+    <email>contact@ab-d.fr</email>
+    <web>http://www.ab-d.fr</web>
+  </auteur>
+  <type>classique</type>
+  <prerequis/>
+  <thelia>1.5</thelia>
+  <etat>production</etat>
+  <documentation>Readme.html</documentation>
+  <urlmiseajour></urlmiseajour>
+</plugin>

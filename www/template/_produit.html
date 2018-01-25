@@ -1,0 +1,95 @@
+<TEST_popup variable="#ENV{panier}" test="superieur" valeur="0">
+#FILTRE_jsutils(ready||panierPopup)
+#PARAM_FOND_nopageret=1
+</TEST_popup>
+<!doctype html>
+<html lang="fr">
+#FILTRE_jsutils(ready||panier)
+<//TEST_popup>
+#SET{page_carac, non}
+#SET{carac_id, 0}
+<THELIA_carac type="caracteristique" produit="#PRODUIT_ID">
+#SET{page_carac, #TITRE}
+<THELIA_caracval type="CARACVAL" caracteristique="#ID" produit="#PRODUIT">
+#SET{carac_id,#CARACDISP}
+#SET{carac_val,#VALEUR}
+</THELIA_caracval>
+</THELIA_carac>
+<head>
+#FILTRE_cssutils(add||#FILTRE_imagelist(prod_css||#PRODUIT_ID||290||100||5)||#FILTRE_imagelist(css||#RUBRIQUE_ID||438||100||5||#PRODUIT_ID))
+#FILTRE_jsutils(link||template/js/ImgGridController.js)
+#FILTRE_jsutils(imgGrid||#popBox||#popCtn||.gridContainer||#prod_img)
+#FILTRE_jsutils(pageProd||0)
+#INCLURE "template/custom/head.html"
+#SET{numProd,#FILTRE_imagelist(numProd||#RUBRIQUE_ID)}
+</head>
+<body>
+#FILTRE_ketmiemenu(spip||0)
+#INCLURE "template/custom/panier_box.html"
+<div id="main">
+#FILTRE_ketmiemenu(thelia_prod||#PRODUIT_ID)
+	<div id="content" class="prod-main">
+		<div id="popCtn"></div>
+		<div id="popBox">
+			<div class="flexFixed">
+				<div class="flexPopup">
+					<a href="#" class="popupNav btn_left"><img src="images/popLeft.png" title="Image précedente" alt="Image précedente" /></a>
+					<div class="imgCloseBox">
+						<img class="imgPreview"/>
+						<a href="#" class="popupNav btn_close"><img src="images/close_pop.png" title="Fermer" alt="Fermer"/></a>
+					</div>
+					<a href="#" class="popupNav btn_right"><img src="images/popRight.png" title="Image suivante" alt="Image suivante" /></a>
+				</div>
+			</div>
+		</div>
+		<div class="prod-img">
+		#FILTRE_imagelist(prod_html||#PRODUIT_ID)
+		</div>
+		<div class="v-box">
+			<THELIA_PROD type="PRODUIT" id="#PRODUIT_ID">
+			#SET{btId,btnPanier}
+			<div class="panelBorder">
+				<h1>#TITRE</h1>
+				<TEST_collages variable="#GET{page_carac}" test="egal" valeur="collages">
+					::collageinfo::
+					#FILTRE_egalite(#GET{carac_val}||portrait||::colinfoportait::)
+					#FILTRE_egalite(#GET{carac_val}||paysage||::colinfopaysage::)
+				</TEST_collages>
+				<//TEST_collages>					
+				<TEST_vide variable="#GET{page_carac}" test="egal" valeur="non">
+					#FILTRE_contenu(html||#CHAPO||#DESCRIPTION)					
+				</TEST_vide>
+				<//TEST_vide>
+				<form action="#AJOUTER_PARAMETRE(#URLCOURANTE,panier=1)" method="post">
+				    <input type="hidden" name="action" value="ajouter"/>
+		            <input type="hidden" name="ref" value="#REF"/>
+		            <input type="hidden" name="quantite" value="1"/>
+		            #FILTRE_egalite(#GET{page_carac}||boucles||
+		            <input id="rowIndex" type="hidden" name="rowIndex" value="-1"/>
+		            )
+		            <TEST_bo variable="#GET{page_carac}" test="different" valeur="boucles">
+		            <p><span class="bold sizeM">Prix : #PRIX ::euro::</span></p>
+		            </TEST_bo>
+		            #SET{btId,ajouterPanier}
+		            #FILTRE_tarifbo(produit||#GET{carac_id})
+		            <//TEST_bo>
+		            <div class="popupBtnBox rightForm">
+						<button type="submit" id="#GET{btId}">::ajouterpanier::</button>
+		            </div>
+		        </form>
+			</div>
+			</THELIA_PROD>
+			<TEST_numProd variable="#GET{numProd}" test="superieur" valeur="1">
+			<div class="panelBorder top20">
+				<h2>DANS CETTE RUBRIQUE</h2>
+				#FILTRE_imagelist(html||#RUBRIQUE_ID)
+			</div>
+			</TEST_numProd>
+			<//TEST_numProd>
+		</div>
+	</div>
+</div>
+#INCLURE "template/custom/footer.html"
+#INCLURE "template/custom/popup.html"
+</body>
+</html>

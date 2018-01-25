@@ -1,0 +1,90 @@
+<script type="text/javascript" src="template/js/libs/jquery.js"></script>
+<script type="text/javascript" src="template/js/libs/crypto/rollups/aes.js"></script>
+<script type="text/javascript">
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-63270016-1', 'auto');
+  ga('send', 'pageview');
+
+var CryptoJSAesJson = {
+	    stringify: function (cipherParams) {
+	        var j = {ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64)};
+	        if (cipherParams.iv) j.iv = cipherParams.iv.toString();
+	        if (cipherParams.salt) j.s = cipherParams.salt.toString();
+	        return JSON.stringify(j);
+	    },
+	    parse: function (jsonStr) {
+	        var j = JSON.parse(jsonStr);
+	        var cipherParams = CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(j.ct)});
+	        if (j.iv) cipherParams.iv = CryptoJS.enc.Hex.parse(j.iv)
+	        if (j.s) cipherParams.salt = CryptoJS.enc.Hex.parse(j.s)
+	        return cipherParams;
+	    }
+	};
+$(document).ready(
+	function()
+	{
+		var data = {type:"GET", url:"#VARIABLE(urlsite)/contacts.php", data:{json:1}};
+		var request = $.ajax(data);
+		request.done(
+			function(data)
+			{
+				data = jQuery.parseJSON(data);
+				var name;
+				var prop;
+				var selector;
+				var passphrase = "#VARIABLE(passphrase)";
+				for(name in data)
+				{
+					for(prop in data[name])
+					{
+						selector = "span." + name + "." + prop;
+						var decrypted = JSON.parse(CryptoJS.AES.decrypt(data[name][prop], passphrase, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8));
+						$(selector).text(decrypted);
+					}
+				}
+			}
+		);
+	}
+);
+	
+</script>
+<style type="text/css">
+html {
+     color: #333;
+     background-color: #FFF;
+     text-align: justify;
+}
+
+body, dl, dt, dd, ul, li, p {
+     margin: 0px;
+     padding: 0px;
+     font-family: Arial,Helvetica,sans-serif;
+     font-size: 1em;
+     font-size-adjust: none;
+     font-weight: normal;
+}
+ul, address {margin:.25em;}
+li {margin-left:1em;}
+address {
+     font-style: normal;
+     font-weight: normal;
+}
+dl dt {
+	margin: .75em;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+dl dd {margin: .75em;}
+dd dl dt {
+	margin: .6em;
+	font-size: 1.2em;
+}
+</style>
+</head>
+<body>
+<a href="#URLPREC">::pageprecedente::</a>

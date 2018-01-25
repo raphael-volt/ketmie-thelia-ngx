@@ -1,0 +1,93 @@
+#PARAM_FOND_nopageret=1
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>#VARIABLE(nomsite)</title>
+<script src="template/jq/jq-2.1.3.js" type="text/javascript" ></script>
+<script src="template/jq/ui/jquery-ui.js" type="text/javascript" ></script>
+<script src="template/jq/jquery.validate.js" type="text/javascript"></script>
+<script src="template/jq/validatorInit.js" type="text/javascript"></script>
+<script src="template/js/Modal.js" type="text/javascript" ></script>
+<script src="template/js/AjaxFormController.js" type="text/javascript"></script>
+<script src="template/js/main-layout.js" type="text/javascript"></script>
+<script src="template/js/AjaxListController.js" type="text/javascript"></script>
+<link rel="stylesheet" href="template/jq/ui/jquery-ui.css" type="text/css">
+<link rel="stylesheet" href="template/css/globals.css" type="text/css">
+<link rel="stylesheet" href="template/css/nav.css" type="text/css">
+<link rel="stylesheet" href="template/css/containers.css" type="text/css">
+<link rel="stylesheet" href="template/css/components.css" type="text/css">
+<link rel="stylesheet" href="template/css/panels.css" type="text/css">
+<script type="text/javascript">
+var formController = new AjaxFormController();
+formController.redirect = "#FILTRE_menu(cleanUrl||#URLPREC)";
+formController.redirectOnConnected = "#FILTRE_menu(cleanUrl||#URLPREC)";
+$(document).ready(function()
+{
+#INCLURE "template/js/ready-account.js"
+	invalidateWindowSize();
+});
+</script>
+<style type="text/css">
+#content > ul
+{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+#content > ul > li:first-child
+{
+  flex-grow: 0;
+}
+#content > ul > li:last-child
+{
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+.flex-center table tr td
+{
+  padding: 5px 4px;
+}
+.flex-center table tr td:first-child
+{
+  text-align: right;
+}
+.flex-center table td >button
+{
+  width: 100%;
+}
+
+.content.flex-center
+{
+  display: flex;
+  justify-content: center;
+}
+</style>
+</head>
+<body>
+	<header>
+	#INCLURE "template/header.html"
+	</header>
+	<div id="content" class="top15">
+		<ul class="panel h42 full-height">
+			<li class="titleBar">::identif::</li>
+			<li class="content flex-center">
+				<table>
+					<tr>
+						<td>::dejaclient::</td>
+						<td><button class="connectLink" type="button" id="selfConnectBtn">::selfconnexion::</button></td>
+					</tr>
+					<tr>
+						<td>::nvclient::</td>
+						<td><button class="newAccountLink" type="button" id="selfConnectBtn">::selfaccount::</button></td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+	</div>
+#INCLURE "template/custom/footer.html"
+#INCLURE "template/ajax/form/connectForm.html"
+</body>
+</html>

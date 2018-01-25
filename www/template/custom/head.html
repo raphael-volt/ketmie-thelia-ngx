@@ -1,0 +1,21 @@
+#SET{connected,0}
+<THELIA SI CONNECTE>
+#SET{connected,1}
+</THELIA SI CONNECTE>
+#INCLURE "template/meta.html"
+<link rel="stylesheet" href="template/js/libs/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="template/css/ui.css" type="text/css" />
+<link rel="stylesheet" href="template/css/imgGrid.css" type="text/css" />
+#SET{spip_url, #FILTRE_ketmiemenu(spip_url||0)}
+#FILTRE_jsutils(link||template/js/libs/jquery.js||0)
+#FILTRE_jsutils(link||template/js/libs/jquery-ui.js||1)
+#FILTRE_jsutils(link||template/js/HLayout.js)
+#FILTRE_jsutils(link||template/js/AjaxFormController.js)
+#FILTRE_jsutils(produits||#GET{urlSite}||template/js/AjaxListController.js)
+#FILTRE_jsutils(newProd||#GET{newProd}||custom/nouveautes)
+#FILTRE_jsutils(allProd||#GET{allProd}||custom/produits)
+#FILTRE_jsutils(redirect||#URLCOURANTE)
+#FILTRE_jsutils(connected||#GET{connected}||0)
+#FILTRE_jsutils(createAccount||#URLFOND(ajax/form/accountFormNew)||0)
+#FILTRE_jsutils(validator||template/js/libs/jquery.validate.js||template/js/validatorInit.js)
+#FILTRE_jsutils(output||0)

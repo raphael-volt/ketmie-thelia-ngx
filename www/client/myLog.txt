@@ -1,0 +1,18 @@
+Filtrecarac::processPaiement
+	type_paiement:21
+COMMANDE PROCESS COMPLETE
+Filtrecarac::processPaiement
+	type_paiement:20
+COMMANDE PROCESS COMPLETE
+Filtrecarac::processPaiement
+	type_paiement:21
+COMMANDE PROCESS COMPLETE
+Filtrecarac::processPaiement
+	type_paiement:20
+COMMANDE PROCESS COMPLETE
+Filtrecarac::processPaiement
+	type_paiement:20
+COMMANDE PROCESS COMPLETE
+Filtrecarac::processPaiement
+	type_paiement:21
+COMMANDE PROCESS COMPLETE

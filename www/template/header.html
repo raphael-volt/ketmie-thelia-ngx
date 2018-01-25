@@ -1,0 +1,42 @@
+#INCLURE "template/custom/img-cache.html"
+#SET{connected,0}
+<THELIA SI CONNECTE>
+#SET{connected,1}
+</THELIA SI CONNECTE>
+<dl id="header">
+	<dt>
+		<strong class="hidden">Ketmie, création de bijoux et de collages par Stéphanie Mousquey</strong>
+		<a href="#VARIABLE(urlsite)">
+			<img src="template/css/images/header.jpg" width="960" height="200"/>
+		</a>
+		<div id="panierBox">
+			<div id="panier">
+			<T_PANIER type="PANIER">
+			   	<a href="#URLPANIER" class="panier">::panier:: | #PANIER_NBART ::article::</a>
+			</T_PANIER>
+				<ul id="headerPanier">
+		        	<li>
+		        		<a href="#URLPANIER" class="panier"><img src="./template/_gfx/cadis.png" alt="Panier" />&nbsp;::panier:: | #PANIER_NBART ::article::</a>	
+					</li>
+				</ul>
+		    <//T_PANIER>
+			</div>	
+			<ul id="compte">
+			<TEST_connected variable="#GET{connected}" test="superieur" valeur="0">
+				<li class="on"><a href="#URLFOND(moncompte)" class="compteLink">::compte::</a></li>
+				<li class="on"><a href="#URLDECONNEXION">::deconnect::</a></li>
+				<li class="off"><a id="newAccountLink" href="#URLFOND(connexion)">::createaccount::</a></li>
+		   	 	<li class="off"><a href="#" class="connectLink">::connexion::</a></li>
+		   	 </TEST_connected>
+				<li class="off"><a href="#URLFOND(moncompte)" class="compteLink">::compte::</a></li>
+				<li class="off"><a href="#URLDECONNEXION">::deconnect::</a></li>
+				<li class="on"><a class="newAccountLink" href="#URLFOND(connexion)">::createaccount::</a></li>
+		   	 	<li class="on"><a href="#" class="connectLink">::connexion::</a></li>
+		     <//TEST_connected>
+		 	</ul>
+		 </div>
+	</dt>
+	<dd>
+	#FILTRE_menu(arbo||#RUBRIQUE_ID||#PRODUIT_ID||0)
+	</dd>
+</dl>

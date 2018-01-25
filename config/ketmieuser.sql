@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : ketmie_t_db
--- Généré le :  jeu. 25 jan. 2018 à 16:26
+-- Généré le :  jeu. 25 jan. 2018 à 16:59
 -- Version du serveur :  5.5.56
 -- Version de PHP :  7.0.16
 
@@ -1241,12 +1241,13 @@ INSERT INTO `modules` (`id`, `nom`, `type`, `actif`, `classement`) VALUES
 (19, 'colissimo', 2, 1, 1),
 (20, 'cheque', 1, 1, 1),
 (21, 'virement', 1, 1, 2),
-(28, 'filtreajaxform', 4, 1, 1),
+(28, 'filtreajaxform', 4, 0, 1),
 (24, 'tinymce4', 3, 1, 1),
-(25, 'filtrecarac', 4, 1, 0),
-(26, 'filtreimglist', 4, 1, 0),
-(27, 'filtremenu', 4, 1, 0),
-(29, 'filtreamf', 4, 1, 2);
+(25, 'filtrecarac', 4, 0, 0),
+(26, 'filtreimglist', 4, 0, 0),
+(27, 'filtremenu', 4, 0, 0),
+(29, 'filtreamf', 4, 0, 2),
+(30, 'filtreapi', 4, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -4317,7 +4318,7 @@ ALTER TABLE `messagedesc`
 -- AUTO_INCREMENT pour la table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT pour la table `modulesdesc`
 --

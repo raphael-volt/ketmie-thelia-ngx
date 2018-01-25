@@ -1,0 +1,87 @@
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+.mat-drawer-backdrop.mat-drawer-shown {
+    background-color: transparent !important;
+}
+
+body, html {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+body {
+    position: relative;
+}
+.flex-v {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+
+.flex-v>* {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+
+.flex-h-c {
+    align-items: center;
+}
+
+.black-content {
+    background-color: #333;
+    color: white;
+}
+
+.flati {
+    font-family: Flati!important;
+}
+
+img, svg, svg * {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently upported by Chrome and Opera */
+}
+
+.noevents, .noevents * {
+    pointer-events: none!important;
+}
+
+* {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -moz-tap-highlight-color: rgba(0, 0, 0, 0);
+    outline: none;
+}
+
+.main {
+    padding: 10px;
+    position: relative;
+    transform: translateX(-100%);
+    transition-property: transform;
+    transition-duration: 300ms;
+}
+
+.main.on {
+    transform: translateX(0%);
+    transition-property: transform;
+    transition-duration: 300ms;
+}
+
+.main>h2 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+}

@@ -1,0 +1,98 @@
+.mainContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: stretch;
+}
+
+.container {
+    order: 0;
+    flex: 1 1 auto;
+    align-self: auto;
+    outline-offset: -2px;
+    background: none;
+    overflow: hidden;
+}
+
+.menu-bar {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+    padding: 12px;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: stretch;
+}
+
+.menu-bar > * {
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.menu-bar > menu-button {
+    width: 24px;
+}
+.hr {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background-color: white;
+}
+
+
+.sidenav {
+    padding: 200px 8px;
+}
+.link-container {
+    max-width: 33vw;
+    overflow: hidden;
+    font-size: 16px;
+    height: 100%;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: flex-start;
+    align-items: center;
+}
+
+.link-container>* {
+    display: inline-block;
+    margin: 6px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.v-text {
+    font-family: Flati;
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.link-container > span {
+    font-family: Flati;
+    font-size: 22px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.sidenav-content {
+    overflow-x: hidden;
+    overflow-y: auto;
+    /*overlay*/
+}
+
+.svg-bg {
+    position: fixed;
+    z-index: -1!important;
+    left: 60px;
+    right: 20px;
+    top: 20px;
+    bottom: 20px;
+}

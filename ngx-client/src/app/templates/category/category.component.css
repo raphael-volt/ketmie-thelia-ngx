@@ -1,0 +1,16 @@
+
+.imgCtn {
+    width: 100%;
+    position: relative;
+}
+
+.imgCtn>img {
+    position: absolute;
+}
+
+mat-progress-bar {
+    width: 50vw;
+    position: fixed;
+    left: 25vw;
+    top: 50vh;
+}

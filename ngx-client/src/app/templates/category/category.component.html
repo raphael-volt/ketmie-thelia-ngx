@@ -1,0 +1,12 @@
+<div class="main" [class.on]="enabled">
+  <h2 class="flati">{{categoryLabel}}</h2>
+  <div #imgCtn class="imgCtn">
+    <img *ngFor="let p of children" 
+      apiImage [productId]="p.id" [imgHeight]="350"
+      (loaderEvent)="imgLoad($event)"/>
+  </div>
+  <mat-progress-bar *ngIf="loading"
+  mode="determinate"
+  [value]="percentLoaded">
+  </mat-progress-bar>
+</div>

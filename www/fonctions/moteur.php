@@ -94,7 +94,6 @@ else {
 if ($fond == '')
     $fond = 'index';
 
-Filtremenu::$currentFond = $fond;
 
 /*
  * Définition de la langue courante, dans l'ordre suivant :

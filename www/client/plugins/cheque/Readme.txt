@@ -1,1 +1,0 @@
-Module de paiement par chèque

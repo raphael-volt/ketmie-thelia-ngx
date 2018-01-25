@@ -9,16 +9,53 @@ class Filtreapi extends FiltreCustomBase
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
     }
 
+    private function description($type, $id)
+    {
+        $tbname = null;
+        switch ($type) {
+            case "category":
+                $tbname = "rubriquedesc";
+                break;
+            
+            case "product":
+                $tbname = "produitdesc";
+                ;
+                break;
+            
+            case "cms-content":
+                $tbname = "contenudesc";
+                ;
+                break;
+            
+            default:
+                ;
+                break;
+        }
+        if (! $tbname) {
+            return null;
+        }
+        
+        $q = "SELECT description FROM {$tbname} WHERE id=?";
+        $pdo = PDOThelia::getInstance();
+        $stmt = $pdo->prepare($q);
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        if($stmt->rowCount()) {
+            return $stmt->fetchColumn(0);
+        }
+        return null;
+    }
+
     private function arbo()
     {
         $arbo = new stdClass();
-        $arbo->catalog = $this->catalog();
-        $q = "SELECT c.id as id, c.classement as ci, cd.titre as label FROM contenu as c 
+        $arbo->shopCategories = $this->catalog();
+        $q = "SELECT c.id as id, cd.titre as label FROM contenu as c 
 LEFT JOIN contenudesc as cd ON cd.id=c.id
 ORDER BY c.classement";
         $pdo = PDOThelia::getInstance();
         $cms = $pdo->query($q);
-        $arbo->cms = $cms->fetchAll(PDO::FETCH_OBJ);
+        $arbo->cmsContents = $cms->fetchAll(PDO::FETCH_OBJ);
         return $arbo;
     }
 
@@ -99,8 +136,17 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                         $result = $this->arbo();
                         break;
                     }
+                
+                case "description":
+                    {
+                        $description = $this->description($this->paramsUtil->parameters[0], $this->paramsUtil->parameters[1]);
+                        if($description)
+                            $result->description = $description;
+                        else 
+                            $result->error = "Description not found";
+                        break;
+                    }
             }
-            
         } catch (Exception $e) {
             $result->error = $e->getTraceAsString();
         }

@@ -1,0 +1,13 @@
+/.ovhconfig
+/admin_dev
+/lib
+/fonts
+/securimage
+/client/*
+!/client/plugins/
+/client/plugins/*
+!/client/plugins/filtreapi
+/template/*
+!/template/api/
+/fonctions/*
+!/fonctions/moteur.php

@@ -1,11 +1,8 @@
 .settings/
 .project
 .buildpath
-www/
-!www/client/plugins/filtreapi/
-!www/fonctions/
-!www/classes/
-!www/template/api/
-!www/index.php
-!www/image.php
-!www/sendMail.php
+# System Files
+.DS_Store
+Thumbs.db
+*.txt
+*.log

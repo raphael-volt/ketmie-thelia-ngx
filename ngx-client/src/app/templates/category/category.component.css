@@ -6,6 +6,7 @@
 
 .imgCtn>img {
     position: absolute;
+    cursor: pointer;
 }
 
 mat-progress-bar {

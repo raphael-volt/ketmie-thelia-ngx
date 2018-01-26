@@ -11,7 +11,18 @@ const routes: Routes = [
   {
     path: "category/:id",
     component: CategoryComponent,
-    canDeactivate: [DeactivableGuard] 
+    canDeactivate: [DeactivableGuard],
+    children: [
+      {
+				path: "",
+				redirectTo: "category",
+				pathMatch: 'full' 
+			},
+			{
+				path: "product/:id",
+				component: ProductComponent
+			}
+    ]
   },
   {
     path: "cms-content/:id",

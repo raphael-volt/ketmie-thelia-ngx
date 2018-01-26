@@ -1,3 +1,6 @@
-<p>
-  product works!
-</p>
+<div class="overlay screen-middle">
+  <div class="main" [class.on]="loaded">
+    <h2>{{label}} <i (click)="close()" class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+    </h2>
+  </div>
+</div>

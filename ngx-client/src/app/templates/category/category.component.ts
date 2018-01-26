@@ -15,18 +15,23 @@ export class CategoryComponent extends DeactivableComponent implements AfterView
   @ViewChild('imgCtn')
   imgCtnRef: ElementRef
   imgCtn: HTMLElement
-
+  categoryId: string
   loading: boolean = true
   constructor(
     private route: ActivatedRoute,
     private api: ApiService,
     private tile: ImgTileService) {
       super()
+      console.log("CategoryComponent.constructor")
   }
 
   enabled: boolean = false
   deactivate(): Observable<boolean> {
+    if(this.productId) {
+      return Observable.of(true) 
+    }
     return Observable.create((observer: Observer<boolean>)=>{
+
       this.enabled = false
       setTimeout(() => {
         observer.next(true)
@@ -35,14 +40,25 @@ export class CategoryComponent extends DeactivableComponent implements AfterView
     })
   }
 
+  showProduct(id: string) {
+    console.log("showProduct", id)
+  }
+
   category: any
   children: any[]
   categoryLabel: string = ""
+  private productId: string
+  private routeSubscription: Subscription
   ngAfterViewInit() {
     let sub1 = this.api.getShopCategories().subscribe(
       catalog => {
-        this.route.params.subscribe(params => {
+        this.routeSubscription = this.route.params.subscribe(params => {
           this.category = this.api.getCategoryById(params.id)
+          if(params.productId) {
+            console.log("params.productId", params.productId)
+            this.productId = params.productId
+          }
+          this.categoryId = this.category.id
           this.categoryLabel = this.category.label
           if (this.tileId) {
             this.loading = true
@@ -99,6 +115,7 @@ export class CategoryComponent extends DeactivableComponent implements AfterView
   }
   ngOnDestroy() {
     this.tile.destroy(this.tileId)
+    this.routeSubscription.unsubscribe()
   }
 
 }

@@ -8,10 +8,12 @@ import { MenuButtonComponent } from './menu-button/menu-button.component';
 import { MatModule } from "../mat/mat.module";
 import { CmsContentComponent } from './cms-content/cms-content.component';
 import { ProductComponent } from './product/product.component';
+import { RoutesModule } from "../routes/routes.module";
 @NgModule({
   imports: [
     CommonModule,
-    MatModule
+    MatModule,
+    RoutesModule
   ],
   declarations: [
     CategoryComponent,

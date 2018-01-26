@@ -1,8 +1,20 @@
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+/* MATERIAL OVERRIDES 
+@import './theme';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+
+"styles": [
+    "../libs/flati/flati.css",
+    "../node_modules/font-awesome/css/font-awesome.min.css",
+    "styles.css"
+    ]
+    */
 
 .mat-drawer-backdrop.mat-drawer-shown {
     background-color: transparent !important;
 }
+
+/* GLOBALS */
 
 body, html {
     padding: 0;
@@ -11,9 +23,10 @@ body, html {
     height: 100vh;
     overflow: hidden;
 }
-body {
-    position: relative;
-}
+
+
+/* FLEX LAYOUTS */
+
 .flex-v {
     display: flex;
     flex-direction: column;
@@ -31,6 +44,20 @@ body {
 
 .flex-h-c {
     align-items: center;
+}
+
+.screen-middle {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen-middle:nth-child(1) {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
 }
 
 .black-content {
@@ -69,7 +96,6 @@ img, svg, svg * {
 
 .main {
     padding: 10px;
-    position: relative;
     transform: translateX(-100%);
     transition-property: transform;
     transition-duration: 300ms;
@@ -84,4 +110,21 @@ img, svg, svg * {
 .main>h2 {
     margin: 0 0 10px 0;
     font-size: 28px;
+    font-family: Flati!important;
+}
+
+*:focus {
+    outline: 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+}
+
+#router-container {
+    position: relative;
 }

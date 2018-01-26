@@ -1,7 +1,9 @@
 <div class="main" [class.on]="enabled">
-  <h2 class="flati">{{categoryLabel}}</h2>
+  <h2>{{categoryLabel}}</h2>
   <div #imgCtn class="imgCtn">
     <img *ngFor="let p of children" 
+      (click)="showProduct(p.id)"
+      routerLink="/category/{{categoryId}}/product/{{p.id}}"
       apiImage [productId]="p.id" [imgHeight]="350"
       (loaderEvent)="imgLoad($event)"/>
   </div>
@@ -9,4 +11,5 @@
   mode="determinate"
   [value]="percentLoaded">
   </mat-progress-bar>
+  <router-outlet></router-outlet>
 </div>

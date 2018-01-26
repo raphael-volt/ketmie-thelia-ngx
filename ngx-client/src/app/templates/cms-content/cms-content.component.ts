@@ -43,7 +43,6 @@ export class CmsContentComponent extends DeactivableComponent implements AfterVi
   ngAfterViewInit() {
     const ctn: HTMLElement = this.ctnRef.nativeElement
     this.routeSub = this.route.params.subscribe(params => {
-      console.log("params.subscribe", params.id)
       this.loading = true
       const id: string = params.id
       let cmsContent: CMSContent = this.api.getCmsContentById(id)

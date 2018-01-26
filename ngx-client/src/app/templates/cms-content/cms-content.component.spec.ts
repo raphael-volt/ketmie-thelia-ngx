@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+mport { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CmsContentComponent } from './cms-content.component';
 

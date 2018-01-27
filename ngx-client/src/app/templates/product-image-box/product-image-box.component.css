@@ -1,0 +1,19 @@
+div {
+    font-size: 40px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+}
+
+div > * {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+
+i {
+    margin: 10px;
+}

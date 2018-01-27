@@ -21,6 +21,17 @@ export class ApiService {
       this.baseHref = "http://localhost:4501/"
   }
 
+  getImageUrl(id: string, type: ImgTypes, width?: number, height?: number) {
+    if (!width && !height) {
+      throw new Error("Missing image dimensions.")
+    }
+    const args: string[] = ["id="+id, "type=" + type]
+    if (width)
+      args.push("width=" + width)
+    if (height)
+      args.push("height=" + height)
+    return this.baseHref + "image.php?" + args.join("&")
+  }
   getProductImageUrl(id: string, width?: number, height?: number) {
     if (!width && !height) {
       throw new Error("Missing image dimensions.")

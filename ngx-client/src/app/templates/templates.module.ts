@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from "@angular/flex-layout";
+
 import { CategoryComponent } from './category/category.component';
 import { ApiImageDirective } from './api-image.directive';
 import { ImgTileService } from "./img-tile.service";
@@ -18,6 +20,7 @@ import { ProductImageBoxComponent } from './product-image-box/product-image-box.
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FlexLayoutModule,
     MatModule,
     RoutesModule
   ],

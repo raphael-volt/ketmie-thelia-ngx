@@ -58,7 +58,7 @@ export class CmsContentComponent extends DeactivableComponent implements AfterVi
   }
 
   description: string
-  private createContent(cmsContent: CMSContent, target: HTMLElement) {
+  private createContent(cmsContent: CMSContent) {
     const done = () => {
       let sub = this.api.getDescription("cms-content", cmsContent.id)
       .subscribe(description=>{

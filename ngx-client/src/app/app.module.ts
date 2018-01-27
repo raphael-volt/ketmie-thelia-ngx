@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ApiModule } from "./api/api.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 import { AppComponent } from './app.component';
 import { MainContainerDirective } from './main-container.directive';
@@ -19,6 +20,7 @@ import { RoutesModule } from "./routes/routes.module";
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FlexLayoutModule,
     ApiModule,
     MatModule,
     TemplatesModule,

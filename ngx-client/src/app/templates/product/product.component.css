@@ -2,6 +2,7 @@
     background-color: white!important;
     position: relative;
 }
+
 .close {
     font-size: 28px;
     position: absolute;
@@ -9,12 +10,34 @@
     top: -.5em;
     color: red;
 }
+
 mat-radio-button {
     margin: 5px 0 5px 15px;
 }
+
 i {
     cursor: pointer;
 }
-h2 > i {
+
+h2>i {
     margin: 0 5px;
+}
+
+.product-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-end;
+}
+
+.product-content>* {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+.product-detail {
+    padding: 5px;
+    width: 250px;
 }

@@ -18,6 +18,17 @@ export interface IDescriptable extends ILabelable {
 export interface Product extends IDescriptable {
 
 }
+export interface ProductDeclination extends IIdentifiable {
+    size: string
+    price: string
+}
+export interface ProductDetail extends Product {
+    images: string[]
+    declinations: ProductDeclination[]
+    price: string
+    index: string
+    ref: string
+}
 
 export interface Category extends IDescriptable {
     content: boolean

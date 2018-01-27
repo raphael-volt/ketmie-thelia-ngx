@@ -1,6 +1,28 @@
 <div class="overlay screen-middle">
-  <div class="main" [class.on]="loaded">
-    <h2>{{label}} <i (click)="close()" class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-    </h2>
+  <div class="mat-typography main mat-elevation-z12" [class.on]="loaded">
+    <i class="i-button text-shadow fa fa-times-circle close" aria-hidden="true" (click)="close()"></i>
+    <div *ngIf="product">
+      <h2>
+        <i (click)="prev()" class="fa fa-arrow-circle-left i-button text-shadow" aria-hidden="true"></i>
+        {{product.label}}
+        <i (click)="next()" class="fa fa-arrow-circle-right i-button text-shadow" aria-hidden="true"></i>
+      </h2>
+      <section>
+        <product-image-box [imageIds]="product.images" type="product"></product-image-box>
+        <section>
+          <p>Prix: {{productPrice}}
+            <span *ngIf="productPrice"> €</span>
+          </p>
+          <section *ngIf="product.description" [innerHTML]="product.description"></section>
+          <section *ngIf="product.declinations">
+            <label>Choisiseez une taille:</label>
+            <mat-radio-group class="flex-v" [(ngModel)]="declinationModel" (ngModelChange)="declinationChange($event)">
+              <mat-radio-button *ngFor="let d of product.declinations" [value]="d.id">{{d.size}} cm | {{d.price}} €</mat-radio-button>
+            </mat-radio-group>
+          </section>
+          <button mat-raised-button [disabled]="!productPrice">Ajouter au panier</button>
+        </section>
+      </section>
+    </div>
   </div>
 </div>

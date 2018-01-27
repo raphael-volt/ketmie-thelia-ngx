@@ -1,3 +1,20 @@
 .main {
     background-color: white!important;
+    position: relative;
+}
+.close {
+    font-size: 28px;
+    position: absolute;
+    right: -.5em;
+    top: -.5em;
+    color: red;
+}
+mat-radio-button {
+    margin: 5px 0 5px 15px;
+}
+i {
+    cursor: pointer;
+}
+h2 > i {
+    margin: 0 5px;
 }

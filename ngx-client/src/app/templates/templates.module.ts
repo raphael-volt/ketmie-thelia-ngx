@@ -9,17 +9,27 @@ import { MatModule } from "../mat/mat.module";
 import { CmsContentComponent } from './cms-content/cms-content.component';
 import { ProductComponent } from './product/product.component';
 import { RoutesModule } from "../routes/routes.module";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { InnerHtmlDirective } from './inner-html.directive';
+import { ProductImageBoxComponent } from './product-image-box/product-image-box.component';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatModule,
     RoutesModule
   ],
   declarations: [
+    InnerHtmlDirective, 
     CategoryComponent,
     KetmieBackgroundComponent,
     MenuButtonComponent, 
-    ApiImageDirective, CmsContentComponent, ProductComponent
+    ApiImageDirective, 
+    CmsContentComponent, 
+    ProductComponent, 
+    ProductImageBoxComponent
   ],
   exports:[
     KetmieBackgroundComponent,

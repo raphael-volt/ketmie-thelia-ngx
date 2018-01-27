@@ -107,7 +107,7 @@ img, svg, svg * {
     transition-duration: 300ms;
 }
 
-.main>h2 {
+.main h2 {
     margin: 0 0 10px 0;
     font-size: 28px;
     font-family: Flati!important;
@@ -127,4 +127,11 @@ img, svg, svg * {
 
 #router-container {
     position: relative;
+}
+
+.i-button {
+    cursor: pointer;
+}
+.text-shadow {
+    text-shadow: 3px 3px 3px rgba(0,0,0,0.34); 
 }

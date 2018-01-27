@@ -1,6 +1,6 @@
 <div class="main" [class.on]="enabled">
   <h2>{{title}}</h2>
-  <div #ctn></div>
+  <section [innerHTML]="description"></section>
 </div>
 <div class="screen-middle noevents cms" [class.on]="loading">
   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>

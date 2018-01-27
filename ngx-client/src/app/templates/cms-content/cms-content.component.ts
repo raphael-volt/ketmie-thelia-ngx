@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { DeactivableComponent } from "../../routes/deactivable.component";
 import { Observable, Observer, Subscription } from "rxjs";
 import { ApiService } from "../../api/api.service";
@@ -16,11 +16,7 @@ export class CmsContentComponent extends DeactivableComponent implements AfterVi
     private api: ApiService,
     private route: ActivatedRoute) {
     super()
-    console.log('CmsContentComponent')
   }
-
-  @ViewChild("ctn")
-  private ctnRef: ElementRef | undefined
 
   enabled: boolean = false
   title: string = undefined
@@ -41,7 +37,6 @@ export class CmsContentComponent extends DeactivableComponent implements AfterVi
   }
 
   ngAfterViewInit() {
-    const ctn: HTMLElement = this.ctnRef.nativeElement
     this.routeSub = this.route.params.subscribe(params => {
       this.loading = true
       const id: string = params.id
@@ -49,7 +44,7 @@ export class CmsContentComponent extends DeactivableComponent implements AfterVi
       if (!cmsContent) {
         let sub = this.api.getShopTree()
           .subscribe(tree => {
-            this.createContent(this.api.getCmsContentById(id), ctn)
+            this.createContent(this.api.getCmsContentById(id))
           },
           err => { },
           () => {
@@ -58,16 +53,16 @@ export class CmsContentComponent extends DeactivableComponent implements AfterVi
           })
       }
       else
-        this.createContent(cmsContent, ctn)
+        this.createContent(cmsContent)
     })
   }
 
+  description: string
   private createContent(cmsContent: CMSContent, target: HTMLElement) {
     const done = () => {
       let sub = this.api.getDescription("cms-content", cmsContent.id)
       .subscribe(description=>{
-        const target: HTMLElement = this.ctnRef.nativeElement
-        target.innerHTML = description
+        this.description = description
         this.title = cmsContent.label
         this.enabled = true
         this.loading = false

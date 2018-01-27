@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiService } from "../../api/api.service";
-import { Category, Product } from "../../api/api.model";
+import { Category, ProductDetail, ProductDeclination } from "../../api/api.model";
 import { Subscription } from "rxjs";
 @Component({
   selector: 'product',
@@ -17,10 +17,11 @@ export class ProductComponent implements OnInit, OnDestroy {
   ) { }
 
   private routeSubscription: Subscription
-  private product: Product
-  label: string
   loaded: boolean
-  
+  declinationModel
+  canAddToCard: boolean
+  product: ProductDetail
+  productPrice: string
   close() {
     let subscribed: boolean = false
     let sub = this.route.parent.url.subscribe(value => {
@@ -37,21 +38,35 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (subscribed && sub)
       sub.unsubscribe()
   }
+  prev() {
+    
+  }
+  next() {
+
+  }
+
+  declinationChange(value) {
+    let declination: ProductDeclination = this.product.declinations.find(d => {
+      return d.id == value
+    })
+    this.productPrice = declination.price
+  }
 
   ngOnInit() {
     let sub = this.route.parent.params.subscribe(params => {
       const categoryId: string = params.id
       this.routeSubscription = this.route.params.subscribe(params => {
-        let apiSub = this.api.getShopTree().subscribe(shop => {
-          const category: Category = this.api.getCategoryById(categoryId)
-          this.product = category.children.find(p => {
-            return p.id == params.id
-          })
-          this.label = this.product.label
+        let apiSub = this.api.getProductDetails(params.id).subscribe(product => {
+          if (product.description == "")
+            product.description = null
+          if (!product.declinations || (product.declinations && !product.declinations.length))
+            product.declinations = null
+
+          if (!product.declinations)
+            this.productPrice = product.price
+          this.canAddToCard = product.declinations == null
+          this.product = product
           this.loaded = true
-          if (apiSub) {
-            apiSub.unsubscribe()
-          }
         })
       })
       if (sub) {
@@ -67,5 +82,4 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routeSubscription.unsubscribe()
   }
-
 }

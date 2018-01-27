@@ -4,7 +4,7 @@ import { isDevMode } from '@angular/core';
 import { Observer, Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { Category, Product, CMSContent, ShopTree } from "./api.model";
+import { Category, Product, ProductDetail, CMSContent, ShopTree } from "./api.model";
 
 export type ImgTypes = "contenu" | "dossier" | "produit" | "rubrique"
 export type ContentTypes = "category" | "product" | "cms-content"
@@ -93,6 +93,22 @@ export class ApiService {
     }
     return result
   }
+
+  	getProductDetails(id: string): Observable<ProductDetail> {
+      return this.http.get(this.baseHref, {
+        search: {
+          fond: "api/product",
+          id: id
+        }
+      }).pipe(
+        map(request => {
+          const result = request.json()
+          if (result.error)
+            throw new Error(result.error)
+          return result
+        })
+        )
+    }
 
   getDescription(type: ContentTypes, id: string): Observable<string> {
     let cmsContent: CMSContent = this.getCmsContentById(id)

@@ -1,14 +1,25 @@
 <?php
 require_once (dirname(realpath(__FILE__)) . '/../../../classes/filtres/FiltreCustomBase.class.php');
+require_once __DIR__ . '/ProductHelper.php';
 
 class Filtreapi extends FiltreCustomBase
 {
 
+    /**
+     * 
+     * @var ProductHelper
+     */
+    private $productHelper;
+    
     public function __construct()
     {
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
+        $this->productHelper = new ProductHelper();
     }
 
+    private function product($id) {
+     return json_encode($this->productHelper->getProduct($id, true), JSON_PRETTY_PRINT);
+    }
     private function descriptions($type, $id)
     {
         $result = new stdClass();
@@ -58,7 +69,7 @@ ORDER BY c.classement";
         $arbo->cmsContents = $cms->fetchAll(PDO::FETCH_OBJ);
         return $arbo;
     }
-
+    
     private function catalog()
     {
         $pdo = PDOThelia::getInstance();
@@ -123,6 +134,7 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         $match = parent::calcule($match);
         $action = $this->paramsUtil->action;
         $result = new stdClass();
+        $encode = true;
         try {
             switch ($action) {
                 case "catalog":
@@ -140,10 +152,20 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                         $result = $this->descriptions($this->paramsUtil->parameters[0], $this->paramsUtil->parameters[1]);
                         break;
                     }
+                
+                case "product":
+                    {
+                        $result = $this->product($this->paramsUtil->parameters[0]);
+                        $encode = false;
+                        break;
+                    }
+                
             }
         } catch (Exception $e) {
             $result->error = $e->getTraceAsString();
         }
-        return json_encode($result);
+        if($encode)
+            $result = json_encode($result);
+        return $result;
     }
 }

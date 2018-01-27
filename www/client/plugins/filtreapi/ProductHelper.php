@@ -32,7 +32,8 @@ WHERE p.id=?";
             if($declinations) {
                 $helper = new ProductHelper();
                 $prod->declinations = $helper->getDeclinations($id);
-                $prod->price = $prod->declinations[0]->price;
+                if($prod->declinations)
+                    $prod->price = $prod->declinations[0]->price;
             }
             $stmt = $pdo->prepare("SELECT id FROM " . Image::TABLE . " WHERE produit=? ORDER BY classement");
             $pdo->bindInt($stmt, 1, $id, true);

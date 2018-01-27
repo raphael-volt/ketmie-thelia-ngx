@@ -8,7 +8,7 @@
         <i (click)="next()" class="fa fa-arrow-circle-right i-button text-shadow" aria-hidden="true"></i>
       </h2>
       <section>
-        <product-image-box [imageIds]="product.images" type="product"></product-image-box>
+        <product-image-box [imageIds]="product.images"></product-image-box>
         <section>
           <p>Prix: {{productPrice}}
             <span *ngIf="productPrice"> €</span>

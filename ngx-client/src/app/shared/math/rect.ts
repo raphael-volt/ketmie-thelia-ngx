@@ -1,6 +1,9 @@
 import { Point } from "./point";
 
 export class Rect {
+    static fromBouds(bounds: ClientRect, sizeOnly: boolean = true): Rect {
+        return new Rect(sizeOnly ? 0:bounds.left, sizeOnly ? 0:bounds.top, bounds.width, bounds.height)
+    }
     constructor(
         public x: number = 0,
         public y: number = 0,

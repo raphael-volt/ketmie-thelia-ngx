@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router'
 import { DeactivableComponent } from "./deactivable.component";
 import { DeactivableGuard } from "./deactivable-guard";
-
+import { ThemeComponent } from "../templates/theme/theme.component";
 import { CategoryComponent } from "../templates/category/category.component";
 import { CmsContentComponent } from "../templates/cms-content/cms-content.component";
 import { ProductComponent } from "../templates/product/product.component";
@@ -29,6 +29,10 @@ const routes: Routes = [
     path: "cms-content/:id",
     component: CmsContentComponent,
     canDeactivate: [DeactivableGuard] 
+  },
+  {
+    path: "theme",
+    component: ThemeComponent 
   },
   { path: '**', redirectTo: '' }
 ]

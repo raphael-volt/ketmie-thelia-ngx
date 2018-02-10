@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InnerHtmlDirective } from './inner-html.directive';
 import { SliderDirective } from "./slider.directive";
 import { ImgBoxDirective } from './product/img-box.directive';
+import { ThemeComponent } from './theme/theme.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { ImgBoxDirective } from './product/img-box.directive';
     ApiImageDirective, 
     CmsContentComponent, 
     ProductComponent, 
-    ImgBoxDirective
+    ImgBoxDirective, 
+    ThemeComponent
   ],
   exports:[
     KetmieBackgroundComponent,

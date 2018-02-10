@@ -28,7 +28,7 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
     // r = 350 / 1920
     // r = 0,182291667
     // r1280 = 0,2734375
-    this.imgHeight = Math.ceil(.2734375 * w)
+    this.imgHeight = Math.ceil(.15 * w)
   }
   private subColl: SubscriptionCollector = new SubscriptionCollector()
   constructor(

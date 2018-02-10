@@ -180,8 +180,6 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   ngOnDestroy() {
     if (this.routeSubscription)
       this.routeSubscription.unsubscribe()
-
-    console.log('ProductComponent destroyed')
   }
 
 }

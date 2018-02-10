@@ -1,36 +1,36 @@
 <div #overlay class="menu-offset main-ctn" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
-  <div class="flex-container mat-elevation-z8">
-    <div class="black-content product-ctn mat-elevation-z4">
-      <div *ngIf="product" class="product-detail">
-        <div class="nav-bar">
+  <div *ngIf="product" class="product-box mat-elevation-z8"
+  fxLayout="row" fxLayoutAlign="start stretch" fxLayoutWrap>
+    <mat-card fxFlex="33">
+      <mat-card-header>
+        <mat-card-title>
           <i (click)="prevProduct()" class="nav-item k-i k-i_chevron-left-circle i-button text-shadow" aria-hidden="true"></i>
           <h2 class="flati nav-item">{{product.label}}</h2>
           <i (click)="nextProduct()" class="nav-item k-i k-i_chevron-right-circle i-button text-shadow" aria-hidden="true"></i>
-        </div>
-        <i (click)="close()" class="k-i k-i k-i_close-crcle-o i-button text-shadow" aria-hidden="true"></i>
-        <section>
-          <p>Prix: {{productPrice}}
-            <span *ngIf="productPrice"> €</span>
-          </p>
-          <section *ngIf="product.description" [innerHTML]="product.description"></section>
-          <section *ngIf="product.declinations">
-            <label>Choisiseez une taille:</label>
-            <mat-radio-group class="flex-v" [(ngModel)]="declinationModel" (ngModelChange)="declinationChange($event)">
-              <mat-radio-button *ngFor="let d of product.declinations" [value]="d.id">{{d.size}} cm | {{d.price}} €</mat-radio-button>
-            </mat-radio-group>
-          </section>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Prix: {{productPrice}}
+          <span *ngIf="productPrice"> €</span>
+        </p>
+        <section *ngIf="product.description" [innerHTML]="product.description"></section>
+        <section *ngIf="product.declinations">
+          <label>Choisiseez une taille:</label>
+          <mat-radio-group class="flex-v" [(ngModel)]="declinationModel" (ngModelChange)="declinationChange($event)">
+            <mat-radio-button color="accent" *ngFor="let d of product.declinations" [value]="d.id">{{d.size}} cm | {{d.price}} €</mat-radio-button>
+          </mat-radio-group>
         </section>
+      </mat-card-content>
+      <mat-card-actions>
+        <button color="primary" mat-raised-button [disabled]="!productPrice">Ajouter au panier</button>
+      </mat-card-actions>
+    </mat-card>
+    <div class="img-box-row" fxFlex>
+      <i (click)="imgBox.prev()" class="box-item k-i k-i_chevron-left i-button text-shadow" aria-hidden="true"></i>
+      <div class="box-item img-box">
+        <canvas [imgBox]="boxProduct"></canvas>
       </div>
-      <div class="button-bar">
-        <button mat-raised-button [disabled]="!productPrice">Ajouter au panier</button>
-      </div>
-    </div>
-    <div class="img-box-row">
-        <i (click)="imgBox.prev()" class="box-item k-i k-i_chevron-left i-button text-shadow" aria-hidden="true" ></i>
-        <div class="box-item img-box">
-          <canvas [imgBox]="boxProduct"></canvas>
-        </div>
-        <i (click)="imgBox.next()" class="box-item k-i k-i_chevron-right i-button text-shadow" aria-hidden="true"></i>
+      <i (click)="imgBox.next()" class="box-item k-i k-i_chevron-right i-button text-shadow" aria-hidden="true"></i>
     </div>
   </div>
 </div>

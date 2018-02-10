@@ -11,11 +11,13 @@ import { LayoutService } from "./layout.service";
 import { MatModule } from "./mat/mat.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { RoutesModule } from "./routes/routes.module";
+import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainContainerDirective
+    MainContainerDirective,
+    MenuBarComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +30,7 @@ import { RoutesModule } from "./routes/routes.module";
   ],
   exports: [
     ApiModule,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     RoutesModule,
     TemplatesModule

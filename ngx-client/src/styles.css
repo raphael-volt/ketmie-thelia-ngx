@@ -1,14 +1,4 @@
-/* MATERIAL OVERRIDES 
-@import './theme';
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
-
-
-"styles": [
-    "../libs/flati/flati.css",
-    "../node_modules/font-awesome/css/font-awesome.min.css",
-    "styles.css"
-    ]
-    */
+/* MATERIAL OVERRIDES */
 
 .mat-drawer-backdrop.mat-drawer-shown {
     background-color: transparent !important;
@@ -93,18 +83,10 @@ img, svg, svg * {
     -moz-tap-highlight-color: rgba(0, 0, 0, 0);
     outline: none;
 }
-
 .main {
+    background-color: rgba(255, 255, 255, .5);
     padding: 10px;
-    transform: translateX(-100%);
-    transition-property: transform;
-    transition-duration: 300ms;
-}
-
-.main.on {
-    transform: translateX(0%);
-    transition-property: transform;
-    transition-duration: 300ms;
+    min-height: 100vh;
 }
 
 .main h2 {

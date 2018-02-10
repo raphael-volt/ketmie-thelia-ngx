@@ -1,15 +1,14 @@
-<div class="overlay screen-middle">
-  <div class="mat-typography main mat-elevation-z12" [class.on]="loaded">
-    <i class="i-button text-shadow fa fa-times-circle close" aria-hidden="true" (click)="close()"></i>
-    <div *ngIf="product">
-      <h2>
-        <i (click)="prev()" class="fa fa-arrow-circle-left i-button text-shadow" aria-hidden="true"></i>
-        {{product.label}}
-        <i (click)="next()" class="fa fa-arrow-circle-right i-button text-shadow" aria-hidden="true"></i>
-      </h2>
-      <section class="product-content">
-        <product-image-box [imageIds]="product.images"></product-image-box>
-        <section class="product-detail mat-elevation-z8">
+<div #overlay class="menu-offset main-ctn" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <div class="flex-container mat-elevation-z8">
+    <div class="black-content product-ctn mat-elevation-z4">
+      <div *ngIf="product" class="product-detail">
+        <div class="nav-bar">
+          <i (click)="prevProduct()" class="nav-item k-i k-i_chevron-left-circle i-button text-shadow" aria-hidden="true"></i>
+          <h2 class="flati nav-item">{{product.label}}</h2>
+          <i (click)="nextProduct()" class="nav-item k-i k-i_chevron-right-circle i-button text-shadow" aria-hidden="true"></i>
+        </div>
+        <i (click)="close()" class="k-i k-i k-i_close-crcle-o i-button text-shadow" aria-hidden="true"></i>
+        <section>
           <p>Prix: {{productPrice}}
             <span *ngIf="productPrice"> €</span>
           </p>
@@ -20,9 +19,18 @@
               <mat-radio-button *ngFor="let d of product.declinations" [value]="d.id">{{d.size}} cm | {{d.price}} €</mat-radio-button>
             </mat-radio-group>
           </section>
-          <button mat-raised-button [disabled]="!productPrice">Ajouter au panier</button>
         </section>
-      </section>
+      </div>
+      <div class="button-bar">
+        <button mat-raised-button [disabled]="!productPrice">Ajouter au panier</button>
+      </div>
+    </div>
+    <div class="img-box-row">
+        <i (click)="imgBox.prev()" class="box-item k-i k-i_chevron-left i-button text-shadow" aria-hidden="true" ></i>
+        <div class="box-item img-box">
+          <canvas [imgBox]="boxProduct"></canvas>
+        </div>
+        <i (click)="imgBox.next()" class="box-item k-i k-i_chevron-right i-button text-shadow" aria-hidden="true"></i>
     </div>
   </div>
 </div>

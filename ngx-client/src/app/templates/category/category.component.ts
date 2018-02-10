@@ -1,52 +1,63 @@
 import { Component, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router, RouterEvent, NavigationEnd, NavigationStart } from "@angular/router";
 import { ApiService } from "../../api/api.service";
 import { LoaderEvent } from "../../shared/events/loader-event";
 import { ImgTileService } from "../img-tile.service";
+import { LayoutService, getMaxScreenWidth } from "../../layout.service";
 import { Subscription, Observable, Observer } from "rxjs";
-import { DeactivableComponent } from "../../routes/deactivable.component";
+import { SliderBaseComponent } from "../slider-base.component";
+import { SubscriptionCollector } from "../../shared/utils/subscription.utils";
 @Component({
   selector: 'category',
   templateUrl: './category.component.html',
-  styleUrls: ['./category.component.css']
+  styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent extends DeactivableComponent implements AfterViewInit, OnDestroy, OnChanges {
+export class CategoryComponent extends SliderBaseComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   @ViewChild('imgCtn')
   imgCtnRef: ElementRef
   imgCtn: HTMLElement
   categoryId: string
   loading: boolean = true
+  imgHeight = 350
+  
+  private aliasChanged = (alias) => {
+    let w = getMaxScreenWidth()
+    // w * r = x
+    // 1920 * r = 350
+    // r = 350 / 1920
+    // r = 0,182291667
+    // r1280 = 0,2734375
+    this.imgHeight = Math.ceil(.2734375 * w)
+  }
+  private subColl: SubscriptionCollector = new SubscriptionCollector()
   constructor(
+    layout: LayoutService,
     private route: ActivatedRoute,
+    private router: Router,
     private api: ApiService,
     private tile: ImgTileService) {
-      super()
-      console.log("CategoryComponent.constructor")
-  }
-
-  enabled: boolean = false
-  deactivate(): Observable<boolean> {
-    if(this.productId) {
-      return Observable.of(true) 
-    }
-    return Observable.create((observer: Observer<boolean>)=>{
-
-      this.enabled = false
-      setTimeout(() => {
-        observer.next(true)
-        observer.complete()
-      }, 300);
+    super()
+    this.subColl.add = router.events.subscribe((event: RouterEvent) => {
+      if(event instanceof NavigationStart) {
+        this.checkHasProduct(event.url)
+      }
+      
     })
+    this.subColl.add = layout.responsiveAliasChange
+      .subscribe(this.aliasChanged)
+    this.aliasChanged(layout.responsiveAlias)
+    this.checkHasProduct(router.url)
   }
 
-  showProduct(id: string) {
-    console.log("showProduct", id)
+  private checkHasProduct(url: string) {
+    this.selectedProduct = /\/product\/(\d+)/.test(url)
   }
 
   category: any
   children: any[]
   categoryLabel: string = ""
+  selectedProduct: boolean = false
   private productId: string
   private routeSubscription: Subscription
   ngAfterViewInit() {
@@ -54,10 +65,6 @@ export class CategoryComponent extends DeactivableComponent implements AfterView
       catalog => {
         this.routeSubscription = this.route.params.subscribe(params => {
           this.category = this.api.getCategoryById(params.id)
-          if(params.productId) {
-            console.log("params.productId", params.productId)
-            this.productId = params.productId
-          }
           this.categoryId = this.category.id
           this.categoryLabel = this.category.label
           if (this.tileId) {
@@ -83,7 +90,7 @@ export class CategoryComponent extends DeactivableComponent implements AfterView
     }
   }
   ngOnChanges(changes: SimpleChanges) {
-    
+
   }
 
   private events: LoaderEvent[] = []
@@ -103,19 +110,21 @@ export class CategoryComponent extends DeactivableComponent implements AfterView
     // console.log(loaded, n)
     if (n == loaded) {
       this.loading = false
-      if(! this.imgCtn)
-      this.imgCtn = this.imgCtnRef.nativeElement
-      
+      if (!this.imgCtn)
+        this.imgCtn = this.imgCtnRef.nativeElement
+
       this.tileId = "category" + this.category.id
       this.tile.create(this.tileId, this.imgCtn, this.events.map(e => e.target))
       this.events = []
-      this.enabled = true
+      this.slideIn()
       this.percentLoaded = 0
     }
   }
   ngOnDestroy() {
     this.tile.destroy(this.tileId)
     this.routeSubscription.unsubscribe()
+    this.subColl.unsubscribeAll()
+    console.log('CategoryComponent destroyed')
   }
 
 }

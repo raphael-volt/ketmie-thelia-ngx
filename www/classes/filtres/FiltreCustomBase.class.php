@@ -1,6 +1,6 @@
 <?php 
 require_once __DIR__ . "/../../fonctions/autoload.php";
-
+require_once __DIR__ . "/../../lib/JSON.php";
 class ParametersUtil
 {
 	private static function removeEOL($value)

@@ -1,7 +1,8 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpModule, Http, XHRBackend, BaseRequestOptions } from "@angular/http";
-import { ApiService } from './api.service';
+import { ApiService, replaceCategoryIdInURL, replaceProductIdInURL } from './api.service';
 
+let api: ApiService
 describe('ApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,7 +20,9 @@ describe('ApiService', () => {
           provide: ApiService,
           deps: [Http],
           useFactory: (h: Http) => {
-            return new ApiService(h)
+            if (!api)
+              api = new ApiService(h)
+            return api
           }
         }
       ],
@@ -31,12 +34,19 @@ describe('ApiService', () => {
 
   it('should be created', inject([ApiService], (service: ApiService) => {
     expect(service).toBeTruthy();
-  }));
+    expect(api).toBeTruthy();
 
-  it('should get catalog', async(inject([ApiService], (service: ApiService) => {
-    service.getShopCategories().subscribe(catatlog => {
-      expect(catatlog.id).toEqual(0)
-    })
-  })));
+    let ru = "category/1/product/4#foo"
+    ru = replaceProductIdInURL(ru, "10")
+    expect(ru).toEqual('category/1/product/10#foo')
+    ru = replaceCategoryIdInURL(ru, "5")
+    expect(ru).toEqual('category/5/product/10#foo')
+    
+    ru = '/category/3/product/33'
+    ru = replaceProductIdInURL(ru, "10")
+    expect(ru).toEqual('/category/3/product/10')
+    console.log(ru)
+
+  }))
 
 });

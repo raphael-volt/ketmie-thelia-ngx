@@ -1,27 +1,44 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from "@angular/flex-layout";
+
 import { CategoryComponent } from './category/category.component';
 import { ApiImageDirective } from './api-image.directive';
 import { ImgTileService } from "./img-tile.service";
 import { KetmieBackgroundComponent } from './ketmie-background/ketmie-background.component';
-import { MenuButtonComponent } from './menu-button/menu-button.component';
 import { MatModule } from "../mat/mat.module";
 import { CmsContentComponent } from './cms-content/cms-content.component';
 import { ProductComponent } from './product/product.component';
+import { RoutesModule } from "../routes/routes.module";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { InnerHtmlDirective } from './inner-html.directive';
+import { SliderDirective } from "./slider.directive";
+import { ImgBoxDirective } from './product/img-box.directive';
+
 @NgModule({
   imports: [
     CommonModule,
-    MatModule
+    FormsModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
+    MatModule,
+    RoutesModule,
   ],
   declarations: [
+    SliderDirective,
+    InnerHtmlDirective, 
     CategoryComponent,
     KetmieBackgroundComponent,
-    MenuButtonComponent, 
-    ApiImageDirective, CmsContentComponent, ProductComponent
+    ApiImageDirective, 
+    CmsContentComponent, 
+    ProductComponent, 
+    ImgBoxDirective
   ],
   exports:[
     KetmieBackgroundComponent,
-    MenuButtonComponent
+    SliderDirective,
+    ImgBoxDirective
   ],
   providers: [ImgTileService]
 })

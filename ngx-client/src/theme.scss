@@ -1,27 +1,118 @@
-/*
 @import '~@angular/material/theming';
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
 @include mat-core();
+// Define a theme.
+$primary: mat-palette($mat-indigo);
+$accent: mat-palette($mat-pink, A200, A100, A400);
+$theme: mat-light-theme($primary, $accent);
+// Include all theme styles for the components.
+@include angular-material-theme($theme);
+// slider
+$slider-duration :350ms;
+$slider-property :transform;
+.slider {
+  transition: none;
+}
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue.
-$candy-app-primary: mat-palette($mat-indigo);
-$candy-app-accent:  mat-palette($mat-pink, A200, A100, A400);
+.slider.slider-left {
+  transform: translateX(-100%);
+}
 
-// The warn palette is optional (defaults to red).
-$candy-app-warn:    mat-palette($mat-red);
+%slider-shared {
+  transition-property: $slider-property;
+  transition-duration: $slider-duration;
+}
 
-// Create the theme object (a Sass map containing all of the palettes).
-$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+.slider.slider-left.in {
+  @extend %slider-shared;
+  transform: translateX(0%);
+}
 
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($candy-app-theme);
+.slider.slider-left.out {
+  @extend %slider-shared;
+  transform: translateX(-100%);
+}
 
-*/
+.flex-col-center {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-bar {
+  order: 0;
+  flex: 0 1 auto;
+  align-self: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: center;
+  text-align: center;
+}
+
+.menu-bar>* {
+  display: inline-block;
+  order: 0;
+  flex: 0 1 auto;
+  align-self: auto;
+  cursor: pointer;
+}
+
+@mixin menuBar ($width, $gap, $size) {
+  font-size: ($size)+px;
+  padding: ($gap)+px;
+}
+
+@mixin menuBarChildren ($gap) {
+  margin-bottom: ($gap)+px;
+}
+
+@mixin setMenu($gap, $size) {
+  $offset-left: $size + $gap * 2;
+  .menu-bar {
+    @include menuBar($offset-left, $gap, $size);
+  }
+  .menu-bar>* {
+    @include menuBarChildren($gap);
+  }
+  .menu-offset {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: ($offset-left)+px;
+  }
+}
+
+$menu-gap-xs: 2;
+$menu-gap-sm: 4;
+$menu-gap-md: 6;
+$menu-gap-lg: 8;
+$menu-font-size-xs: 20;
+$menu-font-size-sm: 22;
+$menu-font-size-md: 24;
+$menu-font-size-lg: 30;
+// default
+@include setMenu($menu-gap-md, $menu-font-size-md);
+// xs
+@media screen and (min-width: 0px) and (max-width: 599px) {
+  @include setMenu($menu-gap-xs, $menu-font-size-xs);
+}
+
+// sm
+@media screen and (min-width: 600px) and (max-width: 959px) {
+  @include setMenu($menu-gap-sm, $menu-font-size-sm);
+}
+
+// md
+@media screen and (min-width: 960px) and (max-width: 1279px) {
+  @include setMenu($menu-gap-md, $menu-font-size-md);
+}
+
+// lg
+@media screen and (min-width: 1280px) and (max-width: 5000px) {
+  @include setMenu($menu-gap-lg, $menu-font-size-lg);
+}

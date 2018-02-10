@@ -1,12 +1,105 @@
-<div class="main" [class.on]="enabled">
-  <h2 class="flati">{{categoryLabel}}</h2>
-  <div #imgCtn class="imgCtn">
-    <img *ngFor="let p of children" 
-      apiImage [productId]="p.id" [imgHeight]="350"
-      (loaderEvent)="imgLoad($event)"/>
+<div class="main" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <h2>{{categoryLabel}}</h2>
+  <div #imgCtn class="imgCtn blur" [class.on]="selectedProduct">
+    <img *ngFor="let p of children" routerLink="/category/{{categoryId}}/product/{{p.id}}"
+      apiImage [productId]="p.id" [imgHeight]="imgHeight" (loaderEvent)="imgLoad($event)" />
   </div>
-  <mat-progress-bar *ngIf="loading"
-  mode="determinate"
-  [value]="percentLoaded">
+  <mat-progress-bar *ngIf="loading" mode="determinate" [value]="percentLoaded">
   </mat-progress-bar>
 </div>
+<router-outlet></router-outlet>
+<!--
+
+  /*
+.imgCtn {
+  width: 100%;
+  position: relative;
+}
+
+.imgCtn>img {
+  position: absolute;
+  cursor: pointer;
+}
+
+mat-progress-bar {
+  width: 50vw;
+  position: fixed;
+  left: 25vw;
+  top: 50vh;
+}
+
+// keyframes mixin
+@mixin keyframes($name) {
+    @-webkit-keyframes #{$name} {
+        @content;
+    }
+    @-moz-keyframes #{$name} {
+        @content;
+    }
+    @-ms-keyframes #{$name} {
+        @content;
+    }
+    @-o-keyframes #{$name} {
+        @content;
+    }
+    @keyframes #{$name} {
+        @content;
+    }
+}
+
+@mixin blurSepia($b, $s) {
+    filter: blur(#{$b}) sepia(#{$s});
+}
+@mixin anim($value, $cls) {
+    #{$cls} {
+        animation: $value;   
+        -webkit-animation: $value;
+        -moz-animation: $value;
+        -ms-animation: $value;
+        -o-animation: $value;
+        @content;
+    }
+}
+
+$blur-d: 5000ms;
+$blur: "." + blur;
+$blurin: blurin;
+$blurout: blurout;
+$on: on;
+$blur-on: $blur + "." + $on;
+$blurin-anim: $blurin $blur-d;
+$blurout-anim: $blurout $blur-d;
+
+$b-0: 0px;
+$b-1: 2px;
+$s-0: 0%;
+$s-1: 80%;
+
+// blur-out
+@include anim($blurout-anim, $blur){
+    @include blurSepia($b-0, $s-0);
+};
+@include keyframes($blurin) {
+    from {
+        filter: blur($b-1) sepia($s-1);
+    }
+    to {
+        filter: blur($b-0) sepia($s-0);
+    }
+};
+
+// blur-in
+@include anim($blurin-anim, $blur-on){
+    @include blurSepia($b-1, $s-1);
+};
+@include keyframes($blurin) {
+    from {
+        filter: blur($b-0) sepia($s-0);
+    }
+    to {
+        filter: blur($b-1) sepia($s-1);
+    }
+};
+*/
+
+-->

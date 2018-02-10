@@ -17,27 +17,6 @@
     overflow: hidden;
 }
 
-.menu-bar {
-    order: 0;
-    flex: 0 1 auto;
-    align-self: auto;
-    padding: 12px;
-    font-size: 24px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    align-items: stretch;
-}
-
-.menu-bar > * {
-    margin-bottom: 8px;
-    cursor: pointer;
-}
-.menu-bar > menu-button {
-    width: 24px;
-}
 .hr {
     display: block;
     width: 100%;
@@ -75,6 +54,7 @@
     display: inline-block;
     margin-bottom: 10px;
 }
+
 .link-container > span {
     font-family: Flati;
     font-size: 22px;

@@ -1,27 +1,75 @@
 <?php
 require_once (dirname(realpath(__FILE__)) . '/../../../classes/filtres/FiltreCustomBase.class.php');
+require_once __DIR__ . '/ProductHelper.php';
 
 class Filtreapi extends FiltreCustomBase
 {
 
+    /**
+     * 
+     * @var ProductHelper
+     */
+    private $productHelper;
+    
     public function __construct()
     {
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
+        $this->productHelper = new ProductHelper();
+    }
+
+    private function product($id) {
+     return json_encode($this->productHelper->getProduct($id, true), JSON_PRETTY_PRINT);
+    }
+    private function descriptions($type, $id)
+    {
+        $result = new stdClass();
+        $tn = null;
+        switch ($type) {
+            case "cms-content":
+                $tn = "contenudesc";
+                break;
+            case "category":
+                $tn = "rubriquedesc";
+                break;
+            
+            case "product":
+                $tn = "produitdesc";
+                break;
+            
+            default:
+                ;
+                break;
+        }
+        if (! $tn) {
+            $result->error = "Unable to find decription for type:'{$type}'";
+            return $result;
+        }
+        $pdo = PDOThelia::getInstance();
+        $stmt = $pdo->prepare("SELECT description FROM {$tn} WHERE id=?");
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        if($stmt->rowCount()) {
+            $result->description = $stmt->fetchColumn(0);
+        }
+        else {
+            $result->error = "Object of type:'{$type}' not found";            
+        }
+        return $result;
     }
 
     private function arbo()
     {
         $arbo = new stdClass();
-        $arbo->catalog = $this->catalog();
+        $arbo->shopCategories = $this->catalog();
         $q = "SELECT c.id as id, c.classement as ci, cd.titre as label FROM contenu as c 
 LEFT JOIN contenudesc as cd ON cd.id=c.id
 ORDER BY c.classement";
         $pdo = PDOThelia::getInstance();
         $cms = $pdo->query($q);
-        $arbo->cms = $cms->fetchAll(PDO::FETCH_OBJ);
+        $arbo->cmsContents = $cms->fetchAll(PDO::FETCH_OBJ);
         return $arbo;
     }
-
+    
     private function catalog()
     {
         $pdo = PDOThelia::getInstance();
@@ -86,7 +134,7 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         $match = parent::calcule($match);
         $action = $this->paramsUtil->action;
         $result = new stdClass();
-        
+        $encode = true;
         try {
             switch ($action) {
                 case "catalog":
@@ -99,11 +147,25 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                         $result = $this->arbo();
                         break;
                     }
+                case "descriptions":
+                    {
+                        $result = $this->descriptions($this->paramsUtil->parameters[0], $this->paramsUtil->parameters[1]);
+                        break;
+                    }
+                
+                case "product":
+                    {
+                        $result = $this->product($this->paramsUtil->parameters[0]);
+                        $encode = false;
+                        break;
+                    }
+                
             }
-            
         } catch (Exception $e) {
             $result->error = $e->getTraceAsString();
         }
-        return json_encode($result);
+        if($encode)
+            $result = json_encode($result);
+        return $result;
     }
 }

@@ -19,8 +19,57 @@ const cancel = (id) => {
     window.cancelAnimationFrame(id)
     return null
 }
+
+const now = () => {
+    return Date.now()
+}
+
 export type PlayStatus = "none" | "toEnd" | "toStart"
 export class Tween {
+
+    private static _tweens: Tween[] = []
+    private static _now: number = now()
+    private static _requestID: number = NaN
+
+    private static _addRequestAnimation(t: Tween) {
+        const l = Tween._tweens
+        const i = l.indexOf(t)
+        if (i == -1) {
+            Tween._tweens.push(t)
+            if (isNaN(Tween._requestID))
+                Tween._requestAnimation()
+        }
+    }
+
+    private static _removeRequestAnimation(t: Tween) {
+        const l = Tween._tweens
+        const i = l.indexOf(t)
+        if (i != -1) {
+            l.splice(i, 1)
+            if (!l.length && !isNaN(Tween._requestID)) {
+                Tween._clearAnimation()
+            }
+        }
+    }
+
+    private static _clearAnimation() {
+        window.cancelAnimationFrame(Tween._requestID)
+        Tween._requestID = NaN
+    }
+
+    private static _requestAnimation() {
+        Tween._requestID = window.requestAnimationFrame(Tween._tick)
+    }
+
+    private static _tick = () => {
+        Tween._now = now()
+        const l = Tween._tweens
+        for (const t of l) {
+            t.update()
+        }
+        if (l.length)
+            Tween._requestAnimation()
+    }
     constructor(public ease: Ease) { }
 
     private _currentValue: number = NaN
@@ -38,74 +87,65 @@ export class Tween {
     get currentValue(): number {
         return this._currentValue
     }
+    private startT: number = 0
+    private endT: number = 0
+    private elapsedT: number = 0
     private t: number = 0
     private requestId: any | null
-    private pendingEvents: TweenEvent[] = [
 
-    ]
-    private update = () => {
+    protected update = () => {
         let e: TweenEvent
-        if (this.pendingEvents.length) {
-            for (e of this.pendingEvents)
-                this.change.next(e)
-            this.pendingEvents.length = 0
-        }
-        let t: number = this.t
         const ease = this.ease
-        let finished: boolean = false
-        if (this._playStatus == "toEnd") {
-            t++
-            if (t >= ease.duration) {
-                t = ease.duration
-                finished = true
-            }
-        }
+        const n = Tween._now
+        const duration = ease.duration
+
+        let elapsedT = n - this.startT
+        if (elapsedT > duration)
+            elapsedT = duration
+        this.elapsedT = elapsedT
+        let t: number = elapsedT / duration
         if (this._playStatus == "toStart") {
-            t--
-            if (t <= 0) {
-                t = 0
-                finished = true
-            }
+            t = 1 - t
         }
         this.t = t
-        this._currentValue = this.ease.get(t)
-        this.logProgress("update")
-        this.change.emit(new TweenEvent("change", this))
-        if (finished) {
+        this._currentValue = this.ease.get(elapsedT)
+        if (elapsedT == duration) {
             this._running = false
-            this.logProgress("end")
+            Tween._removeRequestAnimation(this)
             this.change.emit(new TweenEvent("end", this))
-            this.requestId = null
         }
         else
-            this.requestId = request(this.update)
-    }
-    logProgress(e: string) {
-        //console.log(`[Tween ${e}] t:${this.t} d:${this.ease.duration} v:${this._currentValue}`)
+            this.change.emit(new TweenEvent("change", this))
     }
     start() {
         this.t = 0
+        this.elapsedT = 0
+        this.startT = now()
+        this.endT = this.startT + this.ease.duration
+
         this.paused = false
         this._running = true
         this._playStatus = "toEnd"
         this._currentValue = this.ease.start
-        this.logProgress("start")
-        this.pendingEvents.push(new TweenEvent("start", this))
-        this.requestId = request(this.update)
+        Tween._addRequestAnimation(this)
     }
     pause() {
         if (this.paused)
             return
+        Tween._removeRequestAnimation(this)
         this.paused = true
         this._running = false
-        this.requestId = cancel(this.requestId)
     }
     resume() {
         if (!this.paused)
             return
+        let n = now()
+        this.startT = n - this.elapsedT
+        this.endT = this.startT + this.ease.duration
+
         this.paused = false
         this._running = true
-        this.requestId = request(this.update)
+        Tween._addRequestAnimation(this)
     }
     toogle() {
         let status: PlayStatus = "none"
@@ -113,33 +153,18 @@ export class Tween {
             case "toEnd":
                 status = "toStart"
                 break;
-        
+
             case "toStart":
                 status = "toEnd"
                 break;
-        
+
             default:
 
                 break;
         }
-        if(status == "none")
+        if (status == "none")
             return
         this._playStatus = status
-    }
-    rewind() {
-        if (this._playStatus == "toStart" || this.t == 0)
-            return
-        this._playStatus = "toStart"
-        this._running = true
-        this.requestId = request(this.update)
-    }
-    reset() {
-        if (this.requestId !== null) {
-            this.requestId = cancel(this.requestId)
-        }
-        this._running = false
-        this._playStatus = "none"
-        this.t = 0
     }
 }
 

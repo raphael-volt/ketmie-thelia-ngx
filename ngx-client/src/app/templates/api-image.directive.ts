@@ -15,7 +15,8 @@ export class ApiImageDirective implements OnChanges, OnDestroy {
   imgWidth: string
   @Input()
   imgHeight: string
-
+  @Input()
+  imgScale: number
   @Output()
   loaderEvent: EventEmitter<LoaderEvent> = new EventEmitter<LoaderEvent>()
 
@@ -28,6 +29,7 @@ export class ApiImageDirective implements OnChanges, OnDestroy {
   private id: string
   private width: string
   private height: string
+  private scale: number = 1
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.productId) {
@@ -52,6 +54,18 @@ export class ApiImageDirective implements OnChanges, OnDestroy {
         ()=>{
           sub.unsubscribe()
         })
+    }
+    if(changes.imgScale) {
+      let s: number = changes.imgScale.currentValue
+      if(typeof s == "number" && ! isNaN(s)) {
+        const style = this.img.style
+        if(s == 1) {
+          style.transform = "none"
+        }
+        else {
+          style.transform = `scale(${s},${s})`
+        }
+      }
     }
   }
   ngOnDestroy() {

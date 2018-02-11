@@ -1,22 +1,40 @@
 @import '~@angular/material/theming';
 @include mat-core();
-/*
-// Define a theme.
-$primary: mat-palette($mat-indigo);
-$accent: mat-palette($mat-pink, A200, A100, A400);
-$theme: mat-light-theme($primary, $accent);
-// Include all theme styles for the components.
-@include angular-material-theme($theme);
-*/
 
 $custom-theme-primary: mat-palette($mat-light-blue);
-$custom-theme-accent: mat-palette($mat-orange, A200, A100, A400);
-$custom-theme-warn: mat-palette($mat-red);
+$custom-theme-accent: mat-palette($mat-blue-grey);
+$custom-theme-warn: mat-palette($mat-amber);
+// light-theme
+$light-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+// dark theme
+$dark-theme: mat-dark-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+/*
+// Include the default theme
+@include angular-material-theme($light-theme);
 
-$custom-theme: mat-dark-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+// Include the dark theme.
+.ki-dark {
+  @include angular-material-theme($dark-theme);
+}
+*/
 
-@include angular-material-theme($custom-theme);
+// Include the default theme
+@include angular-material-theme($dark-theme);
 
+// Include the light theme.
+.ki-light {
+  @include angular-material-theme($light-theme);
+}
+
+$menu-gap-xs: 3;
+$menu-gap-sm: 5;
+$menu-gap-md: 6;
+$menu-gap-lg: 8;
+$menu-font-size-xs: 16;
+$menu-font-size-sm: 20;
+$menu-font-size-md: 24;
+$menu-font-size-lg: 30;
+$menu-item-mb: .5em;
 // slider
 $slider-duration :350ms;
 $slider-property :transform;
@@ -62,6 +80,7 @@ $slider-property :transform;
   align-content: flex-start;
   align-items: center;
   text-align: center;
+  z-index: 1000;  
 }
 
 .menu-bar>* {
@@ -70,6 +89,7 @@ $slider-property :transform;
   flex: 0 1 auto;
   align-self: auto;
   cursor: pointer;
+  margin-bottom: $menu-item-mb;
 }
 
 @mixin menuBar ($width, $gap, $size) {
@@ -78,7 +98,7 @@ $slider-property :transform;
 }
 
 @mixin menuBarChildren ($gap) {
-  margin-bottom: ($gap)+px;
+  margin-bottom: $menu-item-mb;
 }
 
 @mixin setMenu($gap, $size) {
@@ -98,14 +118,7 @@ $slider-property :transform;
   }
 }
 
-$menu-gap-xs: 2;
-$menu-gap-sm: 4;
-$menu-gap-md: 6;
-$menu-gap-lg: 8;
-$menu-font-size-xs: 20;
-$menu-font-size-sm: 22;
-$menu-font-size-md: 24;
-$menu-font-size-lg: 30;
+
 // default
 @include setMenu($menu-gap-md, $menu-font-size-md);
 // xs

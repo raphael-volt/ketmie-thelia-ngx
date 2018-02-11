@@ -30,9 +30,9 @@ export class SliderBaseComponent extends DeactivableComponent {
 
     }
 
-        protected _deactivate() {
-            this.slideOut()
-        }
+    protected _deactivate() {
+        this.slideOut()
+    }
 
     protected slideIn = () => {
         this.sliderState = "in"

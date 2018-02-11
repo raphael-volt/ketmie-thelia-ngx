@@ -13,7 +13,6 @@ export class ImgTileService {
   private ids: string[] = []
 
   create(id: string, parent: HTMLElement, images: HTMLImageElement[]) {
-    console.log('ImgTileService.create', id)
     const td: TileData = { parent: parent, images: images }
     this.ids.push(id)
     this.tiles.push(td)

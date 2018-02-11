@@ -14,7 +14,6 @@ body, html {
     overflow: hidden;
 }
 
-
 /* FLEX LAYOUTS */
 
 .flex-v {
@@ -50,11 +49,6 @@ body, html {
     align-self: auto;
 }
 
-.black-content {
-    background-color: #333;
-    color: white;
-}
-
 .flati {
     font-family: Flati!important;
 }
@@ -84,8 +78,11 @@ img, svg, svg * {
     outline: none;
 }
 .main {
-    background-color: rgba(255, 255, 255, .5);
+    /*
+    background-color: rgba(255, 255, 255, .75);
+    color: #333;
     padding: 10px;
+    */
     min-height: 100vh;
 }
 

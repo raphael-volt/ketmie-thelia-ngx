@@ -1,33 +1,63 @@
-<div class="main mat-typography">
-  <div>
-    <h1>Crad</h1>
-    <mat-card class="example-card">
-      <mat-card-header>
-        <mat-card-title>Card exemple</mat-card-title>
-        <mat-card-subtitle>Default color</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
-          very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-        </p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button>NORMAL</button>
-        <button color="primary" mat-button>PRYMARY</button>
-        <button color="accent" mat-button>ACCENT</button>
-        <button color="warn" mat-button>WARN</button>
-        <button mat-raised-button>NORMAL</button>
-        <button color="primary" mat-raised-button>PRYMARY</button>
-        <button color="accent" mat-raised-button>ACCENT</button>
-        <button color="warn" mat-raised-button>WARN</button>
-      </mat-card-actions>
-      <mat-card-footer>
-        <button mat-raised-button>NORMAL</button>
-        <button color="primary" mat-raised-button>PRYMARY</button>
-        <button color="accent" mat-raised-button>ACCENT</button>
-        <button color="warn" mat-raised-button>WARN</button>
-      </mat-card-footer>
-    </mat-card>
-  </div>
+<div class="main" 
+  sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  
+  <h2>Light Theme</h2>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Light Card</mat-card-title>
+      <mat-card-subtitle>Default color</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+        very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>NORMAL</button>
+      <button color="primary" mat-button>PRYMARY</button>
+      <button color="accent" mat-button>ACCENT</button>
+      <button color="warn" mat-button>WARN</button>
+      <button mat-raised-button>NORMAL</button>
+      <button color="primary" mat-raised-button>PRYMARY</button>
+      <button color="accent" mat-raised-button>ACCENT</button>
+      <button color="warn" mat-raised-button>WARN</button>
+    </mat-card-actions>
+    <mat-card-footer>
+      <button mat-raised-button>NORMAL</button>
+      <button color="primary" mat-raised-button>PRYMARY</button>
+      <button color="accent" mat-raised-button>ACCENT</button>
+      <button color="warn" mat-raised-button>WARN</button>
+    </mat-card-footer>
+  </mat-card> -->
+  <h2>Dark theme</h2>   
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Dark Card</mat-card-title>
+      <mat-card-subtitle>Default color</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+        very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>NORMAL</button>
+      <button color="primary" mat-button>PRYMARY</button>
+      <button color="accent" mat-button>ACCENT</button>
+      <button color="warn" mat-button>WARN</button>
+      <button mat-raised-button>NORMAL</button>
+      <button color="primary" mat-raised-button>PRYMARY</button>
+      <button color="accent" mat-raised-button>ACCENT</button>
+      <button color="warn" mat-raised-button>WARN</button>
+    </mat-card-actions>
+    <mat-card-footer>
+      <button mat-raised-button>NORMAL</button>
+      <button color="primary" mat-raised-button>PRYMARY</button>
+      <button color="accent" mat-raised-button>ACCENT</button>
+      <button color="warn" mat-raised-button>WARN</button>
+    </mat-card-footer>
+  </mat-card>
+ -->
 </div>

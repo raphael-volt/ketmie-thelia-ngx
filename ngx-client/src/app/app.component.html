@@ -2,9 +2,12 @@
 <div mainContainer class="mainContainer basic-container mat-typography">
   <div menu-bar 
     (menu)="sidenav.toggle()" 
-    class="menu-bar flex-v flex-h-c black-content"></div>
+    class="menu-bar flex-v flex-h-c mat-card">
+      <i routerLink="/theme" routerLinkActive="active" 
+        class="k-i k-i_cogs" aria-hidden="true"></i>
+  </div>
   <mat-sidenav-container class="container">
-    <mat-sidenav #sidenav opened="false" [disableClose]="false" class="sidenav black-content">
+    <mat-sidenav #sidenav opened="false" [disableClose]="false" class="sidenav mat-card">
       <div class="flex-v link-container" (click)="sidenav.close()">
         <span *ngFor="let c of categories" routerLink="/category/{{c.id}}" routerLinkActive="active">{{c.label}}</span>
         <div class="hr"></div>

@@ -21,6 +21,7 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
   loading: boolean = true
   imgHeight = 350
   
+  
   private aliasChanged = (alias) => {
     let w = getMaxScreenWidth()
     // w * r = x
@@ -124,7 +125,6 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
     this.tile.destroy(this.tileId)
     this.routeSubscription.unsubscribe()
     this.subColl.unsubscribeAll()
-    console.log('CategoryComponent destroyed')
   }
 
 }

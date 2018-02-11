@@ -30,12 +30,13 @@ export class Tween {
     private static _tweens: Tween[] = []
     private static _now: number = now()
     private static _requestID: number = NaN
+    private static _requestFlag: boolean = false
 
     private static _addRequestAnimation(t: Tween) {
         const l = Tween._tweens
         const i = l.indexOf(t)
-        if (i == -1) {
-            Tween._tweens.push(t)
+        if (i < -0) {
+            l.push(t)
             if (isNaN(Tween._requestID))
                 Tween._requestAnimation()
         }
@@ -58,10 +59,14 @@ export class Tween {
     }
 
     private static _requestAnimation() {
+        if (Tween._requestFlag)
+            return
+        Tween._requestFlag = true
         Tween._requestID = window.requestAnimationFrame(Tween._tick)
     }
 
     private static _tick = () => {
+        Tween._requestFlag = false
         Tween._now = now()
         const l = Tween._tweens
         for (const t of l) {
@@ -92,8 +97,13 @@ export class Tween {
     private elapsedT: number = 0
     private t: number = 0
     private requestId: any | null
+    private endFlag: boolean = false
 
     protected update = () => {
+        if (!this._running) {
+            console.log('TWEEN REPEAT')
+            return
+        }
         let e: TweenEvent
         const ease = this.ease
         const n = Tween._now
@@ -127,6 +137,7 @@ export class Tween {
         this._running = true
         this._playStatus = "toEnd"
         this._currentValue = this.ease.start
+        this.change.emit(new TweenEvent("start", this))
         Tween._addRequestAnimation(this)
     }
     pause() {

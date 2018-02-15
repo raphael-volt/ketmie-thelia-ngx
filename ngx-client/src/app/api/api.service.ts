@@ -5,7 +5,7 @@ import { Observer, Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { Category, Product, ProductDetail, CMSContent, ShopTree } from "./api.model";
-
+const API: string = "api"
 export type ImgTypes = "contenu" | "dossier" | "produit" | "rubrique"
 export type ContentTypes = "category" | "product" | "cms-content"
 
@@ -16,7 +16,7 @@ const numInPart = /(\d+)(.*)?/
 const urlParts = (str: string) => {
   return str.split(PATH_SEP)
 }
-const urlJoin = (parts: string[]) => parts.join(PATH_SEP)
+const urlJoin = (...parts) => parts.join(PATH_SEP)
 const urlIdReplace = val => `${val}$2`
 const replaceUrlPartId = (input: string, id: string): string => input.replace(numInPart, urlIdReplace(id))
 const asPart = (url: string | string[]) => {
@@ -50,7 +50,7 @@ const replaceIdInURL = (url: string, name: string, newId: string): string => {
   if (i < 0)
     return null
   l[i] = replaceUrlPartId(l[i], newId)
-  return urlJoin(l)
+  return urlJoin.apply(null, l)
 }
 const findIdInURL = (url: string, name: string) => {
   let p = findPathParam(url, name)
@@ -68,17 +68,33 @@ const findProductIdInURL = url => findIdInURL(url, PATH_PRODUCT)
 const replaceCategoryIdInURL = (url: string, id: string) => replaceIdInURL(url, PATH_CATEGORY, id)
 const replaceProductIdInURL = (url: string, id: string) => replaceIdInURL(url, PATH_PRODUCT, id)
 
-export { findCategoryIdInURL, findProductIdInURL, replaceCategoryIdInURL, replaceProductIdInURL }
+export { findCategoryIdInURL, findProductIdInURL, replaceCategoryIdInURL, replaceProductIdInURL, urlJoin }
 @Injectable()
 export class ApiService {
 
-  private baseHref: string = ""
+  private _baseHref: string = ""
   private shopCategoriesMap: { [id: string]: any }
   private shopCategories: any[]
 
   constructor(private http: Http) {
     if (isDevMode())
-      this.baseHref = "http://localhost:4501/"
+      this._baseHref = "http://localhost:4501/"
+  }
+  get baseHref(): string {
+    return this._baseHref
+  }
+
+  getSearchParam(serviceName: string, input?: any) {
+    const params = {
+      search: {
+        fond: urlJoin(API, serviceName)
+      }
+    }
+    if(input) {
+      for(const p in input)
+        params.search[p] = input[p]
+    }
+    return params
   }
 
   getImageUrl(id: string, type: ImgTypes, width?: number, height?: number) {
@@ -90,7 +106,7 @@ export class ApiService {
       args.push("width=" + width)
     if (height)
       args.push("height=" + height)
-    return this.baseHref + "image.php?" + args.join("&")
+    return this._baseHref + "image.php?" + args.join("&")
   }
   getProductImageUrlById(id: string, width?: number, height?: number) {
     return this.getImageUrl(id, "produit", width, height)
@@ -105,7 +121,7 @@ export class ApiService {
       args.push("width=" + width)
     if (height)
       args.push("height=" + height)
-    return this.baseHref + "image.php?" + args.join("&")
+    return this._baseHref + "image.php?" + args.join("&")
   }
   private shopTreeRequesting = false
   private shopTreeRequestingObservers: Observer<any>[] = []
@@ -121,11 +137,7 @@ export class ApiService {
       return Observable.of(this.shopTree)
 
     this.shopTreeRequesting = true
-    return this.http.get(this.baseHref, {
-      search: {
-        fond: "api/arbo"
-      }
-    })
+    return this.http.get(this._baseHref, this.getSearchParam("arbo"))
       .pipe(map(response => {
         this.shopTree = response.json()
         this.createCategoriesMap(this.shopTree.shopCategories)
@@ -183,19 +195,14 @@ export class ApiService {
   }
 
   getProductDetails(id: string): Observable<ProductDetail> {
-    return this.http.get(this.baseHref, {
-      search: {
-        fond: "api/product",
-        id: id
-      }
-    }).pipe(
+    return this.http.get(this._baseHref, this.getSearchParam("product", { id: id })).pipe(
       map(request => {
         const result = request.json()
         if (result.error)
           throw new Error(result.error)
         return result
       })
-      )
+    )
   }
 
   getDescription(type: ContentTypes, id: string): Observable<string> {
@@ -203,13 +210,7 @@ export class ApiService {
     if (cmsContent && cmsContent.description)
       return Observable.of(cmsContent.description)
 
-    return this.http.get(this.baseHref, {
-      search: {
-        fond: "api/descriptions",
-        type: type,
-        id: id
-      }
-    }).pipe(
+    return this.http.get(this._baseHref, this.getSearchParam("product", { id: id, type: type })).pipe(
       map(request => {
         const result = request.json()
         if (result.error)
@@ -217,6 +218,6 @@ export class ApiService {
         cmsContent.description = request.json().description
         return cmsContent.description
       })
-      )
+    )
   }
 }

@@ -3,11 +3,20 @@ import { Component, AfterViewChecked, EventEmitter, Output, ElementRef, ViewChil
 @Component({
   selector: '[menu-bar]',
   templateUrl: './menu-bar.component.html',
-  styleUrls: ['./menu-bar.component.css']
+  styleUrls: ['./menu-bar.component.css'],
+  host: {
+    '(click)':'barClickHandler($event)'
+  }
 })
 export class MenuBarComponent implements AfterViewChecked {
 
-  constructor() { }
+  private target: HTMLElement
+  constructor(ref: ElementRef) {
+    this.target = ref.nativeElement
+   }
+
+  @Output()
+  barClick: EventEmitter<void> = new EventEmitter()
 
   @Output()
   home: EventEmitter<boolean> = new EventEmitter<boolean>()
@@ -37,5 +46,10 @@ export class MenuBarComponent implements AfterViewChecked {
     const ctn: HTMLElement = this.menuCtn.nativeElement
     ctn.style.width = `${bounds.height}px`
     ctn.style.height = `${bounds.width}px`
+  }
+
+  barClickHandler(event: MouseEvent) {
+    if(event.target == this.target)
+      this.barClick.emit()
   }
 }

@@ -1,11 +1,140 @@
-@import '~@angular/material/theming';
+// @import '~@angular/material/theming';
+@import '../node_modules/@angular/material/_theming.scss';
 @include mat-core();
-// Define a theme.
-$primary: mat-palette($mat-indigo);
-$accent: mat-palette($mat-pink, A200, A100, A400);
-$theme: mat-light-theme($primary, $accent);
-// Include all theme styles for the components.
-@include angular-material-theme($theme);
+
+@mixin item-raised($zIndex: 2) {
+  &.raised {
+    @include mat-elevation-transition;
+    @include mat-elevation($zIndex)
+  }
+}
+
+@mixin content-color($palette) {
+  background: mat-color($palette);
+  color: mat-color($palette, default-contrast);
+}
+
+@mixin item-color-theme($color, $zValue: null) {
+  color: mat-color($color);
+  &.content {
+    @include content-color($color);
+    @include item-raised()
+  }
+}
+
+@mixin color-theme($theme) {
+  $config: mat-typography-config();
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+  $theme-color: mat-color($foreground, text);
+  font-family: mat-font-family($config);
+  color: $theme-color;
+  font-size: mat-font-size($config, body-1);
+  .content,
+  &.content {
+    background-color: mat-color($background, card);
+    @include item-raised()
+  }
+  .primary,
+  &.primary {
+    @include item-color-theme($primary)
+  }
+  .accent,
+  &.accent {
+    @include item-color-theme($accent)
+  }
+  .warn,
+  &.accent {
+    @include item-color-theme($warn)
+  }
+  .tool-bar,
+  &.tool-bar {
+    background: mat-color($background, app-bar);
+    &.primary {
+      @include content-color($primary)
+    }
+    &.accent {
+      @include content-color($accent)
+    }
+    &.warn {
+      @include content-color($warn)
+    }
+  }
+}
+
+@mixin side-nav-override() {
+  .mat-drawer-container,
+  .mat-drawer-backdrop.mat-drawer-shown {
+    background-color: transparent;
+  }
+}
+
+@mixin create-mat-theme($theme) {
+  @include angular-material-theme($theme);
+  @include side-nav-override()
+}
+
+$dark: mat-dark-theme( 
+  mat-palette($mat-light-blue), 
+  mat-palette($mat-amber), 
+  mat-palette($mat-deep-orange)
+);
+
+.dark,
+.light .dark,
+.dark .light .dark,
+.light .dark .light .dark {
+  @include create-mat-theme($dark);
+}
+
+.k-dark,
+.k-light .k-dark,
+.k-dark .k-light .k-dark,
+.k-light .k-dark .k-light .k-dark {
+  @include color-theme($dark);
+}
+
+$light: mat-light-theme( 
+  mat-palette($mat-indigo), 
+  mat-palette($mat-blue-grey), 
+  mat-palette($mat-orange)
+);
+
+.light,
+.dark .light,
+.light .dark .light,
+.dark .light .dark .light {
+  @include create-mat-theme($light)
+}
+
+.k-light,
+.k-dark .k-light,
+.k-light .k-dark .k-light,
+.k-dark .k-light .k-dark .k-light {
+  @include color-theme($light)
+}
+
+body,
+html {
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+$menu-gap-xs: 3;
+$menu-gap-sm: 5;
+$menu-gap-md: 6;
+$menu-gap-lg: 8;
+$menu-font-size-xs: 16;
+$menu-font-size-sm: 20;
+$menu-font-size-md: 24;
+$menu-font-size-lg: 30;
+$menu-item-mb: .5em;
 // slider
 $slider-duration :350ms;
 $slider-property :transform;
@@ -40,34 +169,13 @@ $slider-property :transform;
   align-items: center;
 }
 
-.menu-bar {
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  align-items: center;
-  text-align: center;
-}
-
-.menu-bar>* {
-  display: inline-block;
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-  cursor: pointer;
-}
-
 @mixin menuBar ($width, $gap, $size) {
   font-size: ($size)+px;
   padding: ($gap)+px;
 }
 
 @mixin menuBarChildren ($gap) {
-  margin-bottom: ($gap)+px;
+  margin-bottom: $menu-item-mb;
 }
 
 @mixin setMenu($gap, $size) {
@@ -87,14 +195,6 @@ $slider-property :transform;
   }
 }
 
-$menu-gap-xs: 2;
-$menu-gap-sm: 4;
-$menu-gap-md: 6;
-$menu-gap-lg: 8;
-$menu-font-size-xs: 20;
-$menu-font-size-sm: 22;
-$menu-font-size-md: 24;
-$menu-font-size-lg: 30;
 // default
 @include setMenu($menu-gap-md, $menu-font-size-md);
 // xs

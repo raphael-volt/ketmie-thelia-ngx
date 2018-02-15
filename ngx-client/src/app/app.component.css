@@ -1,5 +1,9 @@
-.mainContainer {
-    height: 100%;
+.app-ctn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -8,13 +12,63 @@
     align-items: stretch;
 }
 
+.app-ctn>.menu-bar {
+    font-size: 22px;
+    padding: 12px;
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+    text-align: center;
+}
+
+.app-ctn>mat-sidenav-container {
+    order: 0;
+    flex: 1 1 auto;
+    align-self: auto;
+}
+
+#router-container {
+    overflow: hidden;
+}
+mat-sidenav {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: stretch;
+}
+.nav-list {
+    max-width: 33vw;
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+
+
+.nav-list mat-list-item{
+    margin: 20px 0;
+}
+
+.mat-line.wrap {
+    white-space: normal;
+}
+
 .container {
     order: 0;
     flex: 1 1 auto;
     align-self: auto;
+    /*
     outline-offset: -2px;
     background: none;
     overflow: hidden;
+    */
 }
 
 .hr {
@@ -25,10 +79,14 @@
     background-color: white;
 }
 
+.mat-list-item {
+    text-align: center!important;
+}
 
 .sidenav {
     padding: 200px 8px;
 }
+
 .link-container {
     max-width: 33vw;
     overflow: hidden;
@@ -55,7 +113,7 @@
     margin-bottom: 10px;
 }
 
-.link-container > span {
+.link-container>span {
     font-family: Flati;
     font-size: 22px;
     display: inline-block;

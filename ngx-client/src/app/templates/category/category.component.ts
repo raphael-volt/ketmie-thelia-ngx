@@ -1,4 +1,4 @@
-import { Component, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostBinding, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd, NavigationStart } from "@angular/router";
 import { ApiService } from "../../api/api.service";
 import { LoaderEvent } from "../../shared/events/loader-event";
@@ -14,12 +14,14 @@ import { SubscriptionCollector } from "../../shared/utils/subscription.utils";
 })
 export class CategoryComponent extends SliderBaseComponent implements AfterViewInit, OnDestroy, OnChanges {
 
+  @HostBinding("class.k-light") kLite = true;
   @ViewChild('imgCtn')
   imgCtnRef: ElementRef
   imgCtn: HTMLElement
   categoryId: string
   loading: boolean = true
   imgHeight = 350
+  
   
   private aliasChanged = (alias) => {
     let w = getMaxScreenWidth()
@@ -28,7 +30,7 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
     // r = 350 / 1920
     // r = 0,182291667
     // r1280 = 0,2734375
-    this.imgHeight = Math.ceil(.2734375 * w)
+    this.imgHeight = Math.ceil(.15 * w)
   }
   private subColl: SubscriptionCollector = new SubscriptionCollector()
   constructor(
@@ -124,7 +126,6 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
     this.tile.destroy(this.tileId)
     this.routeSubscription.unsubscribe()
     this.subColl.unsubscribeAll()
-    console.log('CategoryComponent destroyed')
   }
 
 }

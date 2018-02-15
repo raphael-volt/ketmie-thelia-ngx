@@ -20,10 +20,10 @@
       "prefix": "",
       "styles": [
         "theme.scss",
+        "styles.css",
         "../libs/flati/flati.css",
         "../libs/k-i/style.scss",
-        "../node_modules/font-awesome/css/font-awesome.min.css",
-        "styles.css"
+        "../node_modules/font-awesome/css/font-awesome.min.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

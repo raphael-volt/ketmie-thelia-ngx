@@ -23,7 +23,9 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   canAddToCard: boolean
   product: ProductDetail
   productPrice: string
-
+  canNavImages: boolean = false
+  prevProductId: string
+  nextProductId: string
   private routeSubscription: Subscription
 
   constructor(
@@ -34,12 +36,45 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
     super()
   }
 
+  keybordHandler = (event: KeyboardEvent) => {
+    let newId = null
+    let arrow = [false, false]
+    switch (event.code) {
+      case "ArrowLeft":
+        newId = this.prevProductId
+        arrow[0] = true
+        break;
+
+      case "ArrowRight":
+        arrow[1] = true
+        newId = this.nextProductId
+        break;
+
+      case "Escape":
+        this.close()
+        break;
+
+      default:
+        break;
+    }
+    if (newId && !event.altKey && !event.shiftKey) {
+      this._productIdChanged = true
+      this.router.navigate([replaceProductIdInURL(this.router.url, newId)])
+    }
+    if (newId && event.shiftKey) {
+      if (arrow[0])
+        this.imgBox.prev()
+      else
+        this.imgBox.next()
+    }
+  }
   protected slideInEnded() {
     this.boxProduct = this.product
+    this.canNavImages = this.product.images.length > 1
   }
 
   private getNearestProduct(id: string, dir: number): Product {
-    const c: Category = this.api.getCategoryById(this.parentCategoryId)
+    const c: Category = this.api.getCategoryById(this.categoryId)
     if (!c)
       return null
     const products = c.children
@@ -60,39 +95,35 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
     }
     return p
   }
-/*
-  deactivate(): Observable<boolean> {
-    if (!this._productIdChanged)
-    return super.deactivate()
-  }
-  */
-  protected _deactivate() {
-    if (!this._productIdChanged)
-      return super._deactivate()
-    this.setDeactivable()
-  }
+  deactivate() {
+    return Observable.create(o => {
+      if (this.imgBox) {
+        let subscribed = false
+        let sub: Subscription = null
+        const done = () => {
+          if (sub) {
+            sub.unsubscribe()
+            subscribed = true
+          }
+          o.next(true)
+          o.complete()
+        }
+        if (!this._productIdChanged)
+          sub = super.deactivate().subscribe(done)
 
+        else
+          sub = this.imgBox.close().subscribe(done)
+      }
+      else return super.deactivate()
+    })
+  }
   private _productIdChanged: boolean = false
-  private navigateToNearestProduct(dir: number) {
-    let url = this.router.url
-    this.parentCategoryId = findCategoryIdInURL(url)
-    const p = this.getNearestProduct(this.product.id, dir)
-    if (p) {
-      this._productIdChanged = true
-      this.productPrice = undefined
-      this.declinationModel = undefined
-      url = replaceProductIdInURL(url, p.id)
-      this.router.navigate([url])
-    }
+
+  imRowNavClick(id: string) {
+    this._productIdChanged = true
   }
 
-  nextProduct() {
-    this.navigateToNearestProduct(1)
-  }
 
-  prevProduct() {
-    this.navigateToNearestProduct(-1)
-  }
 
   close() {
     this._productIdChanged = false
@@ -115,40 +146,44 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
       if (subscribed && sub)
         sub.unsubscribe()
     }
-
     if (this.imgBox) {
-      sub = this.imgBox.close()
-        .subscribe(v => {
-          subscribed = true
-          if (sub) {
-            sub.unsubscribe()
-            sub = null
-          }
-          done()
-        })
-      if (subscribed && sub)
-        sub.unsubscribe()
+      this.imgBox.close()
     }
-    else
-      done()
-
+    done()
+    /*
+        if (this.imgBox) {
+          sub = this.imgBox.close()
+            .subscribe(v => {
+              subscribed = true
+              if (sub) {
+                sub.unsubscribe()
+                sub = null
+              }
+              done()
+            })
+          if (subscribed && sub)
+            sub.unsubscribe()
+        }
+        else
+          done()
+    */
   }
 
 
   declinationChange(value) {
-    console.log("declinationChange", value, this.declinationModel)
     let declination: ProductDeclination = this.product.declinations.find(d => {
       return d.id == value
     })
     this.productPrice = declination.price
   }
 
-  private parentCategoryId: string
+  categoryId: string
+  private category: Category
 
 
   ngOnInit() {
+    document.addEventListener('keyup', this.keybordHandler)
     let sub = this.route.parent.params.subscribe(params => {
-      this.parentCategoryId = findCategoryIdInURL(this.router.url)
       this.routeSubscription = this.route.params.subscribe(params => {
         let apiSub = this.api.getProductDetails(params.id).subscribe(product => {
           if (product.description == "")
@@ -158,13 +193,24 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
 
           if (!product.declinations)
             this.productPrice = product.price
+          else {
+            this.productPrice = undefined
+            this.declinationModel = undefined
+          }
           this.canAddToCard = product.declinations == null
           this.product = product
           if (this.sliderState == "none") {
             this.slideIn()
           }
-          else
+          else {
+            this.canNavImages = product.images.length > 1
             this.boxProduct = product
+          }
+          this.categoryId = findCategoryIdInURL(this.router.url)
+          this.category = this.api.getCategoryById(this.categoryId)
+          this.nextProductId = this.getNearestProduct(product.id, 1).id
+          this.prevProductId = this.getNearestProduct(product.id, -1).id
+          //this._productIdChanged = false
         })
       })
       if (sub) {
@@ -178,10 +224,9 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   }
 
   ngOnDestroy() {
+    document.removeEventListener('keyup', this.keybordHandler)
     if (this.routeSubscription)
       this.routeSubscription.unsubscribe()
-
-    console.log('ProductComponent destroyed')
   }
 
 }

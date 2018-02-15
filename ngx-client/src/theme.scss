@@ -1,29 +1,129 @@
-@import '~@angular/material/theming';
+// @import '~@angular/material/theming';
+@import '../node_modules/@angular/material/_theming.scss';
 @include mat-core();
 
-$custom-theme-primary: mat-palette($mat-light-blue);
-$custom-theme-accent: mat-palette($mat-blue-grey);
-$custom-theme-warn: mat-palette($mat-amber);
-// light-theme
-$light-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
-// dark theme
-$dark-theme: mat-dark-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
-/*
-// Include the default theme
-@include angular-material-theme($light-theme);
-
-// Include the dark theme.
-.ki-dark {
-  @include angular-material-theme($dark-theme);
+@mixin item-raised($zIndex: 2) {
+  &.raised {
+    @include mat-elevation-transition;
+    @include mat-elevation($zIndex)
+  }
 }
-*/
 
-// Include the default theme
-@include angular-material-theme($dark-theme);
+@mixin content-color($palette) {
+  background: mat-color($palette);
+  color: mat-color($palette, default-contrast);
+}
 
-// Include the light theme.
-.ki-light {
-  @include angular-material-theme($light-theme);
+@mixin item-color-theme($color, $zValue: null) {
+  color: mat-color($color);
+  &.content {
+    @include content-color($color);
+    @include item-raised()
+  }
+}
+
+@mixin color-theme($theme) {
+  $config: mat-typography-config();
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+  $theme-color: mat-color($foreground, text);
+  font-family: mat-font-family($config);
+  color: $theme-color;
+  font-size: mat-font-size($config, body-1);
+  .content,
+  &.content {
+    background-color: mat-color($background, card);
+    @include item-raised()
+  }
+  .primary,
+  &.primary {
+    @include item-color-theme($primary)
+  }
+  .accent,
+  &.accent {
+    @include item-color-theme($accent)
+  }
+  .warn,
+  &.accent {
+    @include item-color-theme($warn)
+  }
+  .tool-bar,
+  &.tool-bar {
+    background: mat-color($background, app-bar);
+    &.primary {
+      @include content-color($primary)
+    }
+    &.accent {
+      @include content-color($accent)
+    }
+    &.warn {
+      @include content-color($warn)
+    }
+  }
+}
+
+@mixin side-nav-override() {
+  .mat-drawer-container,
+  .mat-drawer-backdrop.mat-drawer-shown {
+    background-color: transparent;
+  }
+}
+
+@mixin create-mat-theme($theme) {
+  @include angular-material-theme($theme);
+  @include side-nav-override()
+}
+
+$dark: mat-dark-theme( 
+  mat-palette($mat-light-blue), 
+  mat-palette($mat-amber), 
+  mat-palette($mat-deep-orange)
+);
+
+.dark,
+.light .dark,
+.dark .light .dark,
+.light .dark .light .dark {
+  @include create-mat-theme($dark);
+}
+
+.k-dark,
+.k-light .k-dark,
+.k-dark .k-light .k-dark,
+.k-light .k-dark .k-light .k-dark {
+  @include color-theme($dark);
+}
+
+$light: mat-light-theme( 
+  mat-palette($mat-indigo), 
+  mat-palette($mat-blue-grey), 
+  mat-palette($mat-orange)
+);
+
+.light,
+.dark .light,
+.light .dark .light,
+.dark .light .dark .light {
+  @include create-mat-theme($light)
+}
+
+.k-light,
+.k-dark .k-light,
+.k-light .k-dark .k-light,
+.k-dark .k-light .k-dark .k-light {
+  @include color-theme($light)
+}
+
+body,
+html {
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 $menu-gap-xs: 3;
@@ -69,29 +169,6 @@ $slider-property :transform;
   align-items: center;
 }
 
-.menu-bar {
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  align-items: center;
-  text-align: center;
-  z-index: 1000;  
-}
-
-.menu-bar>* {
-  display: inline-block;
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-  cursor: pointer;
-  margin-bottom: $menu-item-mb;
-}
-
 @mixin menuBar ($width, $gap, $size) {
   font-size: ($size)+px;
   padding: ($gap)+px;
@@ -117,7 +194,6 @@ $slider-property :transform;
     left: ($offset-left)+px;
   }
 }
-
 
 // default
 @include setMenu($menu-gap-md, $menu-font-size-md);

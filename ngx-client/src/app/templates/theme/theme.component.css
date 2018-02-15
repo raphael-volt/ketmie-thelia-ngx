@@ -1,0 +1,13 @@
+.ctn {
+    padding: 20px;
+}
+.ctn > * {
+    margin-bottom: 20px;
+}
+.theme-ctn {
+    padding: 20px;
+}
+
+fake-card {
+    margin: 20px 0;
+}

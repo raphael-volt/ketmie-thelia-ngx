@@ -2,3 +2,6 @@
     font-size: .5em;
     margin-bottom: 1em;
 }
+i {
+    cursor: pointer;
+}

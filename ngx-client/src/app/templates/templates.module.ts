@@ -20,6 +20,7 @@ import { InnerHtmlDirective } from './inner-html.directive';
 import { SliderDirective } from "./slider.directive";
 import { ImgBoxDirective } from './product/img-box.directive';
 import { TemplateDirective } from './template.directive';
+import { FakeCardComponent } from './fake-card/fake-card.component';
 
 @NgModule({
   imports: [
@@ -41,10 +42,11 @@ import { TemplateDirective } from './template.directive';
     ImgBoxDirective, 
     ThemeComponent, 
     ImRowComponent, 
-    SquareBoxDirective, TemplateDirective
+    SquareBoxDirective, TemplateDirective, FakeCardComponent
   ],
   exports:[
     KetmieBackgroundComponent,
+    TemplateDirective,
     ImRowComponent,
     SliderDirective,
     ImgBoxDirective,

@@ -1,4 +1,4 @@
-import { Component, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostBinding, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd, NavigationStart } from "@angular/router";
 import { ApiService } from "../../api/api.service";
 import { LoaderEvent } from "../../shared/events/loader-event";
@@ -14,6 +14,7 @@ import { SubscriptionCollector } from "../../shared/utils/subscription.utils";
 })
 export class CategoryComponent extends SliderBaseComponent implements AfterViewInit, OnDestroy, OnChanges {
 
+  @HostBinding("class.k-light") kLite = true;
   @ViewChild('imgCtn')
   imgCtnRef: ElementRef
   imgCtn: HTMLElement

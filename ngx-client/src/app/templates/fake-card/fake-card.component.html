@@ -1,0 +1,36 @@
+<div [ngClass]="mainClass">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Fake card</mat-card-title>
+      <mat-card-subtitle>Current theme: {{theme}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <button (click)="toggleTheme()" mat-raised-button>Toggle theme</button>
+    </mat-card-content>
+    <mat-card-content>
+      <ng-content></ng-content>
+    </mat-card-content>
+    <mat-card-content>
+      <div [ngClass]="opthemeClass">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>Opposed theme: {{optheme}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <button (click)="toggleoptTheme()" mat-raised-button>Toggle theme</button>
+          </mat-card-content>
+          <mat-card-footer>
+            <button color="primary" mat-raised-button>PRYMARY</button>
+            <button color="accent" mat-raised-button>ACCENT</button>
+            <button color="warn" mat-raised-button>WARN</button>
+          </mat-card-footer>
+        </mat-card>
+      </div>
+    </mat-card-content>
+    <mat-card-footer>
+      <button color="primary" mat-raised-button>PRYMARY</button>
+      <button color="accent" mat-raised-button>ACCENT</button>
+      <button color="warn" mat-raised-button>WARN</button>
+    </mat-card-footer>
+  </mat-card>
+</div>

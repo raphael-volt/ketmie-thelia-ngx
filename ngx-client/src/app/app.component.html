@@ -1,22 +1,27 @@
 <ketmie-background class="svg-bg"></ketmie-background>
-<div mainContainer class="mainContainer basic-container mat-typography">
-  <div menu-bar 
-    (menu)="sidenav.toggle()" 
-    class="menu-bar flex-v flex-h-c mat-card">
-      <i routerLink="/theme" routerLinkActive="active" 
-        class="k-i k-i_cogs" aria-hidden="true"></i>
-  </div>
-  <mat-sidenav-container class="container">
-    <mat-sidenav #sidenav opened="false" [disableClose]="false" class="sidenav mat-card">
-      <div class="flex-v link-container" (click)="sidenav.close()">
-        <span *ngFor="let c of categories" routerLink="/category/{{c.id}}" routerLinkActive="active">{{c.label}}</span>
-        <div class="hr"></div>
-        <span *ngFor="let c of cmsContents" routerLink="/cms-content/{{c.id}}" routerLinkActive="active">{{c.label}}</span>
-      </div>
+<div class="app-ctn dark k-dark">
+  <nav class="menu-bar tool-bar" menu-bar (menu)="sidenav.toggle()" (itemClick)="sidenav.close()" (barClick)="sidenav.close()">
+    <i routerLink="/theme" routerLinkActive="active" class="k-i k-i_cogs" aria-hidden="true"></i>
+  </nav>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav opened="false" [disableClose]="false">
+      <mat-nav-list class="nav-list">
+        <mat-list-item *ngFor="let c of categories" 
+          (click)="sidenav.close()" 
+          routerLink="/category/{{c.id}}">
+          <span matLine class="flati wrap">{{ c.label }}</span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item *ngFor="let c of cmsContents" 
+          (click)="sidenav.close()" 
+          routerLink="/cms-content/{{c.id}}">
+          <span matLine class="flati wrap">{{ c.label }}</span>
+        </mat-list-item>
+      </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="sidenav-content">
-      <div id="router-container">
-          <router-outlet></router-outlet>
+    <mat-sidenav-content>
+      <div id="router-container" class="light k-light">
+        <router-outlet></router-outlet>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

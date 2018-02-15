@@ -1,7 +1,7 @@
 import { Directive, Input, OnChanges, SimpleChanges, ElementRef, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[kTemplate]'
+  selector: '[tpl-dir]'
 })
 export class TemplateDirective implements OnChanges {
 
@@ -35,6 +35,7 @@ export class TemplateDirective implements OnChanges {
   private element: HTMLElement
   constructor(ref: ElementRef) {
     this.element = ref.nativeElement
+    console.log('TemplateDirective.constructor')
   }
 
   ngOnChanges(v: SimpleChanges) {

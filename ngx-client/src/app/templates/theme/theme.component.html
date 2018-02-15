@@ -1,57 +1,39 @@
-<div class="main" 
-  sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
-  
-  <h2>Light Theme</h2>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Light Card</mat-card-title>
-      <mat-card-subtitle>Default color</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>
-        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
-        very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-      </p>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button>NORMAL</button>
-      <button color="primary" mat-button>PRYMARY</button>
-      <button color="accent" mat-button>ACCENT</button>
-      <button color="warn" mat-button>WARN</button>
-      <button mat-raised-button>NORMAL</button>
-      <button color="primary" mat-raised-button>PRYMARY</button>
-      <button color="accent" mat-raised-button>ACCENT</button>
-      <button color="warn" mat-raised-button>WARN</button>
-    </mat-card-actions>
-    <mat-card-footer>
-      <button mat-raised-button>NORMAL</button>
-      <button color="primary" mat-raised-button>PRYMARY</button>
-      <button color="accent" mat-raised-button>ACCENT</button>
-      <button color="warn" mat-raised-button>WARN</button>
-    </mat-card-footer>
-  </mat-card> -->
-  <h2>Dark theme</h2>   
+<div class="ctn k-card">
+  <h1>Ketmie</h1>
+  <div class="k-light">
+    <div class="k-card">
+      <h2>Light k-card</h2>
+      <div class="k-dark">
+        <div class="k-card">
+          <h2>Dark k-card</h2>
+          <h3>Dark in light</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="k-dark">
+    <div class="k-card">
+      <h2>Dark k-card</h2>
+      <div class="k-light">
+        <div class="k-card">
+          <h2>Light k-card</h2>
+          <h3>Light in dark</h3>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- <div class="k-dark theme-ctn">
+    <h1>Material</h1>
+    <fake-card theme="k-light"></fake-card>
+    <fake-card theme="k-dark"></fake-card>
+  <p>Should be DARK theme</p>
   <mat-card>
     <mat-card-header>
       <mat-card-title>Dark Card</mat-card-title>
-      <mat-card-subtitle>Default color</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
-      <p>
-        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
-        very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-      </p>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button>NORMAL</button>
-      <button color="primary" mat-button>PRYMARY</button>
-      <button color="accent" mat-button>ACCENT</button>
-      <button color="warn" mat-button>WARN</button>
-      <button mat-raised-button>NORMAL</button>
-      <button color="primary" mat-raised-button>PRYMARY</button>
-      <button color="accent" mat-raised-button>ACCENT</button>
-      <button color="warn" mat-raised-button>WARN</button>
-    </mat-card-actions>
     <mat-card-footer>
       <button mat-raised-button>NORMAL</button>
       <button color="primary" mat-raised-button>PRYMARY</button>
@@ -59,5 +41,19 @@
       <button color="warn" mat-raised-button>WARN</button>
     </mat-card-footer>
   </mat-card>
- -->
 </div>
+
+<div class="k-light theme-ctn">
+  <p>Should be LIGHT theme</p>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Light Card</mat-card-title>
+    </mat-card-header>
+    <mat-card-footer>
+      <button mat-raised-button>NORMAL</button>
+      <button color="primary" mat-raised-button>PRYMARY</button>
+      <button color="accent" mat-raised-button>ACCENT</button>
+      <button color="warn" mat-raised-button>WARN</button>
+    </mat-card-footer>
+  </mat-card>
+</div> -->

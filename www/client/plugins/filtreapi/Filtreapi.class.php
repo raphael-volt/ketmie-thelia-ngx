@@ -6,20 +6,22 @@ class Filtreapi extends FiltreCustomBase
 {
 
     /**
-     * 
+     *
      * @var ProductHelper
      */
     private $productHelper;
-    
+
     public function __construct()
     {
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
         $this->productHelper = new ProductHelper();
     }
 
-    private function product($id) {
-     return json_encode($this->productHelper->getProduct($id, true), JSON_PRETTY_PRINT);
+    private function product($id)
+    {
+        return $this->productHelper->getProduct($id, true);
     }
+
     private function descriptions($type, $id)
     {
         $result = new stdClass();
@@ -48,11 +50,10 @@ class Filtreapi extends FiltreCustomBase
         $stmt = $pdo->prepare("SELECT description FROM {$tn} WHERE id=?");
         $stmt->bindValue(1, $id);
         $stmt->execute();
-        if($stmt->rowCount()) {
+        if ($stmt->rowCount()) {
             $result->description = $stmt->fetchColumn(0);
-        }
-        else {
-            $result->error = "Object of type:'{$type}' not found";            
+        } else {
+            $result->error = "Object of type:'{$type}' not found";
         }
         return $result;
     }
@@ -69,7 +70,7 @@ ORDER BY c.classement";
         $arbo->cmsContents = $cms->fetchAll(PDO::FETCH_OBJ);
         return $arbo;
     }
-    
+
     private function catalog()
     {
         $pdo = PDOThelia::getInstance();
@@ -129,12 +130,61 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         return $root->toJson()->children;
     }
 
+    private function getPostJson()
+    {
+        $fn = "php://input";
+        $result = null;
+        if (file_exists($fn)) {
+            try {
+                $result = json_decode(file_get_contents('php://input'));
+            } catch (Exception $e) {}
+        }
+        return $result;
+    }
+
+    private function logout()
+    {
+        // deconnexion();
+        ActionsModules::instance()->appel_module("deconnexion");
+        return HTTPReponseHelper::getResult(true);
+    }
+
+    private function getCurrentCustomer()
+    {
+        if (isset($_SESSION["navig"]) && property_exists($_SESSION["navig"], "client")) {
+            return $_SESSION['navig']->client;
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param unknown $post
+     * @return NULL|Client
+     */
+    private function login($post)
+    {
+        $client = new Client();
+        if ($client->charger($post->email, $post->motdepasse)) {
+            
+            $_SESSION['navig']->client = $client;
+            $_SESSION['navig']->connecte = 1;
+            
+            ActionsModules::instance()->appel_module("apresconnexion", $client);
+        } else {
+            return null;
+        }
+        unset($client->bddvars);
+        unset($client->motdepasse);
+        return $client;
+    }
+
     public function calcule($match)
     {
+        $response = new Response(true);
         $match = parent::calcule($match);
         $action = $this->paramsUtil->action;
         $result = new stdClass();
-        $encode = true;
         try {
             switch ($action) {
                 case "catalog":
@@ -156,16 +206,255 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                 case "product":
                     {
                         $result = $this->product($this->paramsUtil->parameters[0]);
-                        $encode = false;
                         break;
                     }
-                
+                case "customer":
+                    {
+                        switch ($action) {
+                            case "login":
+                                {
+                                    $json = $this->getPostJson();
+                                    if ($json == null) {
+                                        $json = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        break;
+                                    }
+                                    $result = $this->login($this->paramsUtil->parameters[0], $json);
+                                    $response->success = $result != null;
+                                    break;
+                                }
+                            case 'logout':
+                                {
+                                    $this->logout();
+                                    break;
+                                }
+                            case 'current':
+                                {
+                                    $result = $this->getCurrentCustomer();
+                                    $response->success = $result != null;
+                                    break;
+                                }
+                            default:
+                                ;
+                                break;
+                        }
+                        break;
+                    }
             }
         } catch (Exception $e) {
-            $result->error = $e->getTraceAsString();
+            $result = HTTPReponseHelper::getErrorJson(500, $e->getMessage());
+            $response->success = false;
         }
-        if($encode)
-            $result = json_encode($result);
-        return $result;
+        $response->body = $result;
+        return $response->serialize();
+    }
+}
+
+class Response
+{
+
+    public $body;
+
+    public $success;
+
+    function __construct($success = false, $body = null)
+    {
+        $this->success = $success;
+        $this->body = $body;
+    }
+    /**
+     * 
+     * @param Baseobj $obj
+     */
+    static function baseobj($obj) {
+        $o = new stdClass();
+        $props = $obj->bddvars;
+        foreach ($props as $p) {
+            if(property_exists($obj, $p))
+                $o->{$p} = $obj->{$p};
+        }
+        return $o;
+    }
+
+    function serialize()
+    {
+        $body = $this->body;
+        if ($body instanceof Baseobj) {
+            $body = self::baseobj($body);
+        }
+        $obj = new stdClass();
+        $obj->success = $this->success;
+        $obj->body = $body;
+        return json_encode($obj);
+    }
+}
+
+class HTTPReponseHelper
+{
+
+    static $OK = 200;
+
+    static $BAD_REQUEST = 400;
+
+    static $UNAUTHORIZED = 401;
+
+    static $PAYMENT_REQUIRED = 402;
+
+    static $METHOD_NOT_ALLOWED = 402;
+
+    static $FORBIDDEN = 403;
+
+    static function getErrorJson($code, $message = null, $stringify = false)
+    {
+        $e = new stdClass();
+        if (! $message) {
+            $message = self::getMessage($code);
+        }
+        $e->code = $code;
+        $e->message = $message;
+        if ($stringify)
+            return json_encode($e);
+        return $e;
+    }
+
+    static function getResultError($code, $message = null)
+    {
+        return new Response(false, self::getErrorJson($code, $message));
+    }
+
+    static function getResult($success, $body = null)
+    {
+        return new Response($success, $body);
+    }
+
+    static function getMessage($code)
+    {
+        $text = 'Unknown http status code "' . $code . '"';
+        switch ($code) {
+            case 100:
+                $text = 'Continue';
+                break;
+            case 101:
+                $text = 'Switching Protocols';
+                break;
+            case 200:
+                $text = 'OK';
+                break;
+            case 201:
+                $text = 'Created';
+                break;
+            case 202:
+                $text = 'Accepted';
+                break;
+            case 203:
+                $text = 'Non-Authoritative Information';
+                break;
+            case 204:
+                $text = 'No Content';
+                break;
+            case 205:
+                $text = 'Reset Content';
+                break;
+            case 206:
+                $text = 'Partial Content';
+                break;
+            case 300:
+                $text = 'Multiple Choices';
+                break;
+            case 301:
+                $text = 'Moved Permanently';
+                break;
+            case 302:
+                $text = 'Moved Temporarily';
+                break;
+            case 303:
+                $text = 'See Other';
+                break;
+            case 304:
+                $text = 'Not Modified';
+                break;
+            case 305:
+                $text = 'Use Proxy';
+                break;
+            case 400:
+                $text = 'Bad Request';
+                break;
+            case 401:
+                $text = 'Unauthorized';
+                break;
+            case 402:
+                $text = 'Payment Required';
+                break;
+            case 403:
+                $text = 'Forbidden';
+                break;
+            case 404:
+                $text = 'Not Found';
+                break;
+            case 405:
+                $text = 'Method Not Allowed';
+                break;
+            case 406:
+                $text = 'Not Acceptable';
+                break;
+            case 407:
+                $text = 'Proxy Authentication Required';
+                break;
+            case 408:
+                $text = 'Request Time-out';
+                break;
+            case 409:
+                $text = 'Conflict';
+                break;
+            case 410:
+                $text = 'Gone';
+                break;
+            case 411:
+                $text = 'Length Required';
+                break;
+            case 412:
+                $text = 'Precondition Failed';
+                break;
+            case 413:
+                $text = 'Request Entity Too Large';
+                break;
+            case 414:
+                $text = 'Request-URI Too Large';
+                break;
+            case 415:
+                $text = 'Unsupported Media Type';
+                break;
+            case 500:
+                $text = 'Internal Server Error';
+                break;
+            case 501:
+                $text = 'Not Implemented';
+                break;
+            case 502:
+                $text = 'Bad Gateway';
+                break;
+            case 503:
+                $text = 'Service Unavailable';
+                break;
+            case 504:
+                $text = 'Gateway Time-out';
+                break;
+            case 505:
+                $text = 'HTTP Version not supported';
+                break;
+            default:
+                break;
+        }
+        return $text;
+    }
+
+    static function setHeader($code, $message = null)
+    {
+        if ($message == null)
+            $message = self::getMessage($code);
+        $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+        
+        header('HTTP/1.0 ' . $code . ' ' . $text);
+        
+        $GLOBALS['http_response_code'] = $code;
     }
 }

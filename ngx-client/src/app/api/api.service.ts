@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Http } from "@angular/http";
+import {
+  Http,
+  Request, RequestMethod, RequestOptions, RequestOptionsArgs,
+  Response, ResponseContentType
+} from "@angular/http";
 import { isDevMode } from '@angular/core';
 import { Observer, Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { Category, Product, ProductDetail, CMSContent, ShopTree } from "./api.model";
+import {
+  APIResponse, APIResponseError, isAPIResponseError,
+  Category, Product, ProductDetail, CMSContent, ShopTree
+} from "./api.model";
 const API: string = "api"
 export type ImgTypes = "contenu" | "dossier" | "produit" | "rubrique"
 export type ContentTypes = "category" | "product" | "cms-content"
@@ -76,7 +83,7 @@ export class ApiService {
   private shopCategoriesMap: { [id: string]: any }
   private shopCategories: any[]
 
-  constructor(private http: Http) {
+  constructor(public http: Http) {
     if (isDevMode())
       this._baseHref = "http://localhost:4501/"
   }
@@ -84,17 +91,11 @@ export class ApiService {
     return this._baseHref
   }
 
-  getSearchParam(serviceName: string, input?: any) {
-    const params = {
-      search: {
-        fond: urlJoin(API, serviceName)
-      }
-    }
-    if(input) {
-      for(const p in input)
-        params.search[p] = input[p]
-    }
-    return params
+  getSearchParam(serviceName: string, input?: any): URLSearchParams {
+    if(! input)
+      input = {}
+    input.fond = urlJoin(API, serviceName)
+    return input
   }
 
   getImageUrl(id: string, type: ImgTypes, width?: number, height?: number) {
@@ -137,9 +138,14 @@ export class ApiService {
       return Observable.of(this.shopTree)
 
     this.shopTreeRequesting = true
-    return this.http.get(this._baseHref, this.getSearchParam("arbo"))
+    const req = this.getRequest(RequestMethod.Get, this.getSearchParam('arbo'))
+    return this.http.request(req)
       .pipe(map(response => {
-        this.shopTree = response.json()
+        const res = this.getApiResponse(response)
+        if (!res.success) {
+          throw res.body
+        }
+        this.shopTree = res.body
         this.createCategoriesMap(this.shopTree.shopCategories)
         for (let o of this.shopTreeRequestingObservers) {
           o.next(this.shopTree)
@@ -195,12 +201,13 @@ export class ApiService {
   }
 
   getProductDetails(id: string): Observable<ProductDetail> {
-    return this.http.get(this._baseHref, this.getSearchParam("product", { id: id })).pipe(
-      map(request => {
-        const result = request.json()
-        if (result.error)
-          throw new Error(result.error)
-        return result
+    const req = this.getRequest(RequestMethod.Get, this.getSearchParam('product', {id:id}))
+    return this.http.request(req).pipe(
+      map(response => {
+        const res = this.getApiResponse(response)
+        if (!res.success)
+          throw res.body
+        return res.body
       })
     )
   }
@@ -210,14 +217,34 @@ export class ApiService {
     if (cmsContent && cmsContent.description)
       return Observable.of(cmsContent.description)
 
-    return this.http.get(this._baseHref, this.getSearchParam("product", { id: id, type: type })).pipe(
-      map(request => {
-        const result = request.json()
-        if (result.error)
-          throw new Error(result.error)
-        cmsContent.description = request.json().description
-        return cmsContent.description
-      })
-    )
+    const req = this.getRequest(
+      RequestMethod.Get,
+      this.getSearchParam('product', { id: id, type: type }
+    ))
+    return this.http.request(req).map(response => {
+      const res = this.getApiResponse(response)
+      if (!res.success)
+        throw res.body
+      cmsContent.description = res.body
+      return cmsContent.description
+    })
+  }
+
+  isErrorBody(response: APIResponse) {
+    return isAPIResponseError(response.body)
+  }
+
+  getApiResponse(response: Response): APIResponse {
+    return response.json()
+  }
+
+  getRequest(method: RequestMethod, search: URLSearchParams = null, body: any = null) {
+    return new Request({
+      method: method,
+      url: this._baseHref,
+      responseType: ResponseContentType.Json,
+      body: body,
+      search: search
+    })
   }
 }

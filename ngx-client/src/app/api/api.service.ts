@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
 import {
-  Http,
+  Http, Headers,
   Request, RequestMethod, RequestOptions, RequestOptionsArgs,
   Response, ResponseContentType
 } from "@angular/http";
+import { LocalStorageService } from "angular-2-local-storage";
 import { isDevMode } from '@angular/core';
 import { Observer, Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 
 import {
   APIResponse, APIResponseError, isAPIResponseError,
-  Category, Product, ProductDetail, CMSContent, ShopTree
+  Category, Product, ProductDetail, CMSContent, ShopTree, Customer
 } from "./api.model";
+
+type Session = {
+  session_id: string
+  customer: Customer
+}
 const API: string = "api"
 export type ImgTypes = "contenu" | "dossier" | "produit" | "rubrique"
 export type ContentTypes = "category" | "product" | "cms-content"
@@ -83,19 +89,17 @@ export class ApiService {
   private shopCategoriesMap: { [id: string]: any }
   private shopCategories: any[]
 
-  constructor(public http: Http) {
+  private _http: HttpService
+  get http(): HttpService {
+    return this._http
+  }
+  constructor(http: Http, storage: LocalStorageService) {
     if (isDevMode())
       this._baseHref = "http://localhost:4501/"
+    this._http = new HttpService(http, this._baseHref, storage);
   }
   get baseHref(): string {
     return this._baseHref
-  }
-
-  getSearchParam(serviceName: string, input?: any): URLSearchParams {
-    if(! input)
-      input = {}
-    input.fond = urlJoin(API, serviceName)
-    return input
   }
 
   getImageUrl(id: string, type: ImgTypes, width?: number, height?: number) {
@@ -138,10 +142,9 @@ export class ApiService {
       return Observable.of(this.shopTree)
 
     this.shopTreeRequesting = true
-    const req = this.getRequest(RequestMethod.Get, this.getSearchParam('arbo'))
-    return this.http.request(req)
-      .pipe(map(response => {
-        const res = this.getApiResponse(response)
+    const req = this.http.getRequest(this.http.getSearchParam('arbo'))
+    return this.http.get(req)
+      .pipe(map(res => {
         if (!res.success) {
           throw res.body
         }
@@ -201,10 +204,9 @@ export class ApiService {
   }
 
   getProductDetails(id: string): Observable<ProductDetail> {
-    const req = this.getRequest(RequestMethod.Get, this.getSearchParam('product', {id:id}))
-    return this.http.request(req).pipe(
-      map(response => {
-        const res = this.getApiResponse(response)
+    const req = this.http.getRequest(this.http.getSearchParam('product', { id: id }))
+    return this.http.get(req).pipe(
+      map(res => {
         if (!res.success)
           throw res.body
         return res.body
@@ -217,15 +219,13 @@ export class ApiService {
     if (cmsContent && cmsContent.description)
       return Observable.of(cmsContent.description)
 
-    const req = this.getRequest(
-      RequestMethod.Get,
-      this.getSearchParam('product', { id: id, type: type }
-    ))
-    return this.http.request(req).map(response => {
-      const res = this.getApiResponse(response)
-      if (!res.success)
-        throw res.body
-      cmsContent.description = res.body
+    const req = this.http.getRequest(
+      this.http.getSearchParam('product', { id: id, type: type }
+      ))
+    return this.http.get(req).map(response => {
+      if (!response.success)
+        throw response.body
+      cmsContent.description = response.body
       return cmsContent.description
     })
   }
@@ -238,13 +238,133 @@ export class ApiService {
     return response.json()
   }
 
-  getRequest(method: RequestMethod, search: URLSearchParams = null, body: any = null) {
+}
+
+type SessionCookie = {
+  session_id: string
+}
+
+const X_API_SESSION_ID: string = "X-Api-Session-Id"
+const COOKIE_ID: string = "api-session"
+
+export class HttpService {
+  private _sessionCookie: SessionCookie
+
+  get hasSession() {
+    console.log("HttpService.hasSession", this._sessionCookie)
+    return this._sessionCookie != undefined && (this._sessionCookie.session_id.length > 0)
+  }
+
+  registerSession(): Observable<boolean> {
+    return this.get(
+      this.getRequest(this.getSearchParam("session"))
+    ).pipe(
+      map(response => {
+        const session: Session = response.body
+        this.setSessionId(session.session_id)
+        return true
+      })
+    )
+  }
+  private headers: Headers = new Headers({
+
+  })
+
+  private loadSessionCookie() {
+    let cookie = this.storage.get<SessionCookie>(COOKIE_ID)
+    if (!cookie) {
+      cookie = { session_id: "" }
+      this.storage.set(COOKIE_ID, cookie)
+    }
+    this._sessionCookie = cookie
+    console.log("HttpService.cookie", cookie)
+    this.setSessionHeader()
+  }
+
+  constructor(
+    public http: Http,
+    private _baseHref: string,
+    private storage: LocalStorageService) {
+    this.loadSessionCookie()
+  }
+  getSearchParam(serviceName: string, input?: any): URLSearchParams {
+    if (!input)
+      input = {}
+    input.fond = urlJoin(API, serviceName)
+    return input
+  }
+
+  currentCustomer(): Observable<Customer> {
+    return this.get(
+      this.getRequest(
+        this.getSearchParam('customer', { method: "current" })
+      )
+    ).pipe(
+      map(response => response.body)
+    )
+  }
+
+  login(customer: Customer): Observable<Customer> {
+    let req = this.getRequest(
+      this.getSearchParam('customer', { method: "login" }),
+      customer
+    )
+    return this.post(req).pipe(
+      map(response => {
+        if (response.success) {
+          Object.assign(customer, response.body)
+        }
+        customer.loggedIn = response.success
+        return customer
+      })
+    )
+  }
+
+  logout(): Observable<APIResponse> {
+    return this.get(
+      this.getRequest(
+        this.getSearchParam("customer", { method: "logout" })
+      ))
+  }
+
+
+  get(request: Request): Observable<APIResponse> {
+    request.method = RequestMethod.Get
+    return this.http.request(request).pipe(
+      map(response => response.json())
+    )
+  }
+  post(request: Request): Observable<APIResponse> {
+    request.method = RequestMethod.Post
+    return this.http.request(request).pipe(
+      map(response => {
+        let res = response.json()
+
+        return res
+      })
+    )
+  }
+
+  getRequest(search: URLSearchParams = null, body: any = null) {
     return new Request({
-      method: method,
+      headers: this.headers,
       url: this._baseHref,
       responseType: ResponseContentType.Json,
       body: body,
       search: search
     })
+  }
+
+  private setSessionHeader() {
+    this.headers.set(
+      X_API_SESSION_ID,
+      this._sessionCookie.session_id)
+  }
+
+  private setSessionId(value: string) {
+    this._sessionCookie.session_id = value
+    this.storage.set(COOKIE_ID, this._sessionCookie)
+    this.setSessionHeader()
+    console.log('HttpService?headers[X-Api-Session-Id]', this.headers.get("X-Api-Session-Id"))
   }
 }

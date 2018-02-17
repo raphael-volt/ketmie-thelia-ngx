@@ -134,27 +134,45 @@ WHERE ligne=1 ORDER BY rubrique, classement";
     {
         $fn = "php://input";
         $result = null;
-        if (file_exists($fn)) {
-            try {
-                $result = json_decode(file_get_contents('php://input'));
-            } catch (Exception $e) {}
-        }
+        try {
+            $result = json_decode(file_get_contents($fn));
+        } catch (Exception $e) {}
+        
         return $result;
     }
 
     private function logout()
     {
-        // deconnexion();
-        ActionsModules::instance()->appel_module("deconnexion");
-        return HTTPReponseHelper::getResult(true);
+        //ActionsModules::instance()->appel_module("deconnexion");
+        ActionsModules::instance()->appel_module("avantdeconnexion", $_SESSION['navig']->client);
+        
+        $_SESSION['navig']->client = new Client();
+        
+        $_SESSION['navig']->connecte = 0;
+        $_SESSION['navig']->adresse = 0;
+        
+        $_SESSION['navig']->urlpageret = supprimer_deconnexion($_SESSION['navig']->urlpageret);
+        
+        ActionsModules::instance()->appel_module("apresdeconnexion");
     }
 
     private function getCurrentCustomer()
     {
-        if (isset($_SESSION["navig"]) && property_exists($_SESSION["navig"], "client")) {
+        if (isset($_SESSION["navig"]) && $_SESSION['navig']->connecte == 1 && property_exists($_SESSION["navig"], "client")) {
             return $_SESSION['navig']->client;
         }
         return null;
+    }
+
+    private function log($data)
+    {
+        file_put_contents(__DIR__ . "/log.txt", $data, FILE_APPEND);
+    }
+
+    private function logPrint($data)
+    {
+        $data = print_r($data, true);
+        $this->log($data);
     }
 
     /**
@@ -166,7 +184,6 @@ WHERE ligne=1 ORDER BY rubrique, classement";
     {
         $client = new Client();
         if ($client->charger($post->email, $post->motdepasse)) {
-            
             $_SESSION['navig']->client = $client;
             $_SESSION['navig']->connecte = 1;
             
@@ -174,19 +191,25 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         } else {
             return null;
         }
-        unset($client->bddvars);
         unset($client->motdepasse);
         return $client;
     }
 
     public function calcule($match)
     {
-        $response = new Response(true);
         $match = parent::calcule($match);
+        $response = new Response(true);
         $action = $this->paramsUtil->action;
         $result = new stdClass();
         try {
             switch ($action) {
+                case 'session':
+                    {
+                        
+                        $result->session_id = session_id();
+                        
+                        break;
+                    }
                 case "catalog":
                     {
                         $result = $this->catalog();
@@ -210,7 +233,10 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                     }
                 case "customer":
                     {
-                        switch ($action) {
+                        $method = $this->paramsUtil->parameters[0];
+                        
+                        switch ($method) {
+                            
                             case "login":
                                 {
                                     $json = $this->getPostJson();
@@ -218,13 +244,18 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                                         $json = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
                                         break;
                                     }
-                                    $result = $this->login($this->paramsUtil->parameters[0], $json);
-                                    $response->success = $result != null;
+                                    $json = $this->login($json);
+                                    if ($json) {
+                                        $result = $response->baseobj($json);
+                                        $response->success = true;
+                                    } else
+                                        $response->success = false;
                                     break;
                                 }
                             case 'logout':
                                 {
                                     $this->logout();
+                                    $result = null;
                                     break;
                                 }
                             case 'current':
@@ -244,7 +275,19 @@ WHERE ligne=1 ORDER BY rubrique, classement";
             $result = HTTPReponseHelper::getErrorJson(500, $e->getMessage());
             $response->success = false;
         }
+        // $this->logPrint(array("action"=>$action, "session"=> $_SESSION));
+        // session_write_close();
         $response->body = $result;
+        /*
+         * $this->logPrint(array(
+         * "action" => $action,
+         * "method" => $method,
+         * "result"=>$response
+         * ));
+         *
+         * $result = $response->serialize();
+         * return $result;
+         */
         return $response->serialize();
     }
 }
@@ -261,15 +304,17 @@ class Response
         $this->success = $success;
         $this->body = $body;
     }
+
     /**
-     * 
+     *
      * @param Baseobj $obj
      */
-    static function baseobj($obj) {
+    static function baseobj($obj)
+    {
         $o = new stdClass();
         $props = $obj->bddvars;
         foreach ($props as $p) {
-            if(property_exists($obj, $p))
+            if (property_exists($obj, $p))
                 $o->{$p} = $obj->{$p};
         }
         return $o;
@@ -284,7 +329,7 @@ class Response
         $obj = new stdClass();
         $obj->success = $this->success;
         $obj->body = $body;
-        return json_encode($obj);
+        return json_encode($obj); // , JSON_PRETTY_PRINT);
     }
 }
 

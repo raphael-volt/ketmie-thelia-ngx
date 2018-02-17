@@ -1,7 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { ApiService } from "./api.service";
+import { ApiService, HttpService } from "./api.service";
 import { APIResponse, isAPIResponseError, Customer } from "./api.model";
-import { Http, Response, RequestOptionsArgs, RequestMethod, Request, ResponseContentType } from "@angular/http";
+import { Http, 
+  Headers,
+  RequestOptionsArgs, RequestMethod, Request, 
+  Response, ResponseContentType 
+} from "@angular/http";
 import { Observable, Observer, Subscription } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 
@@ -22,27 +26,15 @@ export class CustomerService {
     return this._logedin
   }
 
-  private getRequest(method: RequestMode, search:URLSearchParams=null, body: any=null) {
-    return new Request({
-      method: RequestMethod.Post,
-      url: this.api.baseHref,
-      responseType: ResponseContentType.Json,
-      body: body,
-      search: search
-    })
-  }
-  login(user: Customer): Observable<Customer> {
+  getCurrent(): Observable<Customer> {
 
-    const params = this.api.getSearchParam("customer", { action: "login" })
-    const request: Request = this.api.getRequest(RequestMethod.Post, params, user)
+    const params = this.http.getSearchParam("customer", { action: "current" })
+    const request: Request = this.http.getRequest(params)
 
-    return this.http.request(request).pipe(
+    return this.http.get(request).pipe(
       map(response => {
-        const res = this.api.getApiResponse(response)
-        if(res.success) {
-          Object.assign(user, res.body)
-        }
-        return this.setCurrentCustomer(user)
+        this.setCurrentCustomer(response.body)
+        return this.customer
       }),
       catchError((err, caught) => {
         console.error(err)
@@ -51,6 +43,41 @@ export class CustomerService {
     )
 
   }
+  
+  logout(): Observable<APIResponse> {
+
+    const params = this.http.getSearchParam("customer", { 
+      action: "logout"
+    })
+    
+    const request: Request = this.http.getRequest( params, {
+      action:"deconnexion"
+    })
+
+    return this.http.get(request).pipe(
+      map(response => {
+        this.setCurrentCustomer(null)
+        return response
+      }),
+      catchError((err, caught) => {
+        console.error(err)
+        return caught
+      })
+    )
+
+  }
+  login(user: Customer): Observable<Customer> {
+    
+    return this.http.login(user).pipe(
+      map(customer => {
+        if(customer) {
+          Object.assign(user, customer)
+        }
+        return this.setCurrentCustomer(user)
+      })
+    )
+  }
+
   private setCurrentCustomer(value: Customer) {
     const logedIn = Boolean(value)
     if(value)
@@ -65,27 +92,8 @@ export class CustomerService {
     }
     return value
   }
-  
-  getCurrent(): Observable<Customer> {
-
-    const params = this.api.getSearchParam("customer", { action: "current" })
-    const request: Request = this.api.getRequest(RequestMethod.Post, params)
-
-    return this.http.request(request).pipe(
-      map(response => {
-        const res = this.api.getApiResponse(response)
-        this.setCurrentCustomer(res.body)
-        return this.customer
-      }),
-      catchError((err, caught) => {
-        console.error(err)
-        return caught
-      })
-    )
-
-  }
-  
-  private get http(): Http {
+   
+  private get http(): HttpService {
     return this.api.http
   }
 }

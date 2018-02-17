@@ -1,5 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+
+import { LocalStorageModule } from 'angular-2-local-storage'
+
 import { ApiModule } from "./api/api.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +25,7 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    LocalStorageModule,
     FlexLayoutModule,
     ApiModule,
     MatModule,
@@ -31,6 +35,7 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
   exports: [
     ApiModule,
     FormsModule,
+    LocalStorageModule,
     ReactiveFormsModule,
     RoutesModule,
     TemplatesModule

@@ -142,22 +142,37 @@ export class ApiService {
       return Observable.of(this.shopTree)
 
     this.shopTreeRequesting = true
-    const req = this.http.getRequest(this.http.getSearchParam('arbo'))
-    return this.http.get(req)
-      .pipe(map(res => {
-        if (!res.success) {
-          throw res.body
-        }
-        this.shopTree = res.body
-        this.createCategoriesMap(this.shopTree.shopCategories)
-        for (let o of this.shopTreeRequestingObservers) {
-          o.next(this.shopTree)
-          o.complete()
-        }
-        this.shopTreeRequestingObservers.length = 0
-        this.shopTreeRequesting = false
-        return this.shopTree
-      }))
+    return Observable.create((observer: Observer<ShopTree>) => {
+      const loadTree = () => {
+
+        const req = this.http.getRequest(this.http.getSearchParam('arbo'))
+        let sub = this.http.get(req).subscribe(res=>{
+          sub.unsubscribe()
+          if (!res.success) {
+            return observer.error(res.body)
+          }
+          this.shopTree = res.body
+          this.createCategoriesMap(this.shopTree.shopCategories)
+          this.shopTreeRequestingObservers.unshift(observer)
+          for (let o of this.shopTreeRequestingObservers) {
+            o.next(this.shopTree)
+            o.complete()
+          }
+          this.shopTreeRequestingObservers.length = 0
+          this.shopTreeRequesting = false
+        })
+      }
+      if (this.http.hasSession) {
+        loadTree()
+      }
+      else {
+        let sub = this.http.registerSession().subscribe(success => {
+          sub.unsubscribe()
+          loadTree()
+        })
+      }
+    })
+
   }
 
   getShopCategories(): Observable<Category[]> {
@@ -251,7 +266,6 @@ export class HttpService {
   private _sessionCookie: SessionCookie
 
   get hasSession() {
-    console.log("HttpService.hasSession", this._sessionCookie)
     return this._sessionCookie != undefined && (this._sessionCookie.session_id.length > 0)
   }
 
@@ -277,7 +291,6 @@ export class HttpService {
       this.storage.set(COOKIE_ID, cookie)
     }
     this._sessionCookie = cookie
-    console.log("HttpService.cookie", cookie)
     this.setSessionHeader()
   }
 
@@ -365,6 +378,5 @@ export class HttpService {
     this._sessionCookie.session_id = value
     this.storage.set(COOKIE_ID, this._sessionCookie)
     this.setSessionHeader()
-    console.log('HttpService?headers[X-Api-Session-Id]', this.headers.get("X-Api-Session-Id"))
   }
 }

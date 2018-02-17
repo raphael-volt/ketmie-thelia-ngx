@@ -8,7 +8,6 @@ export class CatalogGuard implements CanActivate {
 
     constructor(private api: ApiService) { }
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        console.log("CatalogGuard canActivate")
         return this.api.getShopTree().pipe(
             map(tree=>{
                 console.log("CatalogGuard activate")

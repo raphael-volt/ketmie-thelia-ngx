@@ -185,7 +185,7 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
     document.addEventListener('keyup', this.keybordHandler)
     let sub = this.route.parent.params.subscribe(params => {
       this.routeSubscription = this.route.params.subscribe(params => {
-        let apiSub = this.api.getProductDetails(params.id).subscribe(product => {
+        let apiSub = this.api.getProductDescription(params.id).subscribe(product => {
           if (product.description == "")
             product.description = null
           if (!product.declinations || (product.declinations && !product.declinations.length))

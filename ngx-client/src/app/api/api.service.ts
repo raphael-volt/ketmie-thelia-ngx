@@ -1,26 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import {
-  Http, Headers,
-  Request, RequestMethod, RequestOptions, RequestOptionsArgs,
-  Response, ResponseContentType
+  Http, Request, RequestMethod, Response
 } from "@angular/http";
-import { LocalStorageService } from "angular-2-local-storage";
-import { isDevMode } from '@angular/core';
 import { Observer, Observable, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
-
+import { RequestService, ContentTypes, ImgTypes } from "./request.service";
+import { SessionService } from "./session.service";
 import {
-  APIResponse, APIResponseError, isAPIResponseError,
-  Category, Product, ProductDetail, CMSContent, ShopTree, Customer
+  APIResponse, APISession, APIResponseError, isAPIResponseError,
+  Category, Product, ProductDetail, CMSContent, ShopTree, Customer,
+  IDescriptable
 } from "./api.model";
-
-type Session = {
-  session_id: string
-  customer: Customer
-}
-const API: string = "api"
-export type ImgTypes = "contenu" | "dossier" | "produit" | "rubrique"
-export type ContentTypes = "category" | "product" | "cms-content"
 
 const PATH_CATEGORY: string = "category"
 const PATH_PRODUCT: string = "product"
@@ -85,94 +75,113 @@ export { findCategoryIdInURL, findProductIdInURL, replaceCategoryIdInURL, replac
 @Injectable()
 export class ApiService {
 
-  private _baseHref: string = ""
   private shopCategoriesMap: { [id: string]: any }
   private shopCategories: any[]
 
-  private _http: HttpService
-  get http(): HttpService {
-    return this._http
-  }
-  constructor(http: Http, storage: LocalStorageService) {
-    if (isDevMode())
-      this._baseHref = "http://localhost:4501/"
-    this._http = new HttpService(http, this._baseHref, storage);
-  }
   get baseHref(): string {
-    return this._baseHref
+    return this.request.baseHref
   }
 
-  getImageUrl(id: string, type: ImgTypes, width?: number, height?: number) {
-    if (!width && !height) {
-      throw new Error("Missing image dimensions.")
-    }
-    const args: string[] = ["id=" + id, "type=" + type]
-    if (width)
-      args.push("width=" + width)
-    if (height)
-      args.push("height=" + height)
-    return this._baseHref + "image.php?" + args.join("&")
-  }
-  getProductImageUrlById(id: string, width?: number, height?: number) {
-    return this.getImageUrl(id, "produit", width, height)
+  constructor(
+    private http: Http,
+    private session: SessionService,
+    private request: RequestService) {
   }
 
-  getProductImageUrl(id: string, width?: number, height?: number) {
-    if (!width && !height) {
-      throw new Error("Missing image dimensions.")
+  private _initializing: boolean
+  private _initialized: boolean
+
+  initializedChange: EventEmitter<boolean> = new EventEmitter()
+
+  get initialized(): boolean {
+    return this._initialized
+  }
+  initialize(): Observable<ShopTree> {
+    if (this._initialized || this._initializing)
+      throw "initialize error"
+    this._initializing = true
+    const treeMap = tree => {
+      this._initializing = false
+      this._initialized = true
+      this.initializedChange.emit(true)
+      return tree
     }
-    const args: string[] = ["produit=" + id]
-    if (width)
-      args.push("width=" + width)
-    if (height)
-      args.push("height=" + height)
-    return this._baseHref + "image.php?" + args.join("&")
+    if (this.session.hasSession) {
+      this.request.setSessionId(this.session.sessionId)
+      return this._getShopTree()
+        .pipe(map(treeMap))
+    }
+    return Observable.create((observer: Observer<boolean>) => {
+
+      let sub = this.get(
+        this.request.getRequest(
+          this.request.getSessionParams()
+        )
+      ).subscribe(response => {
+        const session: APISession = response.body
+        this.session.update(session.session_id)
+        this.request.setSessionId(session.session_id)
+        sub.unsubscribe()
+        sub = this._getShopTree().subscribe(tree => {
+          sub.unsubscribe()
+          observer.next(treeMap(tree))
+          observer.complete()
+        })
+      })
+    })
   }
   private shopTreeRequesting = false
   private shopTreeRequestingObservers: Observer<any>[] = []
   private shopTree: ShopTree
 
+  get(request: Request): Observable<APIResponse> {
+    request.method = RequestMethod.Get
+    return this.http.request(request).pipe(
+      map(response => response.json())
+    )
+  }
+
+  post(request: Request): Observable<APIResponse> {
+    request.method = RequestMethod.Post
+    return this.http.request(request).pipe(
+      map(response => {
+        let res = response.json()
+        return res
+      })
+    )
+  }
+
+  private _getShopTree(): Observable<ShopTree> {
+    return Observable.create((observer: Observer<ShopTree>) => {
+      const req = this.request.getRequest(this.request.getNavTreeParams())
+      let sub = this.get(req).subscribe(response => {
+        sub.unsubscribe()
+        if (!response.success) {
+          return observer.error(response.body)
+        }
+        this.shopTree = response.body
+        this.createCategoriesMap(this.shopTree.shopCategories)
+        this.shopTreeRequestingObservers.unshift(observer)
+        for (let o of this.shopTreeRequestingObservers) {
+          o.next(this.shopTree)
+          o.complete()
+        }
+        this.shopTreeRequestingObservers.length = 0
+      })
+    })
+  }
+
   getShopTree(): Observable<ShopTree> {
-    if (this.shopTreeRequesting) {
+    if (this.shopTree)
+      return Observable.of(this.shopTree)
+
+    if (!this._initialized) {
       return Observable.create(o => {
         this.shopTreeRequestingObservers.push(o)
       })
     }
-    if (this.shopTree)
-      return Observable.of(this.shopTree)
 
-    this.shopTreeRequesting = true
-    return Observable.create((observer: Observer<ShopTree>) => {
-      const loadTree = () => {
-
-        const req = this.http.getRequest(this.http.getSearchParam('arbo'))
-        let sub = this.http.get(req).subscribe(res=>{
-          sub.unsubscribe()
-          if (!res.success) {
-            return observer.error(res.body)
-          }
-          this.shopTree = res.body
-          this.createCategoriesMap(this.shopTree.shopCategories)
-          this.shopTreeRequestingObservers.unshift(observer)
-          for (let o of this.shopTreeRequestingObservers) {
-            o.next(this.shopTree)
-            o.complete()
-          }
-          this.shopTreeRequestingObservers.length = 0
-          this.shopTreeRequesting = false
-        })
-      }
-      if (this.http.hasSession) {
-        loadTree()
-      }
-      else {
-        let sub = this.http.registerSession().subscribe(success => {
-          sub.unsubscribe()
-          loadTree()
-        })
-      }
-    })
-
+    return this._getShopTree()
   }
 
   getShopCategories(): Observable<Category[]> {
@@ -193,19 +202,6 @@ export class ApiService {
     return this.shopCategoriesMap ? this.shopCategoriesMap[id] : undefined
   }
 
-  getCategoryIdFromUrl(url: string) {
-    const parts = url.split("/")
-    const n: number = parts.length
-    let i = parts.indexOf("category")
-    if (i > -1) {
-      i++
-      if (i < n) {
-
-      }
-
-    }
-  }
-
   getCmsContentById(id: string): CMSContent {
     let result: CMSContent
     if (this.shopTree) {
@@ -218,9 +214,11 @@ export class ApiService {
     return result
   }
 
-  getProductDetails(id: string): Observable<ProductDetail> {
-    const req = this.http.getRequest(this.http.getSearchParam('product', { id: id }))
-    return this.http.get(req).pipe(
+  getProductDescription(id: string): Observable<ProductDetail> {
+    const req = this.request.getRequest(
+      this.request.getProductDescriptionParams(id)
+    )
+    return this.get(req).pipe(
       map(res => {
         if (!res.success)
           throw res.body
@@ -229,154 +227,34 @@ export class ApiService {
     )
   }
 
-  getDescription(type: ContentTypes, id: string): Observable<string> {
-    let cmsContent: CMSContent = this.getCmsContentById(id)
-    if (cmsContent && cmsContent.description)
-      return Observable.of(cmsContent.description)
 
-    const req = this.http.getRequest(
-      this.http.getSearchParam('product', { id: id, type: type }
-      ))
-    return this.http.get(req).map(response => {
-      if (!response.success)
-        throw response.body
-      cmsContent.description = response.body
-      return cmsContent.description
-    })
+  getCmsContentDescription(id: string): Observable<IDescriptable> {
+    const req = this.request.getRequest(
+      this.request.getCmsContentDescriptionParams(id)
+    )
+    return this.get(req).pipe(
+      map(res => {
+        if (!res.success)
+          throw res.body
+        return res.body
+      })
+    )
+  }
+
+  getCategoryDescription(id: string): Observable<IDescriptable> {
+    const req = this.request.getRequest(
+      this.request.getCmsContentDescriptionParams(id)
+    )
+    return this.get(req).pipe(
+      map(res => {
+        if (!res.success)
+          throw res.body
+        return res.body
+      })
+    )
   }
 
   isErrorBody(response: APIResponse) {
     return isAPIResponseError(response.body)
-  }
-
-  getApiResponse(response: Response): APIResponse {
-    return response.json()
-  }
-
-}
-
-type SessionCookie = {
-  session_id: string
-}
-
-const X_API_SESSION_ID: string = "X-Api-Session-Id"
-const COOKIE_ID: string = "api-session"
-
-export class HttpService {
-  private _sessionCookie: SessionCookie
-
-  get hasSession() {
-    return this._sessionCookie != undefined && (this._sessionCookie.session_id.length > 0)
-  }
-
-  registerSession(): Observable<boolean> {
-    return this.get(
-      this.getRequest(this.getSearchParam("session"))
-    ).pipe(
-      map(response => {
-        const session: Session = response.body
-        this.setSessionId(session.session_id)
-        return true
-      })
-    )
-  }
-  private headers: Headers = new Headers({
-
-  })
-
-  private loadSessionCookie() {
-    let cookie = this.storage.get<SessionCookie>(COOKIE_ID)
-    if (!cookie) {
-      cookie = { session_id: "" }
-      this.storage.set(COOKIE_ID, cookie)
-    }
-    this._sessionCookie = cookie
-    this.setSessionHeader()
-  }
-
-  constructor(
-    public http: Http,
-    private _baseHref: string,
-    private storage: LocalStorageService) {
-    this.loadSessionCookie()
-  }
-  getSearchParam(serviceName: string, input?: any): URLSearchParams {
-    if (!input)
-      input = {}
-    input.fond = urlJoin(API, serviceName)
-    return input
-  }
-
-  currentCustomer(): Observable<Customer> {
-    return this.get(
-      this.getRequest(
-        this.getSearchParam('customer', { method: "current" })
-      )
-    ).pipe(
-      map(response => response.body)
-    )
-  }
-
-  login(customer: Customer): Observable<Customer> {
-    let req = this.getRequest(
-      this.getSearchParam('customer', { method: "login" }),
-      customer
-    )
-    return this.post(req).pipe(
-      map(response => {
-        if (response.success) {
-          Object.assign(customer, response.body)
-        }
-        customer.loggedIn = response.success
-        return customer
-      })
-    )
-  }
-
-  logout(): Observable<APIResponse> {
-    return this.get(
-      this.getRequest(
-        this.getSearchParam("customer", { method: "logout" })
-      ))
-  }
-
-
-  get(request: Request): Observable<APIResponse> {
-    request.method = RequestMethod.Get
-    return this.http.request(request).pipe(
-      map(response => response.json())
-    )
-  }
-  post(request: Request): Observable<APIResponse> {
-    request.method = RequestMethod.Post
-    return this.http.request(request).pipe(
-      map(response => {
-        let res = response.json()
-
-        return res
-      })
-    )
-  }
-
-  getRequest(search: URLSearchParams = null, body: any = null) {
-    return new Request({
-      headers: this.headers,
-      url: this._baseHref,
-      responseType: ResponseContentType.Json,
-      body: body,
-      search: search
-    })
-  }
-
-  private setSessionHeader() {
-    this.headers.set(
-      X_API_SESSION_ID,
-      this._sessionCookie.session_id)
-  }
-
-  private setSessionId(value: string) {
-    this._sessionCookie.session_id = value
-    this.storage.set(COOKIE_ID, this._sessionCookie)
-    this.setSessionHeader()
   }
 }

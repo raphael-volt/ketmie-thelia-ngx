@@ -8,6 +8,10 @@ export interface APIResponseError {
     message: string
 }
 
+export interface APISession {
+    session_id: string
+}
+
 
 export interface ShopTree {
     shopCategories: Category[]

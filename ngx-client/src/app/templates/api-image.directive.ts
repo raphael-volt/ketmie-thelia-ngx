@@ -1,6 +1,6 @@
 import { Directive, Input, Output, EventEmitter, ElementRef, 
   OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { ApiService } from "../api/api.service";
+import { RequestService } from "../api/request.service";
 import { XHRImage } from "../shared/utils/xhr-image";
 import { LoaderEvent } from "../shared/events/loader-event";
 import { Observable, Observer, Subscription } from "rxjs";
@@ -22,7 +22,7 @@ export class ApiImageDirective implements OnChanges, OnDestroy {
 
   private img: HTMLImageElement
 
-  constructor(ref: ElementRef, private api: ApiService) {
+  constructor(ref: ElementRef, private request: RequestService) {
     this.img = ref.nativeElement
   }
 
@@ -42,7 +42,7 @@ export class ApiImageDirective implements OnChanges, OnDestroy {
       this.height = changes.imgHeight.currentValue
     }
     if (this.id && (this.imgHeight || this.imgWidth)) {
-      const src: string = this.api.getProductImageUrl(this.id, Number(this.width), Number(this.height))
+      const src: string = this.request.getProductImageUrl(this.id, Number(this.width), Number(this.height))
       const ldr: XHRImage = new XHRImage()
       const sub: Subscription = ldr.load(this.img, src)
         .subscribe((event: LoaderEvent) => {

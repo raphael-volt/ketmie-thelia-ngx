@@ -10,32 +10,37 @@ import { CmsContentComponent } from "../templates/cms-content/cms-content.compon
 import { ProductComponent } from "../templates/product/product.component";
 const routes: Routes = [
   {
-    path: "category/:id",
-    component: CategoryComponent,
+    path: '',
     canActivate: [CatalogGuard],
-    canDeactivate: [DeactivableGuard],
     children: [
       {
-				path: "",
-				redirectTo: "category",
-				pathMatch: 'full', 
-        canDeactivate: [DeactivableGuard]
-			},
-			{
-				path: "product/:id",
-        component: ProductComponent,
-        canDeactivate: [DeactivableGuard]
-			}
+        path: "category/:id",
+        component: CategoryComponent,
+        canDeactivate: [DeactivableGuard],
+        children: [
+          {
+            path: "",
+            redirectTo: "category",
+            pathMatch: 'full',
+            canDeactivate: [DeactivableGuard]
+          },
+          {
+            path: "product/:id",
+            component: ProductComponent,
+            canDeactivate: [DeactivableGuard]
+          }
+        ]
+      },
+      {
+        path: "cms-content/:id",
+        component: CmsContentComponent,
+        canDeactivate: [DeactivableGuard] 
+      },
+      {
+        path: "theme",
+        component: ThemeComponent 
+      }
     ]
-  },
-  {
-    path: "cms-content/:id",
-    component: CmsContentComponent,
-    canDeactivate: [DeactivableGuard] 
-  },
-  {
-    path: "theme",
-    component: ThemeComponent 
   },
   { path: '**', redirectTo: '' }
 ]

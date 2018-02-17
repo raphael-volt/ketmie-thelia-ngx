@@ -1,5 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { ApiService, HttpService } from "./api.service";
+import { ApiService } from "./api.service";
+import { RequestService } from "./request.service";
 import { APIResponse, isAPIResponseError, Customer } from "./api.model";
 import { Http, 
   Headers,
@@ -13,7 +14,8 @@ import { map, catchError } from "rxjs/operators";
 export class CustomerService {
   
   constructor(
-    private api: ApiService
+    private api: ApiService,
+    private request: RequestService
   ) { }
  
   
@@ -28,10 +30,10 @@ export class CustomerService {
 
   getCurrent(): Observable<Customer> {
 
-    const params = this.http.getSearchParam("customer", { action: "current" })
-    const request: Request = this.http.getRequest(params)
+    const params = this.request.getCustomerParams("current")
+    const request: Request = this.request.getRequest(params)
 
-    return this.http.get(request).pipe(
+    return this.api.get(request).pipe(
       map(response => {
         this.setCurrentCustomer(response.body)
         return this.customer
@@ -46,29 +48,23 @@ export class CustomerService {
   
   logout(): Observable<APIResponse> {
 
-    const params = this.http.getSearchParam("customer", { 
-      action: "logout"
-    })
+    const params = this.request.getCustomerParams("logout")
     
-    const request: Request = this.http.getRequest( params, {
-      action:"deconnexion"
-    })
+    const request: Request = this.request.getRequest( params)
 
-    return this.http.get(request).pipe(
+    return this.api.get(request).pipe(
       map(response => {
         this.setCurrentCustomer(null)
         return response
-      }),
-      catchError((err, caught) => {
-        console.error(err)
-        return caught
       })
     )
 
   }
   login(user: Customer): Observable<Customer> {
-    
-    return this.http.login(user).pipe(
+    const params = this.request.getCustomerParams("login")
+    const req = this.request.getRequest(params, user)
+
+    return this.api.post(req).pipe(
       map(customer => {
         if(customer) {
           Object.assign(user, customer)
@@ -91,9 +87,5 @@ export class CustomerService {
       this.customerChange.emit(value)
     }
     return value
-  }
-   
-  private get http(): HttpService {
-    return this.api.http
   }
 }

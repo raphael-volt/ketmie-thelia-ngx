@@ -2,12 +2,12 @@ import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpModule, XHRBackend, BaseRequestOptions, Http } from "@angular/http";
 import { ApiService } from "./api.service";
 import { ImgLoaderService } from './img-loader.service';
-
+import { LocalStorageModule, LocalStorageService } from "angular-2-local-storage";
 describe('ImgLoaderService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-
+LocalStorageService,
         XHRBackend,
         BaseRequestOptions,
         {
@@ -19,9 +19,9 @@ describe('ImgLoaderService', () => {
         },
         {
           provide: ApiService,
-          deps: [Http],
-          useFactory: (h: Http) => {
-            return new ApiService(h)
+          deps: [Http, LocalStorageService],
+          useFactory: (h: Http, s: LocalStorageService) => {
+            return new ApiService(h, s)
           }
         },
         {

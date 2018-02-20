@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-header *ngIf="data.title">
+    <mat-card-title><h2>{{data.title}}</h2></mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div [innerHTML]="data.message"></div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-toolbar>
+      <span style="flex: 1 1 auto;"></span>
+      <button *ngIf="data.cancelable" mat-raised-button 
+        [color]="data.labels.cancel.color" (click)="cancel()">{{data.labels.cancel.label}}</button>
+      <button mat-raised-button 
+        [color]="data.labels.ok.color" (click)="close()">{{data.labels.ok.label}}</button>
+    </mat-toolbar>
+  </mat-card-footer>
+</mat-card>      

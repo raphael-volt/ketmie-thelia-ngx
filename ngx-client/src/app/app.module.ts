@@ -15,12 +15,14 @@ import { MatModule } from "./mat/mat.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { RoutesModule } from "./routes/routes.module";
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
-
+import { DialogContentComponent } from './shared/dialog-content/dialog-content.component';
+import { PopupService } from "./popup.service";
 @NgModule({
   declarations: [
     AppComponent,
     MainContainerDirective,
-    MenuBarComponent
+    MenuBarComponent,
+    DialogContentComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +43,11 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
     TemplatesModule
   ],
   providers: [
-    LayoutService
+    LayoutService,
+    PopupService
+  ],
+  entryComponents: [
+    DialogContentComponent
   ],
   bootstrap: [AppComponent]
 })

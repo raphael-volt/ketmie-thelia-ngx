@@ -12,7 +12,7 @@ class Filtreapi extends FiltreCustomBase
     private $productHelper;
 
     private $createErrorMap;
-    
+
     public function __construct()
     {
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
@@ -160,6 +160,14 @@ WHERE ligne=1 ORDER BY rubrique, classement";
      *
      * @return Client|NULL
      */
+    private function getCurrentCustomerId()
+    {
+        $client = $this->getCurrentCustomer();
+        if ($client)
+            return $client->id;
+        return null;
+    }
+
     private function getCurrentCustomer()
     {
         if (isset($_SESSION["navig"]) && $_SESSION['navig']->connecte == 1 && property_exists($_SESSION["navig"], "client")) {
@@ -261,11 +269,13 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         
         return true;
     }
+
     /**
-     * 
+     *
      * @param stdClass $json
      */
-    private function updateCustomer($json) {
+    private function updateCustomer($json)
+    {
         $client = new Client();
         $client->charger_id($_SESSION['navig']->client->id);
         foreach ($json as $key => $value) {
@@ -277,27 +287,38 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         ActionsModules::instance()->appel_module("apresmodifcompte", $client);
         return true;
     }
+
     /**
      *
      * @param stdClass $json
      */
-    private function createCustomer($json) {
-        
+    private function createCustomer($json)
+    {
         $test = new Client();
         $valid = true;
-        $props = array("raison", "nom", "prenom", "email", "motdepasse", "adresse1", "cpostal", "ville", "pays");
+        $props = array(
+            "raison",
+            "nom",
+            "prenom",
+            "email",
+            "motdepasse",
+            "adresse1",
+            "cpostal",
+            "ville",
+            "pays"
+        );
         $this->createErrorMap->missingProperties = array();
-        foreach ($props as $prop) { 
-            if(! property_exists($json, $prop)) {
+        foreach ($props as $prop) {
+            if (! property_exists($json, $prop)) {
                 $valid = false;
                 $this->createErrorMap->missingProperties[] = $prop;
             }
         }
-        if(! property_exists($json, "telfix") && ! property_exists($json, "telport") ) {
+        if (! property_exists($json, "telfix") && ! property_exists($json, "telport")) {
             $this->createErrorMap->missingProperties[] = "telfix|telport";
             $valid = false;
         }
-        if(! $valid)
+        if (! $valid)
             return null;
         if ($test->existe($json->email)) {
             $this->createErrorMap->emailExists = true;
@@ -318,12 +339,45 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         
         return $client;
     }
-    
 
-    /*
-     * $response->success = $this->updateEmail($json->email);
-     * $response->success = $this->updatePassword($json->password);
-     */
+    private function createAddress($address)
+    {
+        $result = new Adresse();
+        foreach ($address as $key => $value) {
+            $result->{$key} = $value;
+        }
+        $result->client = $this->getCurrentCustomerId();
+        if ($result->client == null)
+            return null;
+        $result->id = $result->add();
+        return $result;
+    }
+
+    private function updateAddress($address)
+    {
+        if (! property_exists($address, "id"))
+            return null;
+        $id = $address->id;
+        $result = new Adresse();
+        $result->charger_id($id);
+        foreach ($address as $key => $value) {
+            $result->{$key} = $value;
+        }
+        $result->maj();
+        return true;
+    }
+
+    private function deleteAddress($address)
+    {
+        if (! property_exists($address, "id"))
+            return null;
+        $id = $address->id;
+        $result = new Adresse();
+        $result->charger_id($id);
+        $result->delete();
+        return true;
+    }
+
     private function getCountries()
     {
         $pdo = PDOThelia::getInstance();
@@ -338,6 +392,7 @@ ORDER BY titre";
 
     public function calcule($match)
     {
+        $isPost = $_SERVER['REQUEST_METHOD'] == 'POST';
         $match = parent::calcule($match);
         $response = new Response(true);
         $action = $this->paramsUtil->action;
@@ -382,35 +437,34 @@ ORDER BY titre";
                         $method = $this->paramsUtil->parameters[0];
                         
                         switch ($method) {
-                            case "create": {
-                                $response->success = false;
-                                
-                                $json = $this->getPostJson();
-                                
-                                if ($json == null) {
-                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(
-                                        HTTPReponseHelper::$BAD_REQUEST);
-                                    $this->createErrorMap->reason = "missing post data";
-                                    $result = $this->createErrorMap;
-                                    // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                            case "create":
+                                {
+                                    $response->success = false;
+                                    
+                                    $json = $this->getPostJson();
+                                    
+                                    if ($json == null) {
+                                        $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        $this->createErrorMap->reason = "missing post data";
+                                        $result = $this->createErrorMap;
+                                        // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        break;
+                                    }
+                                    
+                                    $json = $this->createCustomer($json);
+                                    if ($json == null) {
+                                        $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        $this->createErrorMap->reason = "createCustomer FAIL";
+                                        $result = $this->createErrorMap;
+                                        // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        break;
+                                    }
+                                    
+                                    $result = $response->baseobj($json);
+                                    unset($result->motdepasse);
+                                    $response->success = true;
                                     break;
                                 }
-                                
-                                $json = $this->createCustomer($json);
-                                if ($json == null) {
-                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(
-                                        HTTPReponseHelper::$BAD_REQUEST);
-                                    $this->createErrorMap->reason = "createCustomer FAIL";
-                                    $result = $this->createErrorMap;
-                                    // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                    break;
-                                }
-                                
-                                $result = $response->baseobj($json);
-                                unset($result->motdepasse);
-                                $response->success = true;
-                                break;
-                            }
                             case "update":
                                 {
                                     $response->success = false;
@@ -458,7 +512,7 @@ ORDER BY titre";
                                         $response->success = true;
                                     } else {
                                         $response->success = false;
-                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$FORBIDDEN);                                        
+                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
                                     }
                                     break;
                                 }
@@ -476,8 +530,59 @@ ORDER BY titre";
                                 }
                             case 'address':
                                 {
-                                    $result = $this->getCustomerAddress();
-                                    $response->success = $this->isConnected();
+                                    if ($isPost) {
+                                        $response->success = false;
+                                        if (! $this->isConnected()) {
+                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
+                                            break;
+                                        }
+                                        $json = $this->getPostJson();
+                                        if ($json == null) {
+                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                            break;
+                                        }
+                                        if (property_exists($json, "method")) {
+                                            $method = $json->method;
+                                            if (property_exists($json, "address")) {
+                                                $address = $json->address;
+                                                switch ($method) {
+                                                    case "create":
+                                                        {
+                                                            $result = $this->createAddress($address);
+                                                            break;
+                                                        }
+                                                    case "delete":
+                                                        {
+                                                            
+                                                            $result = $this->deleteAddress($address);
+                                                            break;
+                                                        }
+                                                    case "update":
+                                                        {
+                                                            
+                                                            $result = $this->updateAddress($address);
+                                                            break;
+                                                        }
+                                                    default:
+                                                        {
+                                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                                            break;
+                                                        }
+                                                }
+                                                if (! $result) {
+                                                    $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                                } else {
+                                                    $response->success = true;
+                                                }
+                                            } else {
+                                                $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        $result = $this->getCustomerAddress();
+                                        $response->success = $this->isConnected();
+                                    }
                                     break;
                                 }
                             default:
@@ -491,7 +596,7 @@ ORDER BY titre";
             $result = HTTPReponseHelper::getErrorJson(500, $e->getMessage());
             $response->success = false;
         }
-
+        
         $response->body = $result;
         return $response->serialize();
     }

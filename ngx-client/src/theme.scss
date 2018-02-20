@@ -42,6 +42,31 @@
     background-color: mat-color($background, card);
     @include item-raised()
   }
+  .pad-16,
+  &.pad-16 {
+    padding: 16px;
+  }
+  .pad-8,
+  &.pad-8 {
+    padding: 8px;
+  }
+  .pad-4,
+  &.pad-4 {
+    padding: 4px;
+  }
+  .br-2,
+  &.br-2 {
+    border-radius: 2px;
+  }
+  .br-4,
+  &.br-4 {
+    border-radius: 4px;
+  }
+  .br-half,
+  &.br-half {
+    border-radius: calc(1em / 2);
+  }
+
   .primary,
   &.primary {
     @include item-color-theme($primary)

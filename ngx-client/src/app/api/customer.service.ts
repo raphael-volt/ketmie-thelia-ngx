@@ -19,9 +19,9 @@ export class CustomerService {
       sub.unsubscribe()
     })
     let sub2 = this.getCurrent()
-    .subscribe(customer=>{
-      sub2.unsubscribe()
-    })
+      .subscribe(customer => {
+        sub2.unsubscribe()
+      })
   }
 
 
@@ -125,16 +125,6 @@ export class CustomerService {
     )
   }
 
-  getAdresses(): Observable<Address[]> {
-    return this.api.get(
-      this.request.getRequest(
-        this.request.getCustomerParams("address")
-      )
-    ).pipe(
-      map(response => response.body)
-    )
-  }
-
   getEmailTaken(email: string): Observable<boolean> {
     return this.api.get(
       this.request.getRequest(
@@ -199,6 +189,61 @@ export class CustomerService {
       this.request.getRequest(
         this.request.getCustomerParams("update"),
         { password: password }
+      )
+    ).pipe(
+      map(response => response.success)
+    )
+  }
+
+  getAdresses(): Observable<Address[]> {
+    return this.api.get(
+      this.request.getRequest(
+        this.request.getCustomerParams("address")
+      )
+    ).pipe(
+      map(response => response.body)
+    )
+  }
+
+  createAddress(address: Address): Observable<Address> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("address"),
+        {
+          method: "create",
+          address: address
+        }
+      )
+    ).pipe(
+      map(response => {
+        Object.assign(address, response.body)
+        return address
+      })
+    )
+  }
+
+  updateAddress(address: Address): Observable<boolean> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("address"),
+        {
+          method: "update",
+          address: address
+        }
+      )
+    ).pipe(
+      map(response => response.success)
+    )
+  }
+
+  deleteAddress(address: Address): Observable<boolean> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("address"),
+        {
+          method: "delete",
+          address: { id: address.id }
+        }
       )
     ).pipe(
       map(response => response.success)

@@ -6,7 +6,7 @@
   </mat-card-header>
   <mat-card-actions>
     <button *ngIf="isClient" mat-raised-button (click)="isClient=false">Créer mon compte</button>
-    <button *ngIf="!isClient" mat-raised-button (click)="isClient=false">Me connecter</button>
+    <button *ngIf="!isClient" mat-raised-button (click)="isClient=true">Me connecter</button>
   </mat-card-actions>
   <mat-card-content *ngIf="isClient" class="connect-content">
     <mat-card-content *ngIf="loginError" class="k-light">
@@ -28,8 +28,8 @@
     </div>
   </mat-card-content>
   <mat-card-content *ngIf="!isClient" class="connect-content">
-    <mat-horizontal-stepper [linear]="true" #stepper="matHorizontalStepper">
-      <mat-step [stepControl]="createForm">
+    <mat-horizontal-stepper [linear]="true">
+      <mat-step [stepControl]="createForm" [completed]="false">
         <div [formGroup]="createForm" fxLayout="column" fxLayoutAlign="start stretch">
           <ng-template matStepLabel>Mes données de connexion</ng-template>
           <mat-form-field>
@@ -47,7 +47,7 @@
           <mat-form-field>
             <input matInput type="password" placeholder="Mot de passe" formControlName="password" [(ngModel)]="data.password">
             <mat-error *ngIf="createForm.controls.password.invalid">
-              Mot de passe trop court.
+              {{getPwdError(createForm.controls.password, true)}}
             </mat-error>
           </mat-form-field>
           <mat-form-field>
@@ -62,7 +62,7 @@
           </div>
         </div>
       </mat-step>
-      <mat-step [stepControl]="addressForm.formGroup">
+      <mat-step [stepControl]="addressForm.formGroup" [completed]="false">
         <ng-template matStepLabel>Mon addresse</ng-template>
         <address-form #addressForm [address]="data.address" [saveButton]="false" (valid)="addressValid($event)"></address-form>
       </mat-step>

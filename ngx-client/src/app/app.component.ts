@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from "rxjs";
 import { ApiService } from "./api/api.service";
 import { CustomerService } from "./api/customer.service";
+import { PopupService } from "./popup.service";
+import { OK, YES, NO, CANCEL, GIVE_UP, VALIDATE, CONTINUE, CLOSE } from "./shared/dialog-content/dialog-content.component";
 import { ShopTree, CMSContent, Category } from "./api/api.model";
 @Component({
   selector: 'app-root',
@@ -11,6 +13,7 @@ import { ShopTree, CMSContent, Category } from "./api/api.model";
 export class AppComponent implements OnInit, OnDestroy{
   
   constructor(
+    private popupService: PopupService,
     private apiService: ApiService,
     customerService: CustomerService) { }
 

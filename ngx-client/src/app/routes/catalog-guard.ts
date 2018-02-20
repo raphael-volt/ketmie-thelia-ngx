@@ -18,8 +18,11 @@ export class CatalogGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         if(this.api.initialized)
             return true
+        return this.api.initializedChange.asObservable()
+        /*
         return this.api.initialize().pipe(
             map(tree=>true)
         )
+        */
     }
 }

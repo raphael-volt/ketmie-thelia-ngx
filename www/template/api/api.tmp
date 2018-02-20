@@ -5,14 +5,13 @@ require_once __DIR__ . '/ProductHelper.php';
 class Filtreapi extends FiltreCustomBase
 {
 
+    private $createErrorMap;
     /**
      *
      * @var ProductHelper
      */
     private $productHelper;
 
-    private $createErrorMap;
-    
     public function __construct()
     {
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
@@ -284,25 +283,26 @@ WHERE ligne=1 ORDER BY rubrique, classement";
     private function createCustomer($json) {
         
         $test = new Client();
+        $props = $test->bddvars;
         $valid = true;
-        $props = array("raison", "nom", "prenom", "email", "motdepasse", "adresse1", "cpostal", "ville", "pays");
+        $skipProps = array("id", "ref", "datecrea", "siret", "intracom", "parrain", "type", "pourcentage", "lang");
         $this->createErrorMap->missingProperties = array();
-        foreach ($props as $prop) { 
-            if(! property_exists($json, $prop)) {
-                $valid = false;
-                $this->createErrorMap->missingProperties[] = $prop;
+        $this->createErrorMap->skipProperties = array();
+        foreach ($props as $prop) {
+            if(array_search($prop, $skipProps) !== false) {
+                $this->createErrorMap->skipProperties[] = $prop;
+                continue;
             }
-        }
-        if(! property_exists($json, "telfix") && ! property_exists($json, "telport") ) {
-            $this->createErrorMap->missingProperties[] = "telfix|telport";
-            $valid = false;
+            if(! property_exists($json, $prop)) {
+                $this->createErrorMap->missingProperties[] = $prop;
+                $valid = false;
+                // break;
+            }
         }
         if(! $valid)
             return null;
-        if ($test->existe($json->email)) {
-            $this->createErrorMap->emailExists = true;
+        if ($test->existe($json->email))
             return null;
-        }
         
         $client = new Client();
         foreach ($json as $key => $value) {
@@ -318,12 +318,7 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         
         return $client;
     }
-    
 
-    /*
-     * $response->success = $this->updateEmail($json->email);
-     * $response->success = $this->updatePassword($json->password);
-     */
     private function getCountries()
     {
         $pdo = PDOThelia::getInstance();
@@ -335,6 +330,8 @@ ORDER BY titre";
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         return $stmt->fetchAll();
     }
+    
+    
 
     public function calcule($match)
     {
@@ -388,9 +385,9 @@ ORDER BY titre";
                                 $json = $this->getPostJson();
                                 
                                 if ($json == null) {
-                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(
-                                        HTTPReponseHelper::$BAD_REQUEST);
+                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
                                     $this->createErrorMap->reason = "missing post data";
+                                    
                                     $result = $this->createErrorMap;
                                     // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
                                     break;
@@ -398,11 +395,10 @@ ORDER BY titre";
                                 
                                 $json = $this->createCustomer($json);
                                 if ($json == null) {
-                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(
-                                        HTTPReponseHelper::$BAD_REQUEST);
-                                    $this->createErrorMap->reason = "createCustomer FAIL";
-                                    $result = $this->createErrorMap;
-                                    // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                    $this->createErrorMap->reason = "create customer fail";
+                                    
+                                    $result = $this->createErrorMap;//HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
                                     break;
                                 }
                                 

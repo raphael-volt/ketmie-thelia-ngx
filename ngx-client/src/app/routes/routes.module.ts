@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router'
+
 import { DeactivableGuard } from "./deactivable-guard";
 import { CatalogGuard } from "./catalog-guard";
+import { CustomerGuard } from "./customer-guard";
+
 import { DeactivableComponent } from "./deactivable.component";
 import { ThemeComponent } from "../templates/theme/theme.component";
 import { CategoryComponent } from "../templates/category/category.component";
 import { CmsContentComponent } from "../templates/cms-content/cms-content.component";
 import { ProductComponent } from "../templates/product/product.component";
+import { CustomerComponent } from "../templates/customer/customer.component";
 const routes: Routes = [
   {
     path: '',
@@ -37,6 +41,12 @@ const routes: Routes = [
         canDeactivate: [DeactivableGuard] 
       },
       {
+        path: "customer",
+        component: CustomerComponent,
+        canActivate: [CustomerGuard],
+        canDeactivate: [DeactivableGuard] 
+      },
+      {
         path: "theme",
         component: ThemeComponent 
       }
@@ -55,6 +65,6 @@ const routes: Routes = [
     RouterModule,
     DeactivableComponent
   ],
-  providers: [DeactivableGuard, CatalogGuard]
+  providers: [DeactivableGuard, CatalogGuard, CustomerGuard]
 })
 export class RoutesModule { }

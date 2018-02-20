@@ -30,9 +30,13 @@
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
   $theme-color: mat-color($foreground, text);
+  $header-border: 1px solid mat-color($foreground, divider);
   font-family: mat-font-family($config);
   color: $theme-color;
   font-size: mat-font-size($config, body-1);
+  .header-border {
+    border: $header-border;
+  }
   .content,
   &.content {
     background-color: mat-color($background, card);
@@ -47,7 +51,7 @@
     @include item-color-theme($accent)
   }
   .warn,
-  &.accent {
+  &.warn {
     @include item-color-theme($warn)
   }
   .tool-bar,
@@ -74,7 +78,31 @@
 
 @mixin create-mat-theme($theme) {
   @include angular-material-theme($theme);
-  @include side-nav-override()
+  @include side-nav-override();
+  .mat-tab-header-center .mat-tab-labels {
+    justify-content: center;
+  }
+}
+$light: mat-light-theme( 
+  mat-palette($mat-indigo), 
+  mat-palette($mat-blue-grey), 
+  mat-palette($mat-orange)
+);
+
+@include create-mat-theme($light);
+
+.light,
+.dark .light,
+.light .dark .light,
+.dark .light .dark .light {
+  @include create-mat-theme($light)
+}
+
+.k-light,
+.k-dark .k-light,
+.k-light .k-dark .k-light,
+.k-dark .k-light .k-dark .k-light {
+  @include color-theme($light)
 }
 
 $dark: mat-dark-theme( 
@@ -97,25 +125,6 @@ $dark: mat-dark-theme(
   @include color-theme($dark);
 }
 
-$light: mat-light-theme( 
-  mat-palette($mat-indigo), 
-  mat-palette($mat-blue-grey), 
-  mat-palette($mat-orange)
-);
-
-.light,
-.dark .light,
-.light .dark .light,
-.dark .light .dark .light {
-  @include create-mat-theme($light)
-}
-
-.k-light,
-.k-dark .k-light,
-.k-light .k-dark .k-light,
-.k-dark .k-light .k-dark .k-light {
-  @include color-theme($light)
-}
 
 body,
 html {

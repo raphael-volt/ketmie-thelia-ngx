@@ -47,8 +47,11 @@ export class RequestService {
     return request
   }
 
-  getCustomerParams(method: "login" | "logout" | "current"): URLSearchParams {
-    return this.getSearchParam("customer", { method: method })
+  getCustomerParams(method: "login" | "logout" | "current" | "address" | "update" | "create", input?:any): URLSearchParams {
+    if(! input)
+      input = {}
+    input.method = method
+    return this.getSearchParam("customer", input)
   }
 
   getSessionParams(): URLSearchParams {

@@ -1,24 +1,30 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { ApiService } from "./api.service";
 import { RequestService } from "./request.service";
-import { APIResponse, isAPIResponseError, Customer } from "./api.model";
-import { Http, 
-  Headers,
-  RequestOptionsArgs, RequestMethod, Request, 
-  Response, ResponseContentType 
-} from "@angular/http";
+import {
+  APIResponse, isAPIResponseError,
+  Customer, Address, Country
+} from "./api.model";
 import { Observable, Observer, Subscription } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 
 @Injectable()
 export class CustomerService {
-  
+
   constructor(
     private api: ApiService,
     private request: RequestService
-  ) { }
- 
-  
+  ) {
+    let sub = this.getCountries().subscribe(v => {
+      sub.unsubscribe()
+    })
+    let sub2 = this.getCurrent()
+    .subscribe(customer=>{
+      sub2.unsubscribe()
+    })
+  }
+
+
   customer: Customer
   private _logedin: boolean = false
   customerChange: EventEmitter<Customer> = new EventEmitter()
@@ -28,29 +34,72 @@ export class CustomerService {
     return this._logedin
   }
 
-  getCurrent(): Observable<Customer> {
+  private _currentBuzy: boolean
 
-    const params = this.request.getCustomerParams("current")
-    const request: Request = this.request.getRequest(params)
+  get currentBuzy(): boolean {
+    return this._currentBuzy
+  }
 
-    return this.api.get(request).pipe(
+  private countries: Country[]
+  getCountries(): Observable<Country[]> {
+    if (this.countries)
+      return Observable.of(this.countries)
+    return this.api.get(
+      this.request.getRequest(
+        this.request.getSearchParam("countries")
+      )
+    ).pipe(
       map(response => {
-        this.setCurrentCustomer(response.body)
-        return this.customer
-      }),
-      catchError((err, caught) => {
-        console.error(err)
-        return caught
+        this.countries = response.body
+        return this.countries
       })
     )
-
   }
-  
+
+  getCurrent(): Observable<Customer> {
+    this._currentBuzy = true
+    const api = this.api
+    const request = this.request
+    let emitter: EventEmitter<boolean>
+    let obs: Observer<Customer>
+    let customer: Customer
+    const initialized: boolean = api.initialized
+    if (!initialized) {
+      emitter = api.initializedChange
+    }
+    else {
+      emitter = new EventEmitter()
+    }
+    const done = () => {
+      this._currentBuzy = false
+      this.setCurrentCustomer(customer)
+      obs.next(customer)
+      obs.complete()
+    }
+    let sub: Subscription = emitter.subscribe(value => {
+      const params = request.getCustomerParams("current")
+      const req = request.getRequest(params)
+      if (sub)
+        sub.unsubscribe()
+      sub = this.api.get(req).subscribe(response => {
+        sub.unsubscribe()
+        customer = response.body
+        done()
+      })
+    })
+    return Observable.create((observer: Observer<Customer>) => {
+      obs = observer
+      if (initialized) {
+        emitter.next(true)
+      }
+    })
+  }
+
   logout(): Observable<APIResponse> {
 
     const params = this.request.getCustomerParams("logout")
-    
-    const request: Request = this.request.getRequest( params)
+
+    const request = this.request.getRequest(params)
 
     return this.api.get(request).pipe(
       map(response => {
@@ -58,34 +107,112 @@ export class CustomerService {
         return response
       })
     )
-
   }
+
   login(user: Customer): Observable<Customer> {
     const params = this.request.getCustomerParams("login")
     const req = this.request.getRequest(params, user)
 
     return this.api.post(req).pipe(
-      map(customer => {
-        if(customer) {
-          Object.assign(user, customer)
+      map(response => {
+        if (response.success) {
+          Object.assign(user, response.body)
         }
+        else
+          user = null
         return this.setCurrentCustomer(user)
       })
     )
   }
 
-  private setCurrentCustomer(value: Customer) {
+  getAdresses(): Observable<Address[]> {
+    return this.api.get(
+      this.request.getRequest(
+        this.request.getCustomerParams("address")
+      )
+    ).pipe(
+      map(response => response.body)
+    )
+  }
+
+  getEmailTaken(email: string): Observable<boolean> {
+    return this.api.get(
+      this.request.getRequest(
+        this.request.getSearchParam("customer", { method: "emailTaken", email: email })
+      )
+    ).pipe(
+      map(response => response.body.taken)
+    )
+  }
+
+  createCustomer(customer: Customer): Observable<Customer> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("create"),
+        customer
+      )
+    ).pipe(
+      map(response => {
+        if (response.success) {
+          delete (customer.motdepasse)
+          Object.assign(customer, response.body)
+          customer.isNew = true
+          this.setCurrentCustomer(customer)
+          return customer
+        }
+        else {
+          console.error(response.body)
+        }
+        return response.body
+      })
+    )
+  }
+
+  changeEmail(email: string): Observable<boolean> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("update"),
+        { email: email }
+      )
+    ).pipe(
+      map(response => response.success)
+    )
+  }
+
+
+
+  updateCustomer(customer: Customer): Observable<boolean> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("update"),
+        { customer: customer }
+      )
+    ).pipe(
+      map(response => {
+        return response.success
+      })
+    )
+  }
+
+  changePassword(password: string): Observable<boolean> {
+    return this.api.post(
+      this.request.getRequest(
+        this.request.getCustomerParams("update"),
+        { password: password }
+      )
+    ).pipe(
+      map(response => response.success)
+    )
+  }
+
+  private setCurrentCustomer(value: Customer): Customer | null {
     const logedIn = Boolean(value)
-    if(value)
+    if (value)
       value.loggedIn = logedIn
-    if(logedIn != this._logedin) {
-      this._logedin = logedIn
-      this.loggedInChange.emit(this._logedin)
-    }
-    if(this.customer != value) {
-      this.customer = value
-      this.customerChange.emit(value)
-    }
+    this._logedin = logedIn
+    this.loggedInChange.emit(this._logedin)
+    this.customer = value
+    this.customerChange.emit(value)
     return value
   }
 }

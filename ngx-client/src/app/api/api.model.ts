@@ -78,6 +78,29 @@ export interface Customer extends IIdentifiable {
     pourcentage?: string
     lang?: string
     loggedIn?: boolean
+    isNew?: boolean
+}
+
+export interface Address {
+    id?: string
+    libelle?: string
+    client?: string
+    raison?: string
+    entreprise?: string
+    nom?: string
+    prenom?: string
+    adresse1?: string
+    adresse2?: string
+    adresse3?: string
+    cpostal?: string
+    ville?: string
+    tel?: string
+    pays?: string
+}
+
+export interface Country {
+    id: string
+    name: string
 }
 
 const isAPIResponseError = (value: any): value is APIResponseError => {
@@ -85,5 +108,49 @@ const isAPIResponseError = (value: any): value is APIResponseError => {
         return true
     return false
 }
+const addressProperties: string[] = ["raison", "entreprise", "nom", "prenom",
+    "adresse1", "adresse2", "adresse3", "cpostal", "ville", "pays"]
 
-export { isAPIResponseError }
+const customerToAddress = (customer: Customer): Address => {
+    const result: Address = {}
+    for (const p of addressProperties) {
+        if (!customer[p])
+            continue
+        result[p] = customer[p]
+    }
+    if (customer.telfixe) {
+        result.tel = customer.telfixe
+    }
+    if (customer.telport) {
+        result.tel = customer.telport
+    }
+    return result
+}
+const addressToCustomer = (address: Address, customer?: Customer): Customer => {
+    if (!customer)
+        customer = {}
+    for (const p of addressProperties) {
+        if(! address[p])
+            continue
+        customer[p] = address[p]
+    }
+    if(address.tel) {
+        if(! customer.telfixe)
+            customer.telfixe = address.tel
+            
+        if(! customer.telport)
+            customer.telport = address.tel
+    }
+    return customer
+}
+export interface CustomerCivility {
+    id: string
+    condensed: string
+    value: string
+}
+const customerCivilities: CustomerCivility[] = [
+    { id: "1", condensed: "Mme", value: "Madame" },
+    { id: "2", condensed: "Mlle", value: "Mademoiselle" },
+    { id: "3", condensed: "Mr", value: "Monsieur" }
+]
+export { isAPIResponseError, customerToAddress, addressToCustomer, customerCivilities }

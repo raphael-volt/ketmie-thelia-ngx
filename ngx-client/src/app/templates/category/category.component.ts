@@ -1,4 +1,4 @@
-import { Component, HostBinding, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostBinding, ElementRef, AfterViewInit, OnDestroy, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterEvent, NavigationEnd, NavigationStart } from "@angular/router";
 import { ApiService } from "../../api/api.service";
 import { LoaderEvent } from "../../shared/events/loader-event";
@@ -12,7 +12,7 @@ import { SubscriptionCollector } from "../../shared/utils/subscription.utils";
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent extends SliderBaseComponent implements AfterViewInit, OnDestroy, OnChanges {
+export class CategoryComponent extends SliderBaseComponent implements AfterViewInit, OnDestroy, OnChanges, OnInit {
 
   @HostBinding("class.k-light") kLite = true;
   @ViewChild('imgCtn')
@@ -57,12 +57,13 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
   }
 
   category: any
-  children: any[]
+  children: any[] = []
   categoryLabel: string = ""
   selectedProduct: boolean = false
   private productId: string
   private routeSubscription: Subscription
-  ngAfterViewInit() {
+  ngAfterViewInit() {}
+  ngOnInit() {
     let sub1 = this.api.getShopCategories().subscribe(
       catalog => {
         this.routeSubscription = this.route.params.subscribe(params => {
@@ -74,6 +75,8 @@ export class CategoryComponent extends SliderBaseComponent implements AfterViewI
             this.tile.destroy(this.tileId)
           }
           this.children = this.category.children
+          setTimeout(() => {
+          }, 10);
         },
           e => { },
           () => {

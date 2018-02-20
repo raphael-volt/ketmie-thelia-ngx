@@ -27,6 +27,10 @@
 // define("E_STRICT", E_ALL);
 /* Moteur */
 require_once (__DIR__ . "/../fonctions/error_reporting.php");
+//ini_set('display_errors', '1');
+//ini_set('display_startup_errors', '1');
+//error_reporting(E_STRICT);
+
 
 require __DIR__ . "/autoload.php";
 

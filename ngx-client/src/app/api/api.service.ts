@@ -86,6 +86,10 @@ export class ApiService {
     private http: Http,
     private session: SessionService,
     private request: RequestService) {
+      let sub = this.initialize()
+      .subscribe(tree=>{
+        sub.unsubscribe()
+      })
   }
 
   private _initializing: boolean
@@ -96,9 +100,15 @@ export class ApiService {
   get initialized(): boolean {
     return this._initialized
   }
+  private initializeObservers: Observer<ShopTree>[] = []
   initialize(): Observable<ShopTree> {
-    if (this._initialized || this._initializing)
+    if (this._initialized)
       throw "initialize error"
+    if(this._initializing) {
+      return Observable.create(observer=>{
+        this.initializeObservers.push(observer)
+      })
+    }
     this._initializing = true
     const treeMap = tree => {
       this._initializing = false
@@ -111,7 +121,7 @@ export class ApiService {
       return this._getShopTree()
         .pipe(map(treeMap))
     }
-    return Observable.create((observer: Observer<boolean>) => {
+    return Observable.create((observer: Observer<ShopTree>) => {
 
       let sub = this.get(
         this.request.getRequest(
@@ -124,8 +134,12 @@ export class ApiService {
         sub.unsubscribe()
         sub = this._getShopTree().subscribe(tree => {
           sub.unsubscribe()
-          observer.next(treeMap(tree))
-          observer.complete()
+          this.initializeObservers.push(observer)
+          for(observer of this.initializeObservers) {
+            observer.next(treeMap(tree))
+            observer.complete()
+          }
+          this.initializeObservers.length = 0
         })
       })
     })

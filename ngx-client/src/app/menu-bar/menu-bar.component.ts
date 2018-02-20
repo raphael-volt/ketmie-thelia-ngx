@@ -1,5 +1,5 @@
 import { Component, AfterViewChecked, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
-
+import { CustomerService } from "../api/customer.service";
 @Component({
   selector: '[menu-bar]',
   templateUrl: './menu-bar.component.html',
@@ -11,8 +11,11 @@ import { Component, AfterViewChecked, EventEmitter, Output, ElementRef, ViewChil
 export class MenuBarComponent implements AfterViewChecked {
 
   private target: HTMLElement
-  constructor(ref: ElementRef) {
+  constructor(
+    ref: ElementRef, 
+    public customerService: CustomerService) {
     this.target = ref.nativeElement
+    
    }
 
   @Output()

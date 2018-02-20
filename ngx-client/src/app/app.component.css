@@ -35,6 +35,7 @@
 
 #router-container {
     overflow: hidden;
+    transform: translateZ(0);/* bug-fix product-component masking */
 }
 mat-sidenav {
     display: flex;

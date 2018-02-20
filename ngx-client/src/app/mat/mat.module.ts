@@ -31,8 +31,15 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatStepperModule
+  MatStepperModule,
+  MatDialogConfig
 } from '@angular/material';
+
+const defaultConfig: MatDialogConfig = {
+  disableClose: true,
+  panelClass: 'overlay-pane-class',
+  hasBackdrop: true
+}
 @NgModule({
   imports: [
     CommonModule,
@@ -104,3 +111,4 @@ import {
   declarations: []
 })
 export class MatModule { }
+export { defaultConfig }

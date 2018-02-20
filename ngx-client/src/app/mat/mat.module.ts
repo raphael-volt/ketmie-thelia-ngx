@@ -35,10 +35,11 @@ import {
   MatDialogConfig
 } from '@angular/material';
 
-const defaultConfig: MatDialogConfig = {
+const defaultDialogConfig: MatDialogConfig = {
   disableClose: true,
   panelClass: 'overlay-pane-class',
-  hasBackdrop: true
+  hasBackdrop: true,
+  minWidth: 250
 }
 @NgModule({
   imports: [
@@ -111,4 +112,4 @@ const defaultConfig: MatDialogConfig = {
   declarations: []
 })
 export class MatModule { }
-export { defaultConfig }
+export { defaultDialogConfig }

@@ -51,12 +51,13 @@ session_start();
 if (isset($_GET['fond']) && strpos($_GET['fond'], "api/") === 0){  
     
     header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: HEAD, GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     // header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Api-Session-Id, Authorization");
     header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Api-Session-Id");
     
     header("Content-type: application/json; charset=utf-8");
     header("HTTP/1.1 200 OK");
+    header("Content-type: text/html; charset=utf-8");
 }
 else
     header("Content-type: text/html; charset=utf-8");

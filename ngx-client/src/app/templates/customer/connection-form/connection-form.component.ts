@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material';
 import { CustomerService } from "../../../api/customer.service";
 import { Customer, addressToCustomer, Address } from "../../../api/api.model";
 import { FormBuilder, FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-
+import { SEND, CANCEL } from "../../../shared/button-labels";
 @Component({
   selector: 'connection-form',
   templateUrl: './connection-form.component.html',
@@ -12,6 +12,9 @@ import { FormBuilder, FormControl, FormGroup, Validators, ValidatorFn, Validatio
 })
 export class ConnectionFormComponent implements OnInit {
 
+  cancelLabel: string = CANCEL
+  sendLabel: string = SEND
+  
   isClient: boolean = true
   customer: Customer = {
     email: "",

@@ -7,151 +7,100 @@
         <button mat-raised-button color="primary" (click)="logout()">Déconnexion</button>
       </div>
     </div>
-      <div class="tab-ctn" fillParent>
-        <mat-tab-group class="account-tab-group header-border mat-tab-header-center" [dynamicHeight]="false">
-          <mat-tab label="Mes coordonnées">
-            <div fxLayout="row" fxLayoutAlign="center start">
-              <div class="tab-content" fxFlex="80" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="16px" fxFlex.lt-md="100" fxLayoutGap.lt-md="8px">
-                <h3>Mes données de connexion</h3>
-                <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="40px" fxLayout.lt-md="column" fxLayoutAlign.lt-md="start stretch"
-                  fxLayoutGap.lt-md="8px">
-                  <mat-expansion-panel fxFlex="50" #mailPanel blurChild (blurOut)="mailPanel.close()">
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>
-                        Modifier mon email
-                      </mat-panel-title>
-                      <mat-panel-description *ngIf="customer">
-                        {{customer.email}}
-                      </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <div [formGroup]="emailGroup" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="8px">
-                      <mat-form-field>
-                        <input matInput placeholder="Email" formControlName="email" [(ngModel)]="data.email">
-                        <mat-error *ngIf="emailGroup.controls.email.invalid">
-                          Cet email n'est pas valide.
-                        </mat-error>
-                      </mat-form-field>
-                      <mat-form-field>
-                        <input matInput placeholder="Vérification de l'email" formControlName="email2" [(ngModel)]="data.email2">
-                        <mat-error *ngIf="emailGroup.controls.email2.invalid">
-                          {{getEmailError(emailGroup.controls.email2)}}
-                        </mat-error>
-                      </mat-form-field>
-                      <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="8px">
-                        <span *ngIf="emailTaken" class="warn">Cet email est déjà associé à un compte.</span>
-                        <button (click)="changeEmail()" mat-raised-button color="primary" [disabled]="!canChangeEmail">Modifier</button>
-                      </div>
+    <div class="tab-ctn" fillParent>
+      <mat-tab-group class="account-tab-group header-border mat-tab-header-center" [dynamicHeight]="false">
+        <mat-tab label="Mes coordonnées">
+          <div fxLayout="row" fxLayoutAlign="center start">
+            <div class="tab-content" fxFlex="80" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="16px" fxFlex.lt-md="100"
+              fxLayoutGap.lt-md="8px">
+              <h3>Mes données de connexion</h3>
+              <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="40px" fxLayout.lt-md="column" fxLayoutAlign.lt-md="start stretch"
+                fxLayoutGap.lt-md="8px">
+                <mat-expansion-panel fxFlex="50" #mailPanel blurChild (blurOut)="mailPanel.close()">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Modifier mon email
+                    </mat-panel-title>
+                    <mat-panel-description *ngIf="customer">
+                      {{customer.email}}
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div [formGroup]="emailGroup" fxLayout="column" fxLayoutAlign="start stretch">
+                    <mat-form-field>
+                      <input matInput placeholder="Email" formControlName="email" [(ngModel)]="data.email">
+                      <mat-error *ngIf="emailGroup.controls.email.invalid">
+                        Cet email n'est pas valide.
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput placeholder="Vérification de l'email" formControlName="email2" [(ngModel)]="data.email2">
+                      <mat-error *ngIf="emailGroup.controls.email2.invalid">
+                        {{getEmailError(emailGroup.controls.email2)}}
+                      </mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="8px">
+                      <span *ngIf="emailTaken" class="warn">Cet email est déjà associé à un compte.</span>
+                      <button (click)="changeEmail()" mat-raised-button color="primary" [disabled]="!canChangeEmail">Modifier</button>
                     </div>
-                  </mat-expansion-panel>
-                  <mat-expansion-panel fxFlex="50" #pwdPanel blurChild (blurOut)="pwdPanel.close()">
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>
-                        Modifier mon mot de passe
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div [formGroup]="pwdGroup" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="8px">
-                      <mat-form-field>
-                        <input matInput [type]="'password'" placeholder="Mot de passe" formControlName="password" [(ngModel)]="data.password">
-                        <mat-error *ngIf="pwdGroup.controls.password.invalid">
-                          Mot de passe trop court.
-                        </mat-error>
-                      </mat-form-field>
-                      <mat-form-field>
-                        <input matInput [type]="'password'" placeholder="Vérification du mot de passe" formControlName="password2" [(ngModel)]="data.password2">
-                        <mat-error *ngIf="pwdGroup.controls.password2.invalid">
-                          {{getPwdError(pwdGroup.controls.password2)}}
-                        </mat-error>
-                      </mat-form-field>
-                      <div fxLayout="row" fxLayoutAlign="end start">
-                        <button (click)="changePassword()" mat-raised-button color="primary" [disabled]="!pwdGroup.valid">Modifier</button>
-                      </div>
+                  </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel fxFlex="50" #pwdPanel blurChild (blurOut)="pwdPanel.close()">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      Modifier mon mot de passe
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div [formGroup]="pwdGroup" fxLayout="column" fxLayoutAlign="start stretch">
+                    <mat-form-field>
+                      <input matInput [type]="'password'" placeholder="Mot de passe" formControlName="password" [(ngModel)]="data.password">
+                      <mat-error *ngIf="pwdGroup.controls.password.invalid">
+                        Mot de passe trop court.
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput [type]="'password'" placeholder="Vérification du mot de passe" formControlName="password2" [(ngModel)]="data.password2">
+                      <mat-error *ngIf="pwdGroup.controls.password2.invalid">
+                        {{getPwdError(pwdGroup.controls.password2)}}
+                      </mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="end start">
+                      <button (click)="changePassword()" mat-raised-button color="primary" [disabled]="!pwdGroup.valid">Modifier</button>
                     </div>
-                  </mat-expansion-panel>
-                </div>
-                <h3>Mon adresse de facturation</h3>
-                <address-form [address]="address" (save)="saveCustomer()"></address-form>
+                  </div>
+                </mat-expansion-panel>
+              </div>
+              <h3>Mon adresse de facturation</h3>
+              <address-form [address]="address" (save)="saveCustomer()"></address-form>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Mes adresses de livraisons">
+          <div fxLayout="row" fxLayoutAlign="center start">
+            <div class="tab-content" fxFlex="80" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="16px" fxFlex.lt-md="100"
+              fxLayoutGap.lt-md="8px">
+              <div fxLayout="row" fxLayoutAlign="end start">
+                <h3>
+                  <button mat-raised-button color="primary" (click)="createDeliveryAddress()">
+                    <i class="fa fa-address-card" aria-hidden="true"></i> Ajouter une adresse de livraison</button>
+                </h3>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-evenly start" fxLayoutWrap fxLayout.lt-md="column" fxLayoutAlign.lt-md="start center">
+                <div address-view [address]="a" *ngFor="let a of deliveryAddresses" (edit)="editDeliveryAddress($event)" (delete)="deleteDeliveryAddress(a)"></div>
               </div>
             </div>
-          </mat-tab>
-          <mat-tab label="Mes adresses de livraisons">
-            <div class="demo-tab-content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-              vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur
-              felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim
-              rutrum enim, vel tempor sapien arcu a tellus.
+          </div>
+        </mat-tab>
+        <mat-tab label="Mes commandes">
+          <div fxLayout="row" fxLayoutAlign="center start">
+            <div class="tab-content" fxFlex="80" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="16px" fxFlex.lt-md="100"
+              fxLayoutGap.lt-md="8px">
+              <div *ngIf="commands.length == 0">
+                <p>Vous n'avez aucune commande en cours ou archivés.</p>
+              </div>
             </div>
-          </mat-tab>
-          <mat-tab label="Mes commandes">
-            <div class="demo-tab-content">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis
-                vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin
-                consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor,
-                orci enim rutrum enim, vel tempor sapien arcu a tellus.
-              </p>
-            </div>
-          </mat-tab>
-        </mat-tab-group>
-      </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
   </div>
 </div>

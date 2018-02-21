@@ -17,12 +17,16 @@ import { RoutesModule } from "./routes/routes.module";
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { DialogContentComponent } from './shared/dialog-content/dialog-content.component';
 import { PopupService } from "./popup.service";
+import { SnackBarService } from "./snack-bar.service";
+import { SnackBarViewComponent } from './snack-bar-view/snack-bar-view.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     MainContainerDirective,
     MenuBarComponent,
-    DialogContentComponent
+    DialogContentComponent,
+    SnackBarViewComponent
   ],
   imports: [
     BrowserModule,
@@ -44,10 +48,12 @@ import { PopupService } from "./popup.service";
   ],
   providers: [
     LayoutService,
-    PopupService
+    PopupService,
+    SnackBarService
   ],
   entryComponents: [
-    DialogContentComponent
+    DialogContentComponent,
+    SnackBarViewComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -64,15 +64,15 @@
       </mat-step>
       <mat-step [stepControl]="addressForm.formGroup" [completed]="false">
         <ng-template matStepLabel>Mon addresse</ng-template>
-        <address-form #addressForm [address]="data.address" [saveButton]="false" (valid)="addressValid($event)"></address-form>
+        <address-form #addressForm [address]="data.address" [saveButton]="false" [cancelButton]="false" (valid)="addressValid($event)"></address-form>
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card-content>
   <mat-card-footer>
     <mat-toolbar>
       <span style="flex: 1 1 auto;"></span>
-      <button mat-raised-button color="accent" (click)="dialogRef.close()">Annuler</button>
-      <button [disabled]="!submitable" mat-raised-button color="primary" (click)="submit()">Envoyer</button>
+      <button mat-raised-button color="accent" (click)="dialogRef.close()">{{cancelLabel}}</button>
+      <button [disabled]="!submitable" mat-raised-button color="primary" (click)="submit()">{{sendLabel}}</button>
     </mat-toolbar>
   </mat-card-footer>
 </mat-card>

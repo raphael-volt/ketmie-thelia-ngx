@@ -26,6 +26,9 @@ import { ConnectionFormComponent } from './customer/connection-form/connection-f
 import { AddressComponent } from './address/address.component';
 import { CountryPipe } from './country.pipe';
 import { FillParentDirective } from './fill-parent.directive';
+import { AddressViewComponent } from './address-view/address-view.component';
+import { RaisonPipe } from './raison.pipe';
+import { AddressModalComponent } from './address-modal/address-modal.component';
 
 @NgModule({
   imports: [
@@ -48,7 +51,17 @@ import { FillParentDirective } from './fill-parent.directive';
     ThemeComponent,
     ImRowComponent,
     BlurChildDirective,
-    SquareBoxDirective, TemplateDirective, FakeCardComponent, CustomerComponent, ConnectionFormComponent, AddressComponent, CountryPipe, FillParentDirective
+    SquareBoxDirective, 
+    TemplateDirective, 
+    FakeCardComponent, 
+    CustomerComponent, 
+    ConnectionFormComponent, 
+    AddressComponent, 
+    CountryPipe, 
+    FillParentDirective, 
+    AddressViewComponent, 
+    RaisonPipe, 
+    AddressModalComponent
   ],
   exports: [
     KetmieBackgroundComponent,
@@ -60,7 +73,11 @@ import { FillParentDirective } from './fill-parent.directive';
     FillParentDirective,
     BlurChildDirective
   ],
-  entryComponents: [ConnectionFormComponent],
+  entryComponents: [
+    ConnectionFormComponent,
+    AddressComponent,
+    AddressModalComponent
+  ],
   providers: [ImgTileService]
 })
 export class TemplatesModule { }

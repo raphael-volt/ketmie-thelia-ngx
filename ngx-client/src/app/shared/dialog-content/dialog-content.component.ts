@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-
+import { OK, CANCEL } from "../button-labels";
 @Component({
   selector: 'dialog-content',
   templateUrl: './dialog-content.component.html',
@@ -91,14 +91,3 @@ export interface DialogConfig {
 }
 
 export type DialogResult = "ok" | "cancel"
-
-const OK: string = "OK"
-const YES: string = "Oui"
-const NO: string = "Non"
-const CANCEL: string = "Annuler"
-const GIVE_UP: string = "Abandonner"
-const CONTINUE: string = "Continuer"
-const VALIDATE: string = "Valider"
-const CLOSE: string = "Fermer"
-
-export { OK, YES, NO, CLOSE, CANCEL, GIVE_UP, CONTINUE, VALIDATE }

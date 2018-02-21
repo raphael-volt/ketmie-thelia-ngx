@@ -37,3 +37,7 @@
 .mat-tab-labels {
     justify-content: center;
 }
+[address-view] {
+    margin: 16px 8px;
+    margin-top: 0;
+}

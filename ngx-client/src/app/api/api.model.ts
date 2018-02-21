@@ -143,14 +143,7 @@ const addressToCustomer = (address: Address, customer?: Customer): Customer => {
     }
     return customer
 }
-export interface CustomerCivility {
-    id: string
-    condensed: string
-    value: string
-}
-const customerCivilities: CustomerCivility[] = [
-    { id: "1", condensed: "Mme", value: "Madame" },
-    { id: "2", condensed: "Mlle", value: "Mademoiselle" },
-    { id: "3", condensed: "Mr", value: "Monsieur" }
-]
-export { isAPIResponseError, customerToAddress, addressToCustomer, customerCivilities }
+
+const FR_ID: string = "64"
+
+export { isAPIResponseError, customerToAddress, addressToCustomer, FR_ID }

@@ -3,10 +3,10 @@ import {
   FormBuilder, FormGroup, FormControl, Validators,
   AbstractControl, ValidationErrors
 } from "@angular/forms";
-
+import { raisonsMap } from "../raison.pipe";
 import { CustomerService } from "../../api/customer.service";
-import { Address, customerCivilities, CustomerCivility, Country } from "../../api/api.model";
-
+import { Address, Country } from "../../api/api.model";
+import { CANCEL, SAVE } from "../../shared/button-labels";
 
 const numericValidator = Validators.pattern(/^(\d+)$/)
 
@@ -24,6 +24,8 @@ export class AddressComponent implements OnInit, OnChanges {
 
   @Output()
   save: EventEmitter<Address> = new EventEmitter()
+  @Output()
+  close: EventEmitter<any> = new EventEmitter()
 
   @Output()
   valid: EventEmitter<Address> = new EventEmitter()
@@ -35,6 +37,15 @@ export class AddressComponent implements OnInit, OnChanges {
   @Input()
   saveButton = true
 
+  @Input()
+  saveButtonLabel = SAVE
+
+  @Input()
+  cancelButton = true
+
+  @Input()
+  cancelButtonLabel = CANCEL
+  
   data: Address = {}
 
   formGroup: FormGroup
@@ -43,7 +54,7 @@ export class AddressComponent implements OnInit, OnChanges {
 
   requiredError = "Ce champ est requis."
 
-  civilities: CustomerCivility[] = customerCivilities
+  raisons: { id: string, view: string }[] = []
 
   canSave: boolean = false
 
@@ -61,6 +72,12 @@ export class AddressComponent implements OnInit, OnChanges {
     })
     if (this.countries)
       sub.unsubscribe()
+
+    for (const id in raisonsMap) {
+      this.raisons.push({
+        id: id, view: raisonsMap[id].long
+      })
+    }
   }
 
   private createForm(fb: FormBuilder) {
@@ -121,15 +138,17 @@ export class AddressComponent implements OnInit, OnChanges {
       }
       else
         this.data = {}
-      this.isCustomerAddress = !Boolean(this.data.libelle)
-    }
-    for (const p in changes) {
-      console.log(p)
+      this.isCustomerAddress = (this.data as Object).hasOwnProperty('libelle') 
     }
   }
-  saveAddress() {
+  saveHandler() {
     Object.assign(this.address, this.data)
     this.canSave = false
     this.save.emit(this.address)
+  }
+  cancelHandler() {
+    Object.assign(this.data, this.address)
+    this.canSave = false
+    this.close.emit()
   }
 }

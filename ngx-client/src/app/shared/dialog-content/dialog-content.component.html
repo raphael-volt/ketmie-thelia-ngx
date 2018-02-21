@@ -1,6 +1,6 @@
 <mat-card>
   <mat-card-header *ngIf="data.title">
-    <mat-card-title><h2>{{data.title}}</h2></mat-card-title>
+    <mat-card-title [innerHTML]="data.title"></mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <div [innerHTML]="data.message"></div>

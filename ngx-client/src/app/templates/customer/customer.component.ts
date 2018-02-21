@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
 import { Router } from "@angular/router";
-import { Customer, Address, customerToAddress } from "../../api/api.model";
+import { Customer, Address, customerToAddress, FR_ID } from "../../api/api.model";
 import { CustomerService } from "../../api/customer.service";
 import { SliderBaseComponent } from "../slider-base.component";
 import { Subscription, Observable, Observer } from "rxjs";
@@ -10,7 +9,11 @@ import {
   FormBuilder, FormGroup, FormControl, Validators,
   AbstractControl, ValidationErrors, ValidatorFn
 } from "@angular/forms";
-
+import { AddressModalComponent } from "../address-modal/address-modal.component";
+import { PopupService } from "../../popup.service";
+import { SEND, OK, CREATE, CANCEL } from "../../shared/button-labels";
+import { raisonsMap } from "../raison.pipe";
+import { SnackBarService } from "../../snack-bar.service";
 @Component({
   selector: 'customer',
   templateUrl: './customer.component.html',
@@ -29,13 +32,16 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
   deliveryAddresses: Address[] = []
   canChangeEmail = false
   emailTaken = false
+  commands: any[] = []
   constructor(
+    formBuilder: FormBuilder,
     router: Router,
-    private snackBar: MatSnackBar,
-    private customerService: CustomerService,
-    formBuilder: FormBuilder) {
+    private modal: PopupService,
+    private snackBar: SnackBarService,
+    private customerService: CustomerService
+  ) {
     super()
-    
+
     this.createFormGroups(formBuilder)
     this.goHome = () => {
       router.navigate(["/"])
@@ -43,9 +49,9 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
   }
 
   private goHome: () => void
-  
+
   ngOnDestroy() {
-    
+
   }
 
 
@@ -117,12 +123,12 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
       .subscribe(success => {
         this.data.email2 = ""
         this.canChangeEmail = false
-        this.openSnackBar(success ? "Votre email est modifié." : "La modification de votre email a échouée.", success ? "" : "Erreur")
-        if (success)
+        if (success) {
+          this.openSnackBar("Votre email a été modifié.")
           this.customer.email = this.data.email
+        }
         else {
-          // @TODO error notification
-          console.error("changeEmail customer FAIL")
+          this.modalError("La modification de votre email a échouée.")
         }
         this.emailGroup.reset()
       })
@@ -135,10 +141,10 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
         this.data.password2 = ""
         this.pwdGroup.reset()
         if (!success) {
-          // @TODO error notification
-          console.error("changePassword customer FAIL")
+          this.modalError("La modification de votre mot de passe a échouée.")
         }
-        this.openSnackBar(success ? "Votre mot de passe est modifié." : "La modification de votre mot de passe a échouée.", success ? "" : "Erreur")
+        else
+          this.openSnackBar("Votre mot de passe a est modifié.")
       })
   }
 
@@ -154,8 +160,8 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
       this.deliveryAddresses = adresses
       this.slideIn()
     })
-    if(this.customer.isNew) {
-      this.openSnackBar(`Bienvenu ${this.customer.prenom} ${this.customer.nom}`)
+    if (this.customer.isNew) {
+      this.openSnackBar(`<i class="fa fa-smile-o" aria-hidden="true"></i> Bienvenue ${raisonsMap[this.customer.raison].long} ${this.customer.prenom} ${this.customer.nom}!`)
       this.customer.isNew = false
     }
   }
@@ -165,13 +171,43 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
       .subscribe(success => {
         if (success) {
           Object.assign(this.customer, this.address)
+          this.openSnackBar("Votre compte a est modifié.")
         }
-        this.openSnackBar(success ? "Votre compte est modifié." : "La modification de votre compte a échouée.", success ? "" : "Erreur")
+        else {
+          this.modalError("La modification de votre compte a échouée.")
+
+        }
       })
   }
 
-  deleteAccount() {
+  private modalError(message: string, title?: string) {
+    if (!title)
+      title = "Erreur"
+    let sub = this.modal.dialog({
+      title: `<h2><i class="fa fa-bug k-light warn" aria-hidden="true"></i>${title}<h2>`,
+      message: `<p class="k-light content raised warn pad-16 br-2">${message}</p>`,
+      labels: {
+        ok: {
+          color: "primary",
+          label: OK
+        }
+      }
+    })
+  }
 
+  deleteAccount() {
+    let sub = this.modal.dialog({
+      title: "<h2>@TODO<h2>",
+      message: `<i class="fa fa-frown-o" aria-hidden="true"></i> Cette fonctionnalité n'est pas encore implémentée.`,
+      labels: {
+        ok: {
+          color: "primary",
+          label: OK
+        }
+      }
+    }).subscribe(result => {
+      sub.unsubscribe()
+    })
   }
 
   logout() {
@@ -182,12 +218,69 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
       })
   }
 
-  openSnackBar(message, action = '') {
-    this.snackBar.open(message, action, {
-      duration: 2500,
-      verticalPosition: "top",
-      horizontalPosition: "center"
-    });
+  private openSnackBar(message, action?: string) {
+    this.snackBar.show(message, action);
+  }
+
+  deleteDeliveryAddress(address: Address) {
+    const i: number = this.deliveryAddresses.indexOf(address)
+    let sub = this.customerService.deleteAddress(address)
+      .subscribe(success => {
+        sub.unsubscribe()
+        if (success) {
+          this.deliveryAddresses.splice(i, 1)
+          this.openSnackBar("L'adresse a été supprimée.")
+        }
+        else
+          this.modalError("La suppression de l'adresse a échouée.")
+      })
+  }
+
+  editDeliveryAddress(address: Address) {
+    let ref = this.modal.open(AddressModalComponent)
+    let cmp = ref.componentInstance
+    cmp.address = address
+    cmp.isNew = false
+    let sub = ref.afterClosed().subscribe(address => {
+      sub.unsubscribe()
+      if (address) {
+        sub = this.customerService.updateAddress(address)
+          .subscribe(success => {
+            if (success) {
+              this.openSnackBar("L'adresse à été modifiée.")
+            }
+            else {
+              this.modalError("La modification de l'adresse a échouée.")
+            }
+          })
+      }
+      else
+        this.openSnackBar("La modification de l'adresse a été annulée.")
+    })
+  }
+
+  createDeliveryAddress() {
+    let ref = this.modal.open(AddressModalComponent)
+    let cmp = ref.componentInstance
+    cmp.address = { client: this.customer.id, pays: FR_ID }
+    cmp.isNew = true
+    let sub = ref.afterClosed().subscribe(address => {
+      sub.unsubscribe()
+      if (address) {
+        sub = this.customerService.createAddress(address)
+          .subscribe(success => {
+            if (success) {
+              this.deliveryAddresses.push(address)
+              this.openSnackBar("La nouvelle adresse à été ajoutée.")
+            }
+            else {
+              this.modalError("La création de l'adresse a échouée.")
+            }
+          })
+      }
+      else
+        this.openSnackBar("La création de l'adresse a été annulée.")
+    })
   }
 }
 
@@ -196,23 +289,25 @@ import { Directive, ElementRef, Output, EventEmitter, HostListener } from "@angu
 @Directive({
   selector: '[blurChild]'
 })
-export class BlurChildDirective {
+export class BlurChildDirective implements OnDestroy {
 
   @Output()
   blurOut: EventEmitter<any> = new EventEmitter()
-
-  private focused = false
-  @HostListener('focusin')
-  focusIn = () => {
-    this.focused = true
+  
+  private target: HTMLElement
+  
+  constructor(ref: ElementRef) {
+    this.target = ref.nativeElement
+    window.addEventListener('click', this.checkContais);
   }
-  @HostListener('focusout')
-  focusOut = () => {
-    this.focused = false
-    setTimeout(() => {
-      if (!this.focused)
-        this.blurOut.emit(true)
-    }, 10)
+
+  private checkContais = (e: Event) => {
+    if (!this.target.contains(e.target as Node))
+      this.blurOut.emit(true)
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('click', this.checkContais);
   }
 }
 

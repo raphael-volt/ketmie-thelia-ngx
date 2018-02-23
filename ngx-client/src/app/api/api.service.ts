@@ -146,8 +146,13 @@ export class ApiService {
   }
   private shopTreeRequesting = false
   private shopTreeRequestingObservers: Observer<any>[] = []
-  private shopTree: ShopTree
-
+  private _shopTree: ShopTree = undefined
+  get hasShopTree(): boolean {
+    return this._shopTree != undefined
+  }
+  get shopTree(): ShopTree {
+    return this._shopTree
+  }
   get(request: Request): Observable<APIResponse> {
     request.method = RequestMethod.Get
     return this.http.request(request).pipe(
@@ -173,11 +178,11 @@ export class ApiService {
         if (!response.success) {
           return observer.error(response.body)
         }
-        this.shopTree = response.body
-        this.createCategoriesMap(this.shopTree.shopCategories)
+        this._shopTree = response.body
+        this.createCategoriesMap(this._shopTree.shopCategories)
         this.shopTreeRequestingObservers.unshift(observer)
         for (let o of this.shopTreeRequestingObservers) {
-          o.next(this.shopTree)
+          o.next(this._shopTree)
           o.complete()
         }
         this.shopTreeRequestingObservers.length = 0
@@ -186,8 +191,8 @@ export class ApiService {
   }
 
   getShopTree(): Observable<ShopTree> {
-    if (this.shopTree)
-      return Observable.of(this.shopTree)
+    if (this._shopTree)
+      return Observable.of(this._shopTree)
 
     if (!this._initialized) {
       return Observable.create(o => {
@@ -218,8 +223,8 @@ export class ApiService {
 
   getCmsContentById(id: string): CMSContent {
     let result: CMSContent
-    if (this.shopTree) {
-      for (result of this.shopTree.cmsContents) {
+    if (this._shopTree) {
+      for (result of this._shopTree.cmsContents) {
         if (result.id == id)
           break
         result = null

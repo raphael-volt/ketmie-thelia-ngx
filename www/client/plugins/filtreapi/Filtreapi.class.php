@@ -407,8 +407,7 @@ ORDER BY titre";
                     {
                         $result = null;
                         $card = new CardController();
-                        $card->setRequestParameters($this->paramsUtil->parameters, $this->getPostJson());
-                        $response = $card->getResponse();
+                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson():null);
                         break;
                     }
                 case 'countries':
@@ -418,9 +417,7 @@ ORDER BY titre";
                     }
                 case 'session':
                     {
-                        
                         $result->session_id = session_id();
-                        
                         break;
                     }
                 case "catalog":

@@ -130,20 +130,65 @@ const addressToCustomer = (address: Address, customer?: Customer): Customer => {
     if (!customer)
         customer = {}
     for (const p of addressProperties) {
-        if(! address[p])
+        if (!address[p])
             continue
         customer[p] = address[p]
     }
-    if(address.tel) {
-        if(! customer.telfixe)
+    if (address.tel) {
+        if (!customer.telfixe)
             customer.telfixe = address.tel
-            
-        if(! customer.telport)
+
+        if (!customer.telport)
             customer.telport = address.tel
     }
     return customer
 }
 
 const FR_ID: string = "64"
+/*
+var $declinaison;
+        var $valeur;
+*/
+export interface CardItemPerso {
+    declinaison: string
+    valeur?: string
+}
 
+export interface CardItem {
+    index?: number
+    productId?: string
+    decliId?: string
+    quantity?: number
+    parent?: string
+    perso?: CardItemPerso[]
+}
+
+export interface ICard {
+    items: CardItem[]
+    total: number
+}
+
+export class Card {
+    constructor(json?: ICard) {
+        if (json)
+            this.update(json)
+    }
+    items: CardItem[] = []
+    total: number = 0
+    update(json: ICard) {
+        if (json.items != undefined)
+            this.items = json.items
+        this.total = Number(json.total)
+    }
+    
+    get numItems(): number {
+        return this.items.length
+    }
+
+    get numArticles(): number {
+        let n = 0
+        this.items.forEach(value=>{n+=(value.quantity)})
+        return n
+    }
+}
 export { isAPIResponseError, customerToAddress, addressToCustomer, FR_ID }

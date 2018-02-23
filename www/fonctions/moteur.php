@@ -57,7 +57,6 @@ if (isset($_GET['fond']) && strpos($_GET['fond'], "api/") === 0){
     
     header("Content-type: application/json; charset=utf-8");
     header("HTTP/1.1 200 OK");
-    header("Content-type: text/html; charset=utf-8");
 }
 else
     header("Content-type: text/html; charset=utf-8");

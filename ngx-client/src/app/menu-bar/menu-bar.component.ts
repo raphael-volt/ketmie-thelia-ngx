@@ -1,5 +1,7 @@
 import { Component, AfterViewChecked, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
+import { MatRipple } from "@angular/material";
 import { CustomerService } from "../api/customer.service";
+import { CardService } from "../api/card.service";
 @Component({
   selector: '[menu-bar]',
   templateUrl: './menu-bar.component.html',
@@ -9,10 +11,11 @@ import { CustomerService } from "../api/customer.service";
   }
 })
 export class MenuBarComponent implements AfterViewChecked {
-
+  @ViewChild(MatRipple) ripple: MatRipple;
   private target: HTMLElement
   constructor(
     ref: ElementRef, 
+    public cardService: CardService,
     public customerService: CustomerService) {
     this.target = ref.nativeElement
     
@@ -54,5 +57,23 @@ export class MenuBarComponent implements AfterViewChecked {
   barClickHandler(event: MouseEvent) {
     if(event.target == this.target)
       this.barClick.emit()
+  }
+
+  riplleLaunch(){
+    // [matRippleAnimation]="{enterDuration: 300}"
+    /*
+    this.ripple.launch(0, 0, {
+      persistent: false,
+      centered: true,
+      color: "primary",
+      radius:15,
+      
+      
+      animation: {
+        enterDuration: 200
+      }
+    }
+    )
+    */
   }
 }

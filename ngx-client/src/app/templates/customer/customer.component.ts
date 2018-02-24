@@ -121,16 +121,15 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
   changeEmail() {
     let sub = this.customerService.changeEmail(this.data.email)
       .subscribe(success => {
-        this.data.email2 = ""
         this.canChangeEmail = false
         if (success) {
+          this.data.email2 = ""
           this.openSnackBar("Votre email a été modifié.")
-          this.customer.email = this.data.email
+          this.emailGroup.markAsUntouched()
         }
         else {
           this.modalError("La modification de votre email a échouée.")
         }
-        this.emailGroup.reset()
       })
   }
 
@@ -144,7 +143,8 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
           this.modalError("La modification de votre mot de passe a échouée.")
         }
         else
-          this.openSnackBar("Votre mot de passe a est modifié.")
+          this.pwdGroup.markAsUntouched()
+        this.openSnackBar("Votre mot de passe a est modifié.")
       })
   }
 
@@ -170,7 +170,6 @@ export class CustomerComponent extends SliderBaseComponent implements OnInit, Af
     let sub = this.customerService.updateCustomer(this.address)
       .subscribe(success => {
         if (success) {
-          Object.assign(this.customer, this.address)
           this.openSnackBar("Votre compte a est modifié.")
         }
         else {
@@ -293,9 +292,9 @@ export class BlurChildDirective implements OnDestroy {
 
   @Output()
   blurOut: EventEmitter<any> = new EventEmitter()
-  
+
   private target: HTMLElement
-  
+
   constructor(ref: ElementRef) {
     this.target = ref.nativeElement
     window.addEventListener('click', this.checkContais);

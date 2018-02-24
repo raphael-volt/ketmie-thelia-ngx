@@ -21,8 +21,8 @@
                     <mat-panel-title>
                       Modifier mon email
                     </mat-panel-title>
-                    <mat-panel-description *ngIf="customer">
-                      {{customer.email}}
+                    <mat-panel-description>
+                      <span customerEmail></span>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <div [formGroup]="emailGroup" fxLayout="column" fxLayoutAlign="start stretch">
@@ -70,7 +70,7 @@
                 </mat-expansion-panel>
               </div>
               <h3>Mon adresse de facturation</h3>
-              <address-form [address]="address" (save)="saveCustomer()"></address-form>
+              <address-form [isCustomerAddress]="true" [address]="address" (save)="saveCustomer()"></address-form>
             </div>
           </div>
         </mat-tab>

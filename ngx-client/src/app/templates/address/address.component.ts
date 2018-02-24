@@ -129,6 +129,7 @@ export class AddressComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
+  @Input()
   isCustomerAddress: boolean
 
   ngOnChanges(changes: SimpleChanges) {
@@ -138,7 +139,7 @@ export class AddressComponent implements OnInit, OnChanges {
       }
       else
         this.data = {}
-      this.isCustomerAddress = (this.data as Object).hasOwnProperty('libelle') 
+      //this.isCustomerAddress = (this.data as Object).hasOwnProperty('libelle') 
     }
   }
   saveHandler() {

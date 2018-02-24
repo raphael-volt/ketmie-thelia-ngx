@@ -27,9 +27,10 @@
     <p *ngIf="address.adresse2">{{address.adresse2}}</p>
     <p *ngIf="address.adresse3">{{address.adresse3}}</p>
     <p class="cp-town">{{address.cpostal}} {{address.ville}}</p>
+    <p *ngIf="!address.adresse2" class="empty"></p>
+    <p *ngIf="!address.adresse3" class="empty"></p>
     <p class="contry">{{address.pays | country}}</p>
-    <p>
-      <i class="fa fa-phone" aria-hidden="true"></i> {{address.tel}}</p>
+    <p><i class="fa fa-phone" aria-hidden="true"></i> {{address.tel}}</p>
   </mat-card-content>
   <mat-card-footer>
     <mat-toolbar>

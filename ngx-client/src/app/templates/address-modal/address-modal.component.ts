@@ -15,6 +15,7 @@ export class AddressModalComponent implements OnInit {
   cancelLabel: string = CANCEL
   address: Address = {}
   title: string = "Modifier une adresse"
+  isCustomer: boolean = false
   private _isNew: boolean = false
   
   get isNew(): boolean {

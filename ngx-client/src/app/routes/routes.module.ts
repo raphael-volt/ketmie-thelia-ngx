@@ -12,6 +12,7 @@ import { CategoryComponent } from "../templates/category/category.component";
 import { CmsContentComponent } from "../templates/cms-content/cms-content.component";
 import { ProductComponent } from "../templates/product/product.component";
 import { CustomerComponent } from "../templates/customer/customer.component";
+import { CardComponent } from "../templates/card/card.component";
 const routes: Routes = [
   {
     path: '',
@@ -45,6 +46,11 @@ const routes: Routes = [
         component: CustomerComponent,
         canActivate: [CustomerGuard],
         canDeactivate: [DeactivableGuard] 
+      },
+      {
+        path: "card",
+        canActivate: [CatalogGuard],
+        component: CardComponent
       },
       {
         path: "theme",

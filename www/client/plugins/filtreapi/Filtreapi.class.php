@@ -407,7 +407,10 @@ ORDER BY titre";
                     {
                         $result = null;
                         $card = new CardController();
-                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson():null);
+                        $map = 0;
+                        if($this->paramsUtil->getNumParameters()>1)
+                            $map = $this->paramsUtil->parameters[1];
+                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson():null, $map);
                         break;
                     }
                 case 'countries':

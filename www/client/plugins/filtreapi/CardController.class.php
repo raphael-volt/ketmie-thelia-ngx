@@ -19,6 +19,8 @@ class CardItem
 
     public $perso = null;
 
+    public $declinations = null;
+
     function CardItem($json)
     {
         $this->load($json);
@@ -41,8 +43,11 @@ class CardItem
 class CardController
 {
 
+    public $productHelper;
+
     function CardController()
     {
+        $this->productHelper = new ProductHelper();
         if (! isset($_SESSION['navig'])) {
             throw new Exception("missing session navig");
         }
@@ -72,17 +77,14 @@ class CardController
      */
     private function getPersos($item)
     {
-        /*
-         * $persos = array();
-         * foreach ($item->perso as $value) {
-         * $p = new Perso();
-         * $p->declinaison = $value->declinaison;
-         * $p->valeur = $value->valeur;
-         * $persos[] = $p;
-         * }
-         * return $persos;
-         */
-        return array();
+        $persos = array();
+        foreach ($item->perso as $value) {
+            $p = new Perso();
+            $p->declinaison = $value->declinaison;
+            $p->valeur = $value->valeur;
+            $persos[] = $p;
+        }
+        return $persos;
     }
 
     private function setProductPrice($i, $value)
@@ -92,7 +94,7 @@ class CardController
 
     private function checkPrice($i, $declidisp)
     {
-        $p = new ProductHelper();
+        $p = $this->productHelper;
         $d = $p->getPriceByBoCaracId($declidisp);
         if (! is_nan($d)) {
             $this->setProductPrice($i, $d);
@@ -158,7 +160,7 @@ class CardController
      * @param unknown $input
      * @return Response
      */
-    public function setRequestParameters($method, $input)
+    public function setRequestParameters($method, $input, $map=0)
     {
         $this->_response = new Response();
         $item = new CardItem($input);
@@ -179,11 +181,11 @@ class CardController
                 break;
             
             default: // get
-                $send = $this->serializeCard();
+                $send = $this->serializeArticles(); // $this->serializeCard();
                 break;
         }
         
-        return $this->setResponse(true, $send);
+        return $this->setResponse(true, $send, $map);
     }
 
     function logClear()
@@ -191,9 +193,157 @@ class CardController
         file_put_contents(__DIR__ . '/card.add.log', "");
     }
 
-    function log($data){
-        file_put_contents(__DIR__ . '/card.add.log', print_r($data, true), FILE_APPEND);        
+    /**
+     *
+     * @param unknown $sucess
+     * @param unknown $body
+     * @return Response
+     */
+    private function setResponse($sucess, $body, $map)
+    {
+        $this->updateSession();
+        $data = new stdClass();
+        $data->total = $this->card->total();
+        $data->data = $body;
+        if($map == 1) {
+            $data->map = $this->productHelper->getDeclinationsMap();            
+        }
+        
+        $this->_response->success = $sucess;
+        $this->_response->body = $data;
+        return $this->_response;
     }
+
+    private function getProductRef($id)
+    {
+        $pdo = PDOThelia::getInstance();
+        $stmt = $pdo->query("SELECT ref FROM " . Produit::TABLE . " WHERE id=$id LIMIT 1");
+        if ($stmt->rowCount())
+            return $stmt->fetchColumn();
+        return null;
+    }
+
+    /**
+     *
+     * @param Perso $perso
+     */
+    private function serializePerso($perso)
+    {
+        if (! $perso)
+            return null;
+        $result = new stdClass();
+        $result->declination = $perso->perso->declinaison;
+        $result->value = $perso->perso->valeur;
+        return $result;
+    }
+
+    /**
+     *
+     * @param Article $article
+     * @param Perso $perso
+     */
+    private function serializeArticle($article, $index = null)
+    {
+        $item = new stdClass();
+        $item->productId = $article->produit->id;
+        $item->quantity = $article->quantite;
+        $item->parent = $article->parent;
+        $item->decliId = 0;
+        if ($index !== null)
+            $item->index = intval($index);
+        if ($article->perso && ! is_array($article->perso) && property_exists($article->perso, "declinaison") && property_exists($article->perso, "valeur")) {
+            
+            $item->perso = $this->serializePerso($article->perso);
+        }
+        $pid = $article->produitdesc->id;
+        $carac = $this->productHelper->getCarac($pid);
+        if ($carac) {
+            $group = $this->productHelper->getBoDecliGroup($carac->caracdisp);
+            $decli = new stdClass();
+            $decli->label = $group->titre;
+            $decs = $this->productHelper->getBoDeclinations($carac->caracdisp);
+            $decli->items = $decs;
+            
+            $item->declinations = array($carac->caracdisp);
+            
+            $price = $article->produit->prix;
+            $dec = $this->getDecliByPrice($price, $decs);
+            if ($dec == null) {
+                $dec = $decs[0];
+                $pchanged = true;
+            }
+            if ($price != $dec->price) {
+                $pchanged = true;
+            }
+            if ($item->decliId != $dec->id) {
+                $item->decliId = $dec->id;
+            }
+            
+            if ($pchanged) {
+                $article->produit->prix = $dec->price;
+            }
+            
+            $item->perso = $persos;
+            if ($pchanged) {
+                $this->log(array(
+                    "[CARD.SERIALIZE] invalid perso"
+                ));
+                $article = $this->card->tabarticle[$item->index];
+                $article->perso = $persos;
+                $this->card->modifier($index, $article->quantite);
+            }
+        }
+        
+        return $item;
+    }
+
+
+
+    /**
+     *
+     * @param unknown $value
+     * @param BO_Carac[] $declis
+     * @return BO_Carac
+     */
+    private function getDecliByPrice($value, $declis)
+    {
+        $value = floatval($value);
+        foreach ($declis as $d) {
+            if (floatval($d->price) == $value) {
+                return $d;
+            }
+        }
+        return null;
+    }
+
+    private function serializeArticles()
+    {
+        $card = $this->card;
+        $items = array();
+        $l = $this->card->tabarticle;
+        for ($i = 0; $i < $this->card->nbart; $i ++) {
+            $items[] = $this->serializeArticle($l[$i], $i);
+        }
+        
+        return $items;
+    }
+
+    private function serializeCard()
+    {
+        $card = $this->card;
+        $result = new stdClass();
+        $result->items = $this->serializeArticles();
+        $result->total = $card->total();
+        $result->map = $this->productHelper->getDeclinationsMap();
+        
+        return $result;
+    }
+
+    function log($data)
+    {
+        file_put_contents(__DIR__ . '/card.add.log', print_r($data, true), FILE_APPEND);
+    }
+
     function logAction($name, $item = null, $articles = true, $data = null)
     {
         $l = array(
@@ -267,92 +417,6 @@ class CardController
         $data = $data[$index];
         $data instanceof Article;
         return $data;
-    }
-
-    /**
-     *
-     * @param unknown $sucess
-     * @param unknown $body
-     * @return Response
-     */
-    private function setResponse($sucess, $body)
-    {
-        $this->updateSession();
-        $data = new stdClass();
-        $data->total = $this->card->total();
-        $data->data = $body;
-        $this->_response->success = $sucess;
-        $this->_response->body = $data;
-        return $this->_response;
-    }
-
-    private function getProductRef($id)
-    {
-        $pdo = PDOThelia::getInstance();
-        $stmt = $pdo->query("SELECT ref FROM " . Produit::TABLE . " WHERE id=$id LIMIT 1");
-        if ($stmt->rowCount())
-            return $stmt->fetchColumn();
-        return null;
-    }
-
-    /**
-     *
-     * @param Perso $perso
-     */
-    private function serializePerso($perso)
-    {
-        if (! $perso)
-            return null;
-        $result = new stdClass();
-        $result->declination = $perso->perso->declinaison;
-        $result->value = $perso->perso->valeur;
-        return $result;
-    }
-
-    /**
-     *
-     * @param Article $article
-     * @param Perso $perso
-     */
-    private function serializeArticle($article, $index = null)
-    {
-        $item = new stdClass();
-        $item->productId = $article->produit->id;
-        $item->decliId = $article->produitdesc->id;
-        $item->quantity = $article->quantite;
-        $item->parent = $article->parent;
-        if ($index !== null)
-            $item->index = intval($index);
-        if ($article->perso && ! is_array($article->perso) && property_exists($article->perso, "declinaison") && property_exists($article->perso, "valeur")) {
-            
-            $item->perso = $this->serializePerso($article->perso);
-        }
-        return $item;
-    }
-
-    private function serializeArticles()
-    {
-        $card = $this->_card;
-        $items = array();
-        $l = $this->card->tabarticle;
-        for ($i = 0; $i < $this->card->nbart; $i ++) {
-            $items[] = $this->serializeArticle($l[$i], $i);
-        }
-        /*
-         * foreach ($card->tabarticle as $key => $value) {
-         * $items->{$key} = $this->serializeArticle($value);
-         * }
-         */
-        return $items;
-    }
-
-    private function serializeCard()
-    {
-        $card = $this->card;
-        $result = new stdClass();
-        $result->items = $this->serializeArticles();
-        $result->total = $card->total();
-        return $result;
     }
 
     /**

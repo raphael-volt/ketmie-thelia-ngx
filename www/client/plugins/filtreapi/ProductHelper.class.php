@@ -38,15 +38,16 @@ WHERE p.id=?";
         $stmt = $pdo->prepare($query);
         $stmt->bindValue(1, $id);
         $stmt->execute();
+        $declis = array();
         if ($stmt->rowCount()) {
             $stmt->setFetchMode(PDO::FETCH_CLASS, ProductJSON::class);
             $prod = $stmt->fetch();
             $prod instanceof ProductJSON;
             if ($declinations) {
-                $helper = new ProductHelper();
-                $prod->declinations = $helper->getDeclinations($id);
-                if ($prod->declinations)
-                    $prod->price = $prod->declinations[0]->price;
+                $d = $this->getCarac($id);
+                $prod->declinations = array();
+                if($d)
+                    $prod->declinations[] = $d->caracdisp;
             }
             $stmt = $pdo->prepare("SELECT id FROM " . Image::TABLE . " WHERE produit=? ORDER BY classement");
             $pdo->bindInt($stmt, 1, $id, true);
@@ -75,6 +76,7 @@ WHERE p.id=?";
         }
         return $result;
     }
+
     function getPriceByBoCaracId($id)
     {
         $id = intval($id);
@@ -83,11 +85,23 @@ WHERE p.id=?";
         $stmt = $pdo->prepare($q);
         $pdo->bindInt($stmt, 1, $id);
         $carac = $pdo->fetchColumn($stmt, 0, true);
-        if($carac)
-        {
+        if ($carac) {
             return intval($carac);
         }
         return NAN;
+    }
+
+    /**
+     *
+     * @param unknown $caracdisp
+     * @return BO_CaracGroup
+     */
+    public function getBoDecliGroup($caracdisp)
+    {
+        $carac = $this->loadCarac($caracdisp);
+        if (! $carac)
+            return null;
+        return $carac->getGroup($caracdisp);
     }
 
     public function getBoDeclinations($caracdisp)
@@ -95,17 +109,47 @@ WHERE p.id=?";
         if (! $caracdisp)
             return null;
         $declinations = array();
-        $carac = $this->loadCarac($caracdisp);
-        if (! $carac)
+        $c = $this->loadCarac($caracdisp);
+        if (! $c)
             return null;
-        $group = $carac->getGroup($caracdisp);
-        if(! $group)
-                return null;
+        $group = $c->getGroup($caracdisp);
+        if (! $group)
+            return null;
         foreach ($group->caracs as $caracId => $carac) {
-            unset($carac->metal);
+            if (property_exists($carac, "metal"))
+                unset($carac->metal);
             $declinations[] = $carac;
         }
         return $declinations;
+    }
+
+    function getDeclinationsMap()
+    {
+        $q = <<<EOL
+SELECT cdd.titre, cdd.caracdisp,
+bo.size, bo.price, bo.id
+FROM caracdispdesc AS cdd
+LEFT JOIN bo_carac AS bo ON bo.caracdisp=cdd.caracdisp
+WHERE bo.price IS NOT NULL AND bo.metal='zinc'
+ORDER BY cdd.titre, bo.size;
+EOL;
+        $pdo = PDOThelia::getInstance();
+        $res = $pdo->query($q)->fetchAll(PDO::FETCH_OBJ);
+        $map = new stdClass();
+        foreach ($res as $value) {
+            if (! property_exists($map, $value->caracdisp)) {
+                $decli = new stdClass();
+                $decli->label = $value->titre;
+                $decli->items = new stdClass();
+                $map->{$value->caracdisp} = $decli;
+            }
+            $id = $value->id;
+            unset($value->caracdisp);
+            unset($value->id);
+            unset($value->titre);
+            $decli->items->{$id} = $value;
+        }
+        return $map;
     }
 
     /**
@@ -122,8 +166,8 @@ WHERE p.id=?";
     function loadCarac($declidisp, $metal = "zinc")
     {
         $declidisp = intval($declidisp);
-        if(!$declidisp)
-                return null;
+        if (! $declidisp)
+            return null;
         if (self::$caracHelper) {
             if (self::$caracHelper->hasGroup($declidisp, $metal))
                 return self::$caracHelper;
@@ -139,7 +183,7 @@ ORDER BY cdd.titre, bo.size;";
         $pdo->bindInt($stmt, 1, $declidisp);
         $pdo->bindString($stmt, 2, $metal);
         $stmt->execute();
-        if($stmt->rowCount()) {
+        if ($stmt->rowCount()) {
             if (self::$caracHelper == null) {
                 self::$caracHelper = new BO_CaracHelper($stmt->fetchAll(PDO::FETCH_OBJ));
             } else
@@ -148,8 +192,9 @@ ORDER BY cdd.titre, bo.size;";
         }
         return null;
     }
-    
-    function getPrice($declis, $val) {
+
+    function getPrice($declis, $val)
+    {
         $p = 0;
         foreach ($declis as $key => $value) {
             ;
@@ -182,5 +227,4 @@ ORDER BY cdd.titre, bo.size;";
         self::$lastCaracVal = $result;
         return $result;
     }
-    
 }

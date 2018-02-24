@@ -29,6 +29,7 @@ import { FillParentDirective } from './fill-parent.directive';
 import { AddressViewComponent } from './address-view/address-view.component';
 import { RaisonPipe } from './raison.pipe';
 import { AddressModalComponent } from './address-modal/address-modal.component';
+import { CardComponent } from './card/card.component';
 
 @NgModule({
   imports: [
@@ -61,7 +62,7 @@ import { AddressModalComponent } from './address-modal/address-modal.component';
     FillParentDirective, 
     AddressViewComponent, 
     RaisonPipe, 
-    AddressModalComponent
+    AddressModalComponent, CardComponent
   ],
   exports: [
     KetmieBackgroundComponent,

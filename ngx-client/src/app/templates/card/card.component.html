@@ -1,0 +1,12 @@
+<div class="main" 
+  sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <h2>Panier</h2>
+  <div *ngIf="service.isEmpty">
+    <h3>Votre panier est vide</h3>
+  </div>
+  <div *ngIf="!service.isEmpty">
+    <div *ngFor="let i of card.items">
+      <p>article{{i.index+1}} {{i.productId}} {{i.quantity}} {{i.decliId}}</p>
+    </div>
+  </div>
+</div>

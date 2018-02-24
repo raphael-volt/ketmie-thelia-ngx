@@ -8,7 +8,7 @@ import { RequestService } from "./request.service";
 import { SessionService } from "./session.service";
 import { ImgLoaderService } from "./img-loader.service";
 import { CustomerService } from "./customer.service";
-
+import { CardService } from "./card.service";
 const storageConfig: ILocalStorageServiceConfig = {
   prefix: "ketmie",
   storageType: "localStorage"
@@ -25,7 +25,8 @@ const storageConfig: ILocalStorageServiceConfig = {
     SessionService,
     RequestService,
     ImgLoaderService,
-    CustomerService
+    CustomerService,
+    CardService
   ]
 })
 export class ApiModule { }

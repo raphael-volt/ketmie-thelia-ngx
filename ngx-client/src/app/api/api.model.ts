@@ -1,3 +1,5 @@
+const FR_ID: string = "64"
+
 export interface APIResponse {
     success: boolean
     body: any
@@ -11,7 +13,6 @@ export interface APIResponseError {
 export interface APISession {
     session_id: string
 }
-
 
 export interface ShopTree {
     shopCategories: Category[]
@@ -33,13 +34,15 @@ export interface IDescriptable extends ILabelable {
 export interface Product extends IDescriptable {
 
 }
+
 export interface ProductDeclination extends IIdentifiable {
     size: string
     price: string
 }
+
 export interface ProductDetail extends Product {
     images: string[]
-    declinations: ProductDeclination[]
+    declinations: string[]
     price: string
     index: string
     ref: string
@@ -50,9 +53,7 @@ export interface Category extends IDescriptable {
     children: Product[]
 }
 
-export interface CMSContent extends IDescriptable {
-
-}
+export interface CMSContent extends IDescriptable { }
 
 export interface Customer extends IIdentifiable {
     ref?: string
@@ -103,11 +104,86 @@ export interface Country {
     name: string
 }
 
+export interface CardItemPerso {
+    declinaison: string
+    valeur?: string
+}
+
+export interface CardItem {
+    index?: number
+    productId?: string
+    decliId?: string
+    quantity?: number
+    parent?: string
+    perso?: CardItemPerso[]
+    declinations?: string[]
+}
+
+export interface ICard {
+    items: CardItem[]
+    total: number
+}
+
+export class Card {
+    constructor(json?: ICard) {
+        if (json)
+            this.update(json)
+    }
+    items: CardItem[] = []
+    total: number = 0
+    update(json: ICard) {
+        if (json.items != undefined) {
+            this.items.length = 0
+            for (const i of json.items)
+                this.items.push(i)
+        }
+        this.total = Number(json.total)
+    }
+    validateIndexes() {
+        const n = this.numItems
+        for (const i in this.items)
+            this.items[i].index = Number(i)
+    }
+    get numItems(): number {
+        return this.items.length
+    }
+
+    get numArticles(): number {
+        let n = 0
+        this.items.forEach(value => { n += (value.quantity) })
+        return n
+    }
+}
+
+export interface IDeclinationItem {
+    id?: string
+    size?: string
+    price?: string
+    [p: string]: any
+}
+
+export interface IDeclination {
+    label?: string
+    items?: {
+        [id: string]: IDeclinationItem
+    }
+}
+
+export interface IDeclinationMap {
+    [id: string]: {
+        label: string
+        items: {
+            [id: string]: IDeclinationItem
+        }
+    }
+}
+
 const isAPIResponseError = (value: any): value is APIResponseError => {
     if (value && value.code && value.message)
         return true
     return false
 }
+
 const addressProperties: string[] = ["raison", "entreprise", "nom", "prenom",
     "adresse1", "adresse2", "adresse3", "cpostal", "ville", "pays"]
 
@@ -126,6 +202,7 @@ const customerToAddress = (customer: Customer): Address => {
     }
     return result
 }
+
 const addressToCustomer = (address: Address, customer?: Customer): Customer => {
     if (!customer)
         customer = {}
@@ -144,51 +221,4 @@ const addressToCustomer = (address: Address, customer?: Customer): Customer => {
     return customer
 }
 
-const FR_ID: string = "64"
-/*
-var $declinaison;
-        var $valeur;
-*/
-export interface CardItemPerso {
-    declinaison: string
-    valeur?: string
-}
-
-export interface CardItem {
-    index?: number
-    productId?: string
-    decliId?: string
-    quantity?: number
-    parent?: string
-    perso?: CardItemPerso[]
-}
-
-export interface ICard {
-    items: CardItem[]
-    total: number
-}
-
-export class Card {
-    constructor(json?: ICard) {
-        if (json)
-            this.update(json)
-    }
-    items: CardItem[] = []
-    total: number = 0
-    update(json: ICard) {
-        if (json.items != undefined)
-            this.items = json.items
-        this.total = Number(json.total)
-    }
-    
-    get numItems(): number {
-        return this.items.length
-    }
-
-    get numArticles(): number {
-        let n = 0
-        this.items.forEach(value=>{n+=(value.quantity)})
-        return n
-    }
-}
 export { isAPIResponseError, customerToAddress, addressToCustomer, FR_ID }

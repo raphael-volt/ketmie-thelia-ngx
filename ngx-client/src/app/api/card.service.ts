@@ -1,7 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { ApiService } from "./api.service";
 import { RequestService } from "./request.service";
-import { APIResponse, Card, ICard, CardItem, CardItemPerso, ProductDetail, ProductDeclination } from "./api.model";
+import {
+  APIResponse,
+  Card, ICard, IDeclinationMap, IDeclination, IDeclinationItem,
+  CardItem, CardItemPerso,
+  ProductDetail
+} from "./api.model";
 import { one } from "../shared/utils/subscription.utils";
 import { ListBase } from "../shared/utils/list-base";
 export type CardAction = "get" | "add" | "remove" | "update" | "clear"
@@ -40,6 +45,21 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
   events: EventEmitter<CardEvent> = new EventEmitter<CardEvent>(true)
 
+  isEmptyChanged: EventEmitter<boolean> = new EventEmitter<boolean>()
+  private _isEmpty: boolean = true
+
+  get isEmpty(): boolean {
+    return this._isEmpty
+  }
+  private checkEmpty() {
+    let e = this.numItems == 0
+    if (this._isEmpty != e) {
+      this._isEmpty = e
+      this.isEmptyChanged.emit(e)
+    }
+    console.log("checkEmpty", this._isEmpty, this.numItems)
+
+  }
   private _card: Card = undefined
   get card(): Card {
     return this._card
@@ -52,7 +72,11 @@ export class CardService implements ICardImpl<Card, CardItem> {
   constructor(
     public api: ApiService,
     public request: RequestService
-  ) { }
+  ) {
+
+  }
+
+  private init = (next?) => { }
 
   get numArticles(): number {
     return this._card ? this._card.numArticles : 0
@@ -65,29 +89,101 @@ export class CardService implements ICardImpl<Card, CardItem> {
     return this._card ? this._card.total : 0
   }
 
-  items = []
   private list: ListBase<CardItem> = new ListBase<CardItem>()
 
   get length() {
     return this._card ? this.list.length : 0
   }
 
+  private decliMap: IDeclinationMap
+
   get(next) {
-    one(this.api.get(
-      this.getRequest("get")
-    ),
-      response => {
-        const result = response.body
-        const c = this._card
-        if (!this._card)
-          this._card = new Card(result.data)
-        else
-          this._card.update(result.data)
-        this.validateProperties(result.total)
-        this.notify("get")
-        next(this._card)
+    if (this._card)
+      return next(this._card)
+    this.getCard(next)
+  }
+
+  private updateMap: boolean
+  private getCardRequest() {
+    const p: any = { cardAction: "get" }
+    if (!this.decliMap) {
+      this.updateMap = true
+      p.map = 1
+    }
+    return this.api.get(this.request.getRequest(
+      this.request.getSearchParam("card", p)
+    ))
+  }
+
+
+  getProductDecliItems(id: string): IDeclinationItem[] {
+    let res: IDeclinationItem[] = []
+    const d = this.getProductDecli(id)
+    if (d) {
+      for (let i in d.items) {
+        let c: IDeclinationItem = Object.assign({ id: i }, d.items[i])
+        res.push(c)
       }
-    )
+      res.sort((a, b) => {
+        return (parseFloat(a.size) - parseFloat(b.size))
+      })
+    }
+    return res
+  }
+
+  getProductDecli(id: string): IDeclination {
+    if (this.decliMap[id])
+      return this.decliMap[id]
+    return null
+  }
+
+  private getCardMap: any[]
+  private getCard(next) {
+    if (!this.getCardMap)
+      this.getCardMap = []
+    const l = this.getCardMap
+    l.push(next)
+    if (l.length == 1) {
+      one(this.getCardRequest(),
+        response => {
+          const result = response.body
+          const c = this._card
+
+          if (this.updateMap) {
+            this.updateMap = false
+            this.decliMap = result.map
+          }
+          let data = { items: result.data, total: result.total }
+          if (!this._card) {
+            this._card = new Card(data)
+          }
+          else
+            this._card.update(data)
+          this.list.items = this._card.items
+          this.validateProperties(result.total)
+          this.notify("get")
+          for (let n of this.getCardMap)
+            n(this._card)
+          this.getCardMap = undefined
+          this.checkEmpty()
+        }
+      )
+    }
+  }
+
+  createItem(product: ProductDetail, decliId?: any, q: number = 1) {
+    let res: CardItem = {
+      productId: product.id,
+      quantity: q
+    }
+    if (product.declinations && product.declinations.length) {
+      let d = this.getProductDecli(product.declinations[0])
+      if (d && d[decliId]) {
+        res.decliId = decliId
+      }
+    }
+
+    return res
   }
 
   add(item: CardItem, next) {
@@ -96,6 +192,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
       item.index = this.list.add(item) - 1
       this.validateProperties(resopnse.body.total)
       this.notify("add", item)
+      this.checkEmpty()
       next(item)
     })
 
@@ -126,6 +223,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
         l.at(j).index = j;
       this.validateProperties(resopnse.body.total)
       this.notify("remove", item)
+      this.checkEmpty()
       next(item)
 
     })
@@ -139,6 +237,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
       this.list.items = this.card.items
       this.validateProperties(0)
       this.notify("clear")
+      this.checkEmpty()
       next(this.card)
     }
     )
@@ -154,8 +253,8 @@ export class CardService implements ICardImpl<Card, CardItem> {
     return this.list.index(item)
   }
 
-  refresh(next) {
-    return this.get(next)
+  refresh<T extends Card>(next: ICNext<T>) {
+    return this.getCard(next)
   }
 
   private notify(action: CardAction, item?: CardItem) {

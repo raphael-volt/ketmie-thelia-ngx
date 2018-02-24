@@ -15,11 +15,8 @@ let decliProducts: ProductDetail[] = []
 const cardI = (p: ProductDetail, dI, q = 1): CardItem => {
   return {
     productId: p.id,
-    decliId: p.declinations[dI].id,
-    quantity: q,
-    perso: [
-      { declinaison: p.declinations[dI].id, valeur: p.declinations[dI].size }
-    ]
+    decliId: dI,
+    quantity: q
   }
 }
 describe('CardService', () => {
@@ -201,7 +198,6 @@ describe('CardService', () => {
           expect(c.numItems).toEqual(e_ni)
           expect(c.numArticles).toEqual(e_na)
           expect(c.total).toEqual(e_t)
-          expect(service.items.length).toEqual(e_ni)
           expect(service.numItems).toEqual(e_ni)
           expect(service.numArticles).toEqual(e_na)
           expect(service.total).toEqual(e_t)
@@ -210,10 +206,25 @@ describe('CardService', () => {
   })
 
   describe('product decli', () => {
+    it('should have declinaison', () => {
+      let p = decliProducts[0]
+      let did = p.declinations[0]
+      let declis = service.getProductDecliItems(did)
+      let dec = service.getProductDecli(did)
+      let d = declis[0]
+      expect(d).toBeTruthy()
+      expect(d.price).toBeTruthy()
+    })
+    
+    
     it('should add', async(() => {
       let p = decliProducts[0]
-      let d = p.declinations[0]
-      let ci: CardItem = cardI(p, 0)
+      let did = p.declinations[0]
+      let declis = service.getProductDecliItems(did)
+      let dec = service.getProductDecli(did)
+      let d = declis[0];
+      
+      let ci: CardItem = cardI(p, d.id)
 
       service.add(ci, i => {
         expect(service.total).toEqual(Number(d.price))
@@ -221,26 +232,40 @@ describe('CardService', () => {
     }))
     it('should update price', async(() => {
       let p = decliProducts[0]
-      let d = p.declinations[1]
-      let cp = Number(p.declinations[0].price)
-      let np = Number(p.declinations[1].price)
+      let did = p.declinations[0]
+      let declis = service.getProductDecliItems(did)
+      let dec = service.getProductDecli(did)
+      let d = declis[0];
+      let cp = Number(d.price)
+      let np = Number(declis[1].price)
       let ci: CardItem = service.at(0)
-      ci.decliId = d.id
+      ci.decliId = declis[1].id
       service.update(ci, i => {
         expect(service.total).toEqual(np)
       })
     }))
     it('should update price 2', async(() => {
       let p = decliProducts[0]
-      let d = p.declinations[2]
-      let cp = Number(p.declinations[1].price)
-      let np = Number(p.declinations[2].price)
+      let did = p.declinations[0]
+      let declis = service.getProductDecliItems(did)
+      let dec = service.getProductDecli(did)
+      let d = declis[0];
+      let cp = Number(declis[1].price)
+      let np = Number(declis[2].price)
       let ci: CardItem = service.at(0)
-      ci.decliId = d.id
+      ci.decliId = declis[2].id
       service.update(ci, i => {
         expect(service.total).toEqual(np)
       })
     }))
+    it('should refresh', async(() => {
+      service.refresh(card => {
+        let item = service.at(0)
+        expect(item).toBeTruthy()
+      })
+    }))
+
+
   })
 
 });

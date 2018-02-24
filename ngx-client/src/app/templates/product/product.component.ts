@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiService, findCategoryIdInURL, replaceProductIdInURL } from "../../api/api.service";
-import { Category, Product, ProductDetail, ProductDeclination } from "../../api/api.model";
+import { Category, Product, ProductDetail, IDeclinationItem } from "../../api/api.model";
 import { Subscription, Observable, Observer } from "rxjs";
 import { SliderBaseComponent } from "../slider-base.component";
 import { ImgBoxDirective } from "./img-box.directive";
 import { SliderEvent } from "../slider.directive";
+import { CardService } from "../../api/card.service";
 @Component({
   selector: 'product',
   templateUrl: './product.component.html',
@@ -26,9 +27,11 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   canNavImages: boolean = false
   prevProductId: string
   nextProductId: string
+  declinations: IDeclinationItem[]
   private routeSubscription: Subscription
 
   constructor(
+    public card: CardService,
     private api: ApiService,
     private route: ActivatedRoute,
     private router: Router,
@@ -150,37 +153,24 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
       this.imgBox.close()
     }
     done()
-    /*
-        if (this.imgBox) {
-          sub = this.imgBox.close()
-            .subscribe(v => {
-              subscribed = true
-              if (sub) {
-                sub.unsubscribe()
-                sub = null
-              }
-              done()
-            })
-          if (subscribed && sub)
-            sub.unsubscribe()
-        }
-        else
-          done()
-    */
   }
 
 
   declinationChange(value) {
-    let declination: ProductDeclination = this.product.declinations.find(d => {
-      return d.id == value
-    })
-    this.productPrice = declination.price
+    let d = this.declinations.find(i=>i.id==value)
+    this.productPrice = d.price
   }
 
   categoryId: string
   private category: Category
 
 
+  addToCard() {
+    let item = this.card.createItem(this.product, this.declinationModel)
+    this.card.add(item, ()=>{
+      console.log("added to card", item)
+    })
+  }
   ngOnInit() {
     document.addEventListener('keyup', this.keybordHandler)
     let sub = this.route.parent.params.subscribe(params => {
@@ -189,15 +179,17 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
           if (product.description == "")
             product.description = null
           if (!product.declinations || (product.declinations && !product.declinations.length))
-            product.declinations = null
-
-          if (!product.declinations)
+            this.declinations = null
+          else {
+            this.declinations = this.card.getProductDecliItems(product.declinations[0])
+          }
+          if (!product.declinations || !product.declinations.length)
             this.productPrice = product.price
           else {
             this.productPrice = undefined
             this.declinationModel = undefined
           }
-          this.canAddToCard = product.declinations == null
+          this.canAddToCard = this.declinations == null
           this.product = product
           if (this.sliderState == "none") {
             this.slideIn()

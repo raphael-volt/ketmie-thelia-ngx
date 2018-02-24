@@ -13,15 +13,15 @@
           </mat-card-header>
           <mat-card-content>
             <section *ngIf="product.description" [innerHTML]="product.description"></section>
-            <section *ngIf="product.declinations">
+            <section *ngIf="declinations">
               <label>Choisiseez une taille:</label>
               <mat-radio-group class="flex-v" [(ngModel)]="declinationModel" (ngModelChange)="declinationChange($event)">
-                <mat-radio-button color="primary" *ngFor="let d of product.declinations" [value]="d.id">{{d.size}} cm | {{d.price}} €</mat-radio-button>
+                <mat-radio-button color="primary" *ngFor="let d of declinations" [value]="d.id">{{d.size}} cm | {{d.price}} €</mat-radio-button>
               </mat-radio-group>
             </section>
           </mat-card-content>
           <mat-card-actions>
-            <button color="primary" mat-raised-button [disabled]="!productPrice">Ajouter au panier</button>
+            <button color="primary" mat-raised-button [disabled]="!productPrice" (click)="addToCard()">Ajouter au panier</button>
           </mat-card-actions>
         </mat-card>
       </div>

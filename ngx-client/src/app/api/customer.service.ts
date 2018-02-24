@@ -165,7 +165,13 @@ export class CustomerService {
         { email: email }
       )
     ).pipe(
-      map(response => response.success)
+      map(response => {
+        if(response.success) {
+          this.customer.email = email
+          this.customerChange.emit(this.customer)
+        }
+       return response.success
+      })
     )
   }
 
@@ -179,6 +185,10 @@ export class CustomerService {
       )
     ).pipe(
       map(response => {
+        if(response.success) {
+          Object.assign(this.customer, customer)
+          this.customerChange.emit(this.customer)
+        }
         return response.success
       })
     )

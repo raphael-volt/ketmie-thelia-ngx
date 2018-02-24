@@ -9,6 +9,7 @@ import { SessionService } from "./session.service";
 import { ImgLoaderService } from "./img-loader.service";
 import { CustomerService } from "./customer.service";
 import { CardService } from "./card.service";
+import { CustomerEmailDirective } from './core/customer-email.directive';
 const storageConfig: ILocalStorageServiceConfig = {
   prefix: "ketmie",
   storageType: "localStorage"
@@ -19,7 +20,10 @@ const storageConfig: ILocalStorageServiceConfig = {
     HttpModule,
     LocalStorageModule.withConfig(storageConfig)
   ],
-  declarations: [],
+  exports:[
+    CustomerEmailDirective
+  ],
+  declarations: [CustomerEmailDirective],
   providers: [
     ApiService,
     SessionService,

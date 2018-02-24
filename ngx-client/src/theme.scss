@@ -20,6 +20,23 @@
     @include content-color($color);
     @include item-raised()
   }
+  &.border {
+    border: 1px solid mat-color($color); 
+  }
+  
+  &.border-2 {
+    border: 2px solid mat-color($color);
+  }
+  
+  &.border-inset {
+    outline: 1px solid mat-color($color);
+    outline-offset: -1px; 
+  }
+  
+  &.border-inset-2 {
+    outline: 2px solid mat-color($color);
+    outline-offset: -2px; 
+  }
 }
 
 @mixin color-theme($theme) {
@@ -66,7 +83,7 @@
   &.br-half {
     border-radius: calc(1em / 2);
   }
-
+  
   .primary,
   &.primary {
     @include item-color-theme($primary)

@@ -29,8 +29,7 @@ import { FillParentDirective } from './fill-parent.directive';
 import { AddressViewComponent } from './address-view/address-view.component';
 import { RaisonPipe } from './raison.pipe';
 import { AddressModalComponent } from './address-modal/address-modal.component';
-import { CardComponent } from './card/card.component';
-
+import { ApiModule } from "../api/api.module";
 @NgModule({
   imports: [
     CommonModule,
@@ -39,6 +38,7 @@ import { CardComponent } from './card/card.component';
     FlexLayoutModule,
     MatModule,
     RoutesModule,
+    ApiModule
   ],
   declarations: [
     SliderDirective,
@@ -62,7 +62,7 @@ import { CardComponent } from './card/card.component';
     FillParentDirective, 
     AddressViewComponent, 
     RaisonPipe, 
-    AddressModalComponent, CardComponent
+    AddressModalComponent
   ],
   exports: [
     KetmieBackgroundComponent,

@@ -3,8 +3,7 @@
   "project": {
     "name": "ketmie.com"
   },
-  "apps": [
-    {
+  "apps": [{
       "root": "src",
       "outDir": "dist",
       "assets": [
@@ -34,9 +33,9 @@
     },
     {
       "root": "packages",
-      "appRoot": "thelia/api/src",
-      "name": "sample",
-      "outDir": "dist/sample",
+      "appRoot": "thelia/api",
+      "name": "@thelia/api",
+      "outDir": "dist/thelia/api",
       "assets": [
         "assets"
       ],
@@ -56,15 +55,39 @@
         "dev": "../src/environments/environment.ts",
         "prod": "../src/environments/environment.prod.ts"
       }
-}
+    },
+    {
+      "root": "packages",
+      "appRoot": "thelia/model",
+      "name": "@thelia/model",
+      "outDir": "dist/thelia/model",
+      "assets": [
+        "assets"
+      ],
+      "index": "../src/index.html",
+      "main": "../src/main.ts",
+      "polyfills": "../src/polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "../src/tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "",
+      "styles": [
+        "../src/styles.css"
+      ],
+      "scripts": [],
+      "environmentSource": "../src/environments/environment.ts",
+      "environments": {
+        "dev": "../src/environments/environment.ts",
+        "prod": "../src/environments/environment.prod.ts"
+      }
+    }
   ],
   "e2e": {
     "protractor": {
       "config": "./protractor.conf.js"
     }
   },
-  "lint": [
-    {
+  "lint": [{
       "project": "src/tsconfig.app.json",
       "exclude": "**/node_modules/**"
     },

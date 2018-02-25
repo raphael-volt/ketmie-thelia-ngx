@@ -2,9 +2,15 @@
   "compileOnSave": false,
   "angularCompilerOptions": {
     "paths": {
-      "sample": [
-        "../packages/thelia/api/public_api.ts"
-      ]
+      "@thelia/*": [
+        "../packages/thelia/*"
+      ],
+      "@thelia/model": [
+        "../packages/thelia/model"
+      ],
+      "@thelia/api": [
+        "../packages/thelia/api"
+      ],
     }
   },
   "compilerOptions": {
@@ -24,9 +30,15 @@
       "dom"
     ],
     "paths": {
-      "sample": [
-        "../packages/thelia/api/public_api.ts"
-      ]
+      "@thelia/*": [
+        "../packages/thelia/*"
+      ],
+      "@thelia/model": [
+        "../packages/thelia/model"
+      ],
+      "@thelia/api": [
+        "../packages/thelia/api"
+      ],
     }
   }
 }

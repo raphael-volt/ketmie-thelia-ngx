@@ -21,7 +21,9 @@ import { SnackBarService } from "./snack-bar.service";
 import { SnackBarViewComponent } from './snack-bar-view/snack-bar-view.component';
 import { CardModule } from "./templates/card/card.module";
 
-import { Api2Module } from "sample";
+import { ModelModule } from "@thelia/model";
+import { Api2Module } from "@thelia/api";
+// import { Api2Module } from "@thelia/api";
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { Api2Module } from "sample";
     SnackBarViewComponent
   ],
   imports: [
+    ModelModule,
+    Api2Module,
     BrowserModule,
     BrowserAnimationsModule,
     LocalStorageModule,
@@ -43,6 +47,7 @@ import { Api2Module } from "sample";
     RoutesModule
   ],
   exports: [
+    ModelModule,
     ApiModule,
     FormsModule,
     LocalStorageModule,

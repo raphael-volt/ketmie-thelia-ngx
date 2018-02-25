@@ -2,14 +2,11 @@
   "compileOnSave": false,
   "angularCompilerOptions": {
     "paths": {
-      "sample": [
-        "../packages/thelia/api/public_api.ts"
-      ]
+      "@thelia/api": [ "../packages/thelia/api/public_api.ts" ]
     }
   },
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
-    "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -24,9 +21,7 @@
       "dom"
     ],
     "paths": {
-      "sample": [
-        "../packages/thelia/api/public_api.ts"
-      ]
+      "@thelia/api": [ "./packages/thelia/api/public_api.ts" ]
     }
   }
 }

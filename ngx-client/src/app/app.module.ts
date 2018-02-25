@@ -20,6 +20,9 @@ import { PopupService } from "./popup.service";
 import { SnackBarService } from "./snack-bar.service";
 import { SnackBarViewComponent } from './snack-bar-view/snack-bar-view.component';
 import { CardModule } from "./templates/card/card.module";
+
+import { Api2Module } from "sample";
+
 @NgModule({
   declarations: [
     AppComponent,

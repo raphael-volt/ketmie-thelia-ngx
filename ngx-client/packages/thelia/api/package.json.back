@@ -1,0 +1,17 @@
+{
+  "name": "@thelia/api",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "@angular/common": "^5.0.0"
+  },
+  "ngPackage": {
+    "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
+    "dest": "dist/thelia/api",
+    "workingDirectory": "../.ng_build",
+    "lib": {
+      "entryFile": "public_api.ts"
+    },
+    "dest": "../dist/thelia/api"
+  }
+}

@@ -1,0 +1,10 @@
+<mat-select *ngIf="controlType == 'select'" matInput [(ngModel)]="itemId" (ngModelChange)="declinationChange($event)">
+  <mat-option *ngFor="let c of declinations" value="{{c.id}}">{{d | declination}}</mat-option>
+</mat-select>
+<mat-radio-group *ngIf="controlType == 'checkbox'" [(ngModel)]="itemId" (ngModelChange)="declinationChange($event)">
+  <div fxLayoutGap="8px" fxLayout="column" fxLayoutAlign="start stretch">
+    <div *ngFor="let d of declinations" class="cb-ctn">
+      <mat-radio-button color="primary" [value]="d.id">{{d | declination}}</mat-radio-button>
+    </div>
+  </div>
+</mat-radio-group>

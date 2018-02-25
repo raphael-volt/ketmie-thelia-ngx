@@ -7,6 +7,7 @@ import { SliderBaseComponent } from "../slider-base.component";
 import { ImgBoxDirective } from "./img-box.directive";
 import { SliderEvent } from "../slider.directive";
 import { CardService } from "../../api/card.service";
+import { DeclinationService } from "../../api/declination.service";
 @Component({
   selector: 'product',
   templateUrl: './product.component.html',
@@ -20,17 +21,18 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   boxProduct: ProductDetail = undefined
 
   loaded: boolean
-  declinationModel
+  declinationId: string = null
+
   canAddToCard: boolean
   product: ProductDetail
   productPrice: string
   canNavImages: boolean = false
   prevProductId: string
   nextProductId: string
-  declinations: IDeclinationItem[]
   private routeSubscription: Subscription
 
   constructor(
+    private decli: DeclinationService,
     public card: CardService,
     private api: ApiService,
     private route: ActivatedRoute,
@@ -156,21 +158,26 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   }
 
 
+  decliItemId: string
+
   declinationChange(value) {
-    let d = this.declinations.find(i=>i.id==value)
-    this.productPrice = d.price
+    const id = this.decli.getProductDeclinationId(this.product)
+    const d = this.decli.getItem(id, value)
+    if (d)
+      this.productPrice = d.price
   }
 
   categoryId: string
   private category: Category
 
-
   addToCard() {
-    let item = this.card.createItem(this.product, this.declinationModel)
-    this.card.add(item, ()=>{
+    let item = this.card.createItem(this.product, this.declinationId)
+    this.card.add(item, () => {
       console.log("added to card", item)
     })
   }
+
+  hasDecli = false
   ngOnInit() {
     document.addEventListener('keyup', this.keybordHandler)
     let sub = this.route.parent.params.subscribe(params => {
@@ -178,18 +185,20 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
         let apiSub = this.api.getProductDescription(params.id).subscribe(product => {
           if (product.description == "")
             product.description = null
-          if (!product.declinations || (product.declinations && !product.declinations.length))
-            this.declinations = null
-          else {
-            this.declinations = this.card.getProductDecliItems(product.declinations[0])
-          }
-          if (!product.declinations || !product.declinations.length)
+          const decli = this.decli
+
+          const id = this.decli.getProductDeclinationId(product)
+          this.declinationId = id
+          this.hasDecli = id != null
+          this.decliItemId = null
+          if (!id) {
             this.productPrice = product.price
+          }
           else {
             this.productPrice = undefined
-            this.declinationModel = undefined
           }
-          this.canAddToCard = this.declinations == null
+
+          this.canAddToCard = id == null
           this.product = product
           if (this.sliderState == "none") {
             this.slideIn()
@@ -202,7 +211,6 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
           this.category = this.api.getCategoryById(this.categoryId)
           this.nextProductId = this.getNearestProduct(product.id, 1).id
           this.prevProductId = this.getNearestProduct(product.id, -1).id
-          //this._productIdChanged = false
         })
       })
       if (sub) {

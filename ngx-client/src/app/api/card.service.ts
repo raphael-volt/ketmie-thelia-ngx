@@ -1,9 +1,11 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { ApiService } from "./api.service";
 import { RequestService } from "./request.service";
+import { DeclinationService } from "./declination.service";
 import {
   APIResponse,
-  Card, ICard, IDeclinationMap, IDeclination, IDeclinationItem,
+  Card, ICard,
+  declinationMap, IDeclinationMap, IDeclination, IDeclinationItem,
   CardItem, CardItemPerso,
   ProductDetail
 } from "./api.model";
@@ -71,7 +73,8 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
   constructor(
     public api: ApiService,
-    public request: RequestService
+    public request: RequestService,
+    private declinationService: DeclinationService
   ) {
 
   }
@@ -115,28 +118,6 @@ export class CardService implements ICardImpl<Card, CardItem> {
     ))
   }
 
-
-  getProductDecliItems(id: string): IDeclinationItem[] {
-    let res: IDeclinationItem[] = []
-    const d = this.getProductDecli(id)
-    if (d) {
-      for (let i in d.items) {
-        let c: IDeclinationItem = Object.assign({ id: i }, d.items[i])
-        res.push(c)
-      }
-      res.sort((a, b) => {
-        return (parseFloat(a.size) - parseFloat(b.size))
-      })
-    }
-    return res
-  }
-
-  getProductDecli(id: string): IDeclination {
-    if (this.decliMap[id])
-      return this.decliMap[id]
-    return null
-  }
-
   private getCardMap: any[]
   private getCard(next) {
     if (!this.getCardMap)
@@ -151,7 +132,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
           if (this.updateMap) {
             this.updateMap = false
-            this.decliMap = result.map
+            Object.assign(declinationMap, result.map)
           }
           let data = { items: result.data, total: result.total }
           if (!this._card) {
@@ -176,13 +157,11 @@ export class CardService implements ICardImpl<Card, CardItem> {
       productId: product.id,
       quantity: q
     }
-    if (product.declinations && product.declinations.length) {
-      let d = this.getProductDecli(product.declinations[0])
-      if (d && d[decliId]) {
+    if(this.declinationService.declined(product)) {
+      if(this.declinationService.hasItem(product.declinations[0], decliId)) {
         res.decliId = decliId
       }
     }
-
     return res
   }
 

@@ -6,7 +6,7 @@
   </div>
   <div *ngIf="!service.isEmpty">
     <div *ngFor="let i of card.items">
-      <p>article{{i.index+1}} {{i.productId}} {{i.quantity}} {{i.decliId}}</p>
+      <p>index:{{i.index+1}} | productId:{{i.productId}} | quantity:{{i.quantity}} | decli:{{i.decliId}}</p>
     </div>
   </div>
 </div>

@@ -221,4 +221,5 @@ const addressToCustomer = (address: Address, customer?: Customer): Customer => {
     return customer
 }
 
-export { isAPIResponseError, customerToAddress, addressToCustomer, FR_ID }
+const declinationMap: IDeclinationMap = { }
+export { isAPIResponseError, customerToAddress, addressToCustomer, FR_ID, declinationMap }

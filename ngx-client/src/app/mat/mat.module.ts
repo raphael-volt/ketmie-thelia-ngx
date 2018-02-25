@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from "@angular/flex-layout";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -43,6 +44,7 @@ const defaultDialogConfig: MatDialogConfig = {
 }
 @NgModule({
   imports: [
+    FlexLayoutModule,
     CommonModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -77,6 +79,7 @@ const defaultDialogConfig: MatDialogConfig = {
     MatStepperModule
   ],
   exports: [
+    FlexLayoutModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,

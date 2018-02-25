@@ -4,7 +4,7 @@ import { RequestService } from "./request.service";
 import { DeclinationService } from "./declination.service";
 import {
   APIResponse,
-  Card, ICard,
+  Card, ICard, serializableCardItem,
   declinationMap, IDeclinationMap, IDeclination, IDeclinationItem,
   CardItem, CardItemPerso,
   ProductDetail
@@ -132,7 +132,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
           if (this.updateMap) {
             this.updateMap = false
-            Object.assign(declinationMap, result.map)
+            this.declinationService.setMap(result.map)
           }
           let data = { items: result.data, total: result.total }
           if (!this._card) {
@@ -157,8 +157,8 @@ export class CardService implements ICardImpl<Card, CardItem> {
       productId: product.id,
       quantity: q
     }
-    if(this.declinationService.declined(product)) {
-      if(this.declinationService.hasItem(product.declinations[0], decliId)) {
+    if (this.declinationService.declined(product)) {
+      if (this.declinationService.hasItem(product.declinations[0], decliId)) {
         res.decliId = decliId
       }
     }
@@ -177,7 +177,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
   }
 
-  update(item, next) {
+  update(item: CardItem, next: (item: CardItem) => void) {
     this.checkCard
     this.one("update", item, (resopnse: APIResponse) => {
       this.validateProperties(resopnse.body.total)

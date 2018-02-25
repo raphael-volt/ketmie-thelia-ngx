@@ -160,11 +160,8 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
 
   decliItemId: string
 
-  declinationChange(value) {
-    const id = this.decli.getProductDeclinationId(this.product)
-    const d = this.decli.getItem(id, value)
-    if (d)
-      this.productPrice = d.price
+  declinationChange(value: IDeclinationItem) {
+    this.productPrice = value ? value.price : undefined
   }
 
   categoryId: string
@@ -177,7 +174,7 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
     })
   }
 
-  hasDecli = false
+  hasDeclination = false
   ngOnInit() {
     document.addEventListener('keyup', this.keybordHandler)
     let sub = this.route.parent.params.subscribe(params => {
@@ -185,21 +182,10 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
         let apiSub = this.api.getProductDescription(params.id).subscribe(product => {
           if (product.description == "")
             product.description = null
-          const decli = this.decli
-
-          const id = this.decli.getProductDeclinationId(product)
-          this.declinationId = id
-          this.hasDecli = id != null
-          this.decliItemId = null
-          if (!id) {
-            this.productPrice = product.price
-          }
-          else {
-            this.productPrice = undefined
-          }
-
-          this.canAddToCard = id == null
+          
           this.product = product
+          this.hasDeclination = this.decli.declined(product)
+          this.canAddToCard = (product && !this.hasDeclination)
           if (this.sliderState == "none") {
             this.slideIn()
           }
@@ -207,6 +193,7 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
             this.canNavImages = product.images.length > 1
             this.boxProduct = product
           }
+
           this.categoryId = findCategoryIdInURL(this.router.url)
           this.category = this.api.getCategoryById(this.categoryId)
           this.nextProductId = this.getNearestProduct(product.id, 1).id

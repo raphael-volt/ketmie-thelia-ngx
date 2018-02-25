@@ -72,7 +72,8 @@ import { ApiModule } from "../api/api.module";
     ImgBoxDirective,
     SquareBoxDirective,
     FillParentDirective,
-    BlurChildDirective
+    BlurChildDirective,
+    ApiImageDirective
   ],
   entryComponents: [
     ConnectionFormComponent,

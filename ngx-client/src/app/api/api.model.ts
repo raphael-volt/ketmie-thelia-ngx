@@ -221,5 +221,13 @@ const addressToCustomer = (address: Address, customer?: Customer): Customer => {
     return customer
 }
 
-const declinationMap: IDeclinationMap = { }
-export { isAPIResponseError, customerToAddress, addressToCustomer, FR_ID, declinationMap }
+const serializableCardItem = (item: CardItem): CardItem => {
+    return {
+        index: item.index,
+        productId: item.productId,
+        decliId: item.decliId,
+        quantity: item.quantity,
+    }
+}
+const declinationMap: IDeclinationMap = {}
+export { serializableCardItem, isAPIResponseError, customerToAddress, addressToCustomer, FR_ID, declinationMap }

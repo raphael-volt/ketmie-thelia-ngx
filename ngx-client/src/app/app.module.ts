@@ -6,7 +6,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
 import { ApiModule } from "./api/api.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from "@angular/flex-layout";
+//import { FlexLayoutModule } from "@angular/flex-layout";
 
 import { AppComponent } from './app.component';
 import { MainContainerDirective } from './main-container.directive';
@@ -32,7 +32,7 @@ import { CardModule } from "./templates/card/card.module";
     BrowserModule,
     BrowserAnimationsModule,
     LocalStorageModule,
-    FlexLayoutModule,
+    //FlexLayoutModule,
     ApiModule,
     MatModule,
     TemplatesModule,

@@ -13,11 +13,11 @@
           </mat-card-header>
           <mat-card-content>
             <section *ngIf="product.description" [innerHTML]="product.description"></section>
-            <section *ngIf="declinationId">
+            <section *ngIf="hasDeclination">
               <label>Choisiseez une taille:</label>
-              <declination-select 
-              [declinationId]="declinationId" [(itemId)]="decliItemId"
-                (itemIdChange)="declinationChange($event)"></declination-select>
+              <decli-radio-group 
+                [product]="product" (declinationItemChange)="declinationChange($event)">
+              </decli-radio-group>
               </section>
           </mat-card-content>
           <mat-card-actions>

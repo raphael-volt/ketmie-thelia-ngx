@@ -154,7 +154,7 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
   createItem(product: ProductDetail, decliId?: any, q: number = 1) {
     let res: CardItem = {
-      productId: product.id,
+      product: { id: product.id },
       quantity: q
     }
     if (this.declinationService.declined(product)) {

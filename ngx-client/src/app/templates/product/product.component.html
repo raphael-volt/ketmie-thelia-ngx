@@ -21,7 +21,7 @@
               </section>
           </mat-card-content>
           <mat-card-actions>
-            <button color="primary" mat-raised-button [disabled]="!productPrice" (click)="addToCard()">Ajouter au panier</button>
+            <button color="primary" mat-raised-button [disabled]="!canAddToCard" (click)="addToCard()">Ajouter au panier</button>
           </mat-card-actions>
         </mat-card>
       </div>

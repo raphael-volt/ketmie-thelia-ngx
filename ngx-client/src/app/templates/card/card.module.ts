@@ -6,6 +6,7 @@ import { MatModule } from "../../mat/mat.module";
 import { ApiModule } from "../../api/api.module";
 import { CardComponent } from "./card.component";
 import { TemplatesModule } from "../templates.module";
+import { CartItemComponent } from './cart-item/cart-item.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +18,8 @@ import { TemplatesModule } from "../templates.module";
     ApiModule
   ],
   declarations: [
-    CardComponent
+    CardComponent,
+    CartItemComponent
   ],
   exports: [
     CardComponent

@@ -150,7 +150,7 @@ export class Card {
 
     get numArticles(): number {
         let n = 0
-        this.items.forEach(value => { n += (value.quantity) })
+        this.items.forEach(value => { n += Number(value.quantity) })
         return n
     }
 }

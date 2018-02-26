@@ -1,0 +1,8 @@
+<div class="main" 
+  sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <h2>{{title}}</h2>
+  <section [innerHTML]="description"></section>
+</div>
+<div class="screen-middle noevents cms" [class.on]="loading">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>

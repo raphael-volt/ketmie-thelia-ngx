@@ -1,0 +1,33 @@
+<div #menuCtn class="menu-ctn">
+  <i #menuIcon (click)="menu.emit(true)" class="k-i k-i_menu-h" aria-hidden="true"></i>
+  
+</div>
+<div #homeIcon style="position:relative;" class="mat-primary">
+  <i  (click)="home.emit(true)" class="k-i k-i_home" routerLink="/" aria-hidden="true"></i>
+  <div matRipple [class.mat-button-ripple-round]="true" [matRippleDisabled]="false" [matRippleCentered]="true"
+  [matRippleTrigger]="homeIcon"></div>
+</div>
+<i (click)="customer.emit(true)" [class.primary]="customerService.logedIn" class="k-i k-i_user-crcle" aria-hidden="true"
+  routerLink="/customer"></i>
+<div #cardIcon (click)="riplleLaunch()" class="card-box mat-button-wrapper" routerLink="/card">
+  <div >
+    <i (click)="card.emit(true)" [class.primary]="!cardService.isEmpty" class="k-i k-i_card" aria-hidden="true"></i>
+  </div>
+  
+  <div class="border-2 accent art-count" fxLayout="row" fxLayoutAlign="space-around center">
+    <span class="accent">{{cardService.numArticles + 1}}</span>
+  </div>
+  <div matRipple class="mat-button-ripple" [class.mat-button-ripple-round]="true" [matRippleDisabled]="false" [matRippleCentered]="true"
+      [matRippleTrigger]="cardIcon"></div>
+</div>
+<ng-content></ng-content>
+
+<!--
+  <span class="mat-button-wrapper"><ng-content></ng-content></span>
+<div matRipple class="mat-button-ripple"
+     [class.mat-button-ripple-round]="_isRoundButton || _isIconButton"
+     [matRippleDisabled]="_isRippleDisabled()"
+     [matRippleCentered]="_isIconButton"
+     [matRippleTrigger]="_getHostElement()"></div>
+<div class="mat-button-focus-overlay"></div>
+-->

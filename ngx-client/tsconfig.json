@@ -2,8 +2,11 @@
   "compileOnSave": false,
   "angularCompilerOptions": {
     "paths": {
-      "@thelia/*": [
-        "../packages/thelia/*"
+      "@thelia/core": [
+        "../packages/thelia/core"
+      ],
+      "@thelia/mat": [
+        "../packages/thelia/mat"
       ],
       "@thelia/model": [
         "../packages/thelia/model"
@@ -11,6 +14,12 @@
       "@thelia/api": [
         "../packages/thelia/api"
       ],
+      "@thelia/events": [
+        "../packages/thelia/api"
+      ],
+      "@thelia/components": [
+        "../packages/thelia/components"
+      ]
     }
   },
   "compilerOptions": {
@@ -30,8 +39,11 @@
       "dom"
     ],
     "paths": {
-      "@thelia/*": [
-        "../packages/thelia/*"
+      "@thelia/core": [
+        "../packages/thelia/core"
+      ],
+      "@thelia/events": [
+        "../packages/thelia/events"
       ],
       "@thelia/model": [
         "../packages/thelia/model"
@@ -39,6 +51,18 @@
       "@thelia/api": [
         "../packages/thelia/api"
       ],
+      "@thelia/utils": [
+        "../packages/thelia/utils"
+      ],
+      "@thelia/mat": [
+        "../packages/thelia/mat"
+      ],
+      "@thelia/components": [
+        "../packages/thelia/components"
+      ],
+      "@thelia/common": [
+        "../packages/thelia/common"
+      ]
     }
   }
 }

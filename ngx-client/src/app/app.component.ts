@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from "rxjs";
 import { ApiService } from "./api/api.service";
-import { api2 } from "@thelia/api";
-import { IApi } from "@thelia/model";
 
 import { ShopTree, CMSContent, Category } from "./api/api.model";
 @Component({
@@ -20,8 +18,6 @@ export class AppComponent implements OnInit, OnDestroy{
   private treeSub: Subscription
 
   ngOnInit() {
-    let i: IApi = {api: 'ok'}
-    console.log("AppComponent test api2:", api2(), i)
     const api = this.apiService
     if(api.initialized) {
       this.loadTree()

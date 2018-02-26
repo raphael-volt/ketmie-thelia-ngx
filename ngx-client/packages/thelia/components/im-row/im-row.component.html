@@ -1,0 +1,16 @@
+<nav>
+  <div (click)='navClick.emit(prevId)' class="box" [squareBox]="rowHeight" routerLink="/category/{{categoryId}}/product/{{prevId}}">
+    <img 
+    apiImage [productId]="prevId" 
+    [imgScale]="imgScale"
+    [imgHeight]="sideLength" 
+    [imgWidth]="sideLength"/>
+  </div>
+  <div (click)='navClick.emit(nextId)' class="box" [squareBox]="rowHeight" routerLink="/category/{{categoryId}}/product/{{nextId}}">
+    <img 
+    apiImage [productId]="nextId" 
+    [imgScale]="imgScale"
+    [imgHeight]="sideLength" 
+    [imgWidth]="sideLength"/>
+  </div>
+</nav>

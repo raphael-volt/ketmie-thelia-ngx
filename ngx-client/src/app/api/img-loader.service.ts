@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observer, Observable, Subscription } from "rxjs";
-import { ApiService, ImgTypes } from "./api.service";
+import { RequestService, ImgTypes } from "./request.service";
 import { LoaderEvent } from "../shared/events/loader-event";
 import { XHRImage } from "../shared/utils/xhr-image";
 @Injectable()
 export class ImgLoaderService {
 
-  constructor(private api: ApiService) { }
+  constructor(private request: RequestService) { }
 
   private cache: string[] = []
   private loader: XHRImage = new XHRImage
@@ -18,12 +18,12 @@ export class ImgLoaderService {
 
   getProductImages(ids: string[], w?: number, h?: number): Observable<HTMLImageElement[]> {
     let urls: string[] = ids.map(id => {
-      return this.api.getProductImageUrl(id, w, h)
+      return this.request.getDefaultProductImageUrl(id, w, h)
     })
     return this.loadUrls(urls)
   }
   getProductImage(id: string, w?: number, h?: number): Observable<HTMLImageElement> {
-    return this.loadUrl(this.api.getProductImageUrl(id, w, h))
+    return this.loadUrl(this.request.getProductImageUrl(id, w, h))
   }
   
   getProductImageById(imgId: string, w?: number, h?: number) {
@@ -31,7 +31,7 @@ export class ImgLoaderService {
   }
 
   getImageById(id: string, type: ImgTypes, w?: number, h?: number) {
-    return this.loadUrl(this.api.getImageUrl(id, type, w, h))
+    return this.loadUrl(this.request.getImageUrl(id, type, w, h))
   }
 
   private loadUrl(url: string, img?: HTMLImageElement) {

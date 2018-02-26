@@ -6,7 +6,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
 import { ApiModule } from "./api/api.module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from "@angular/flex-layout";
+//import { FlexLayoutModule } from "@angular/flex-layout";
 
 import { AppComponent } from './app.component';
 import { MainContainerDirective } from './main-container.directive';
@@ -15,21 +15,28 @@ import { MatModule } from "./mat/mat.module";
 import { TemplatesModule } from "./templates/templates.module";
 import { RoutesModule } from "./routes/routes.module";
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
-
+import { DialogContentComponent } from './shared/dialog-content/dialog-content.component';
+import { PopupService } from "./popup.service";
+import { SnackBarService } from "./snack-bar.service";
+import { SnackBarViewComponent } from './snack-bar-view/snack-bar-view.component';
+import { CardModule } from "./templates/card/card.module";
 @NgModule({
   declarations: [
     AppComponent,
     MainContainerDirective,
-    MenuBarComponent
+    MenuBarComponent,
+    DialogContentComponent,
+    SnackBarViewComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     LocalStorageModule,
-    FlexLayoutModule,
+    //FlexLayoutModule,
     ApiModule,
     MatModule,
     TemplatesModule,
+    CardModule,
     RoutesModule
   ],
   exports: [
@@ -38,10 +45,17 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
     LocalStorageModule,
     ReactiveFormsModule,
     RoutesModule,
-    TemplatesModule
+    TemplatesModule,
+    CardModule
   ],
   providers: [
-    LayoutService
+    LayoutService,
+    PopupService,
+    SnackBarService
+  ],
+  entryComponents: [
+    DialogContentComponent,
+    SnackBarViewComponent
   ],
   bootstrap: [AppComponent]
 })

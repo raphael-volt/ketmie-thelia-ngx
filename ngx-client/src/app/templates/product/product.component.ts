@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiService, findCategoryIdInURL, replaceProductIdInURL } from "../../api/api.service";
-import { Category, Product, ProductDetail, ProductDeclination } from "../../api/api.model";
+import { Category, Product, ProductDetail, IDeclinationItem } from "../../api/api.model";
 import { Subscription, Observable, Observer } from "rxjs";
 import { SliderBaseComponent } from "../slider-base.component";
 import { ImgBoxDirective } from "./img-box.directive";
 import { SliderEvent } from "../slider.directive";
+import { CardService } from "../../api/card.service";
+import { DeclinationService } from "../../api/declination.service";
 @Component({
   selector: 'product',
   templateUrl: './product.component.html',
@@ -19,7 +21,8 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   boxProduct: ProductDetail = undefined
 
   loaded: boolean
-  declinationModel
+  declinationId: string = null
+
   canAddToCard: boolean
   product: ProductDetail
   productPrice: string
@@ -29,6 +32,8 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   private routeSubscription: Subscription
 
   constructor(
+    private decli: DeclinationService,
+    public card: CardService,
     private api: ApiService,
     private route: ActivatedRoute,
     private router: Router,
@@ -150,55 +155,41 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
       this.imgBox.close()
     }
     done()
-    /*
-        if (this.imgBox) {
-          sub = this.imgBox.close()
-            .subscribe(v => {
-              subscribed = true
-              if (sub) {
-                sub.unsubscribe()
-                sub = null
-              }
-              done()
-            })
-          if (subscribed && sub)
-            sub.unsubscribe()
-        }
-        else
-          done()
-    */
   }
 
 
-  declinationChange(value) {
-    let declination: ProductDeclination = this.product.declinations.find(d => {
-      return d.id == value
-    })
-    this.productPrice = declination.price
+  decliItemId: string
+
+  declinationChange(value: IDeclinationItem) {
+    if(value) {
+      this.canAddToCard = true
+      this.productPrice = value ? value.price : undefined
+    }
   }
 
   categoryId: string
   private category: Category
 
+  addToCard() {
+    let item = this.card.createItem(this.product, this.declinationId)
+    this.card.add(item, () => {
+      console.log("added to card", item)
+    })
+  }
 
+  hasDeclination = false
   ngOnInit() {
     document.addEventListener('keyup', this.keybordHandler)
     let sub = this.route.parent.params.subscribe(params => {
       this.routeSubscription = this.route.params.subscribe(params => {
-        let apiSub = this.api.getProductDetails(params.id).subscribe(product => {
+        let apiSub = this.api.getProductDescription(params.id).subscribe(product => {
           if (product.description == "")
             product.description = null
-          if (!product.declinations || (product.declinations && !product.declinations.length))
-            product.declinations = null
 
-          if (!product.declinations)
-            this.productPrice = product.price
-          else {
-            this.productPrice = undefined
-            this.declinationModel = undefined
-          }
-          this.canAddToCard = product.declinations == null
           this.product = product
+          this.hasDeclination = this.decli.declined(product)
+          this.canAddToCard = (product && !this.hasDeclination)
+          this.productPrice = this.hasDeclination ? undefined : product.price
           if (this.sliderState == "none") {
             this.slideIn()
           }
@@ -206,11 +197,11 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
             this.canNavImages = product.images.length > 1
             this.boxProduct = product
           }
+
           this.categoryId = findCategoryIdInURL(this.router.url)
           this.category = this.api.getCategoryById(this.categoryId)
           this.nextProductId = this.getNearestProduct(product.id, 1).id
           this.prevProductId = this.getNearestProduct(product.id, -1).id
-          //this._productIdChanged = false
         })
       })
       if (sub) {

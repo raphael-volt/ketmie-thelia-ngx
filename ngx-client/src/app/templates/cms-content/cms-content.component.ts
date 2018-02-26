@@ -50,9 +50,9 @@ export class CmsContentComponent extends SliderBaseComponent implements AfterVie
   description: string
   private createContent(cmsContent: CMSContent) {
     const done = () => {
-      let sub = this.api.getDescription("cms-content", cmsContent.id)
+      let sub = this.api.getCmsContentDescription(cmsContent.id)
         .subscribe(description => {
-          this.description = description
+          this.description = description.description
           this.title = cmsContent.label
           this.slideIn()
           this.loading = false

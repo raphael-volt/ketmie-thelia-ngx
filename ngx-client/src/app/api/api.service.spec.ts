@@ -1,6 +1,9 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpModule, Http, XHRBackend, BaseRequestOptions } from "@angular/http";
+import { ApiModule } from "./api.module";
 import { ApiService, replaceCategoryIdInURL, replaceProductIdInURL } from './api.service';
+import { RequestService } from "./request.service";
+import { SessionService } from "./session.service";
 import { LocalStorageModule, LocalStorageService } from "angular-2-local-storage";
 
 let api: ApiService
@@ -8,6 +11,7 @@ describe('ApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        RequestService,
         LocalStorageService,
         XHRBackend,
         BaseRequestOptions,
@@ -19,18 +23,25 @@ describe('ApiService', () => {
           }
         },
         {
+            provide: SessionService,
+            deps: [LocalStorageService],
+            useFactory: (storage: LocalStorageService)=> {
+              return new SessionService(storage)
+            }
+        },
+        {
           provide: ApiService,
-          deps: [Http, LocalStorageService],
-          useFactory: (h: Http, storage: LocalStorageService) => {
+          deps: [Http, RequestService, SessionService],
+          useFactory: (h: Http, request: RequestService, session: SessionService) => {
             if (!api)
-              api = new ApiService(h, storage)
+              api = new ApiService(h, session, request)
             return api
           }
         }
       ],
       imports: [
         HttpModule, 
-        LocalStorageModule
+        ApiModule
       ]
     });
   });

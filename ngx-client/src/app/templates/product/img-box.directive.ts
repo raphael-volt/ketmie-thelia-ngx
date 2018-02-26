@@ -9,7 +9,7 @@ import {
   getImgBoxMaxHeight,
   getMaxScreenWidth
 } from "../../layout.service";
-import { ApiService } from "../../api/api.service";
+import { RequestService } from "../../api/request.service";
 import { SubscriptionCollector } from "../../shared/utils/subscription.utils";
 import { ProductDetail } from "../../api/api.model";
 import { Rect } from "../../shared/math/rect";
@@ -76,13 +76,13 @@ export class ImgBoxDirective implements OnChanges, OnDestroy, AfterViewInit {
 
   constructor(
     ref: ElementRef,
-    api: ApiService,
+    request: RequestService,
     private layout: LayoutService
   ) {
     this._target = ref.nativeElement
     this._ctx = this._target.getContext("2d")
     this.getImgUrl = id => {
-      return api.getProductImageUrlById(id, this._sideLength)
+      return request.getDefaultProductImageUrl(id, this._sideLength)
     }
   }
 

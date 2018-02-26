@@ -20,6 +20,7 @@ if (isset($_SERVER['HTTP_X_API_SESSION_ID'])) {
     if ($id && strlen($id) > 0)
         session_id($id);
 }
+
 // file_put_contents(__DIR__."/server.log", print_r($_SERVER, true), FILE_APPEND);
 unset($fond);
 require ("fonctions/moteur.php");

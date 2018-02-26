@@ -21,7 +21,15 @@ import { SliderDirective } from "./slider.directive";
 import { ImgBoxDirective } from './product/img-box.directive';
 import { TemplateDirective } from './template.directive';
 import { FakeCardComponent } from './fake-card/fake-card.component';
-
+import { CustomerComponent, BlurChildDirective } from './customer/customer.component';
+import { ConnectionFormComponent } from './customer/connection-form/connection-form.component';
+import { AddressComponent } from './address/address.component';
+import { CountryPipe } from './country.pipe';
+import { FillParentDirective } from './fill-parent.directive';
+import { AddressViewComponent } from './address-view/address-view.component';
+import { RaisonPipe } from './raison.pipe';
+import { AddressModalComponent } from './address-modal/address-modal.component';
+import { ApiModule } from "../api/api.module";
 @NgModule({
   imports: [
     CommonModule,
@@ -30,27 +38,47 @@ import { FakeCardComponent } from './fake-card/fake-card.component';
     FlexLayoutModule,
     MatModule,
     RoutesModule,
+    ApiModule
   ],
   declarations: [
     SliderDirective,
-    InnerHtmlDirective, 
+    InnerHtmlDirective,
     CategoryComponent,
     KetmieBackgroundComponent,
-    ApiImageDirective, 
-    CmsContentComponent, 
-    ProductComponent, 
-    ImgBoxDirective, 
-    ThemeComponent, 
-    ImRowComponent, 
-    SquareBoxDirective, TemplateDirective, FakeCardComponent
+    ApiImageDirective,
+    CmsContentComponent,
+    ProductComponent,
+    ImgBoxDirective,
+    ThemeComponent,
+    ImRowComponent,
+    BlurChildDirective,
+    SquareBoxDirective, 
+    TemplateDirective, 
+    FakeCardComponent, 
+    CustomerComponent, 
+    ConnectionFormComponent, 
+    AddressComponent, 
+    CountryPipe, 
+    FillParentDirective, 
+    AddressViewComponent, 
+    RaisonPipe, 
+    AddressModalComponent
   ],
-  exports:[
+  exports: [
     KetmieBackgroundComponent,
     TemplateDirective,
     ImRowComponent,
     SliderDirective,
     ImgBoxDirective,
-    SquareBoxDirective
+    SquareBoxDirective,
+    FillParentDirective,
+    BlurChildDirective,
+    ApiImageDirective
+  ],
+  entryComponents: [
+    ConnectionFormComponent,
+    AddressComponent,
+    AddressModalComponent
   ],
   providers: [ImgTileService]
 })

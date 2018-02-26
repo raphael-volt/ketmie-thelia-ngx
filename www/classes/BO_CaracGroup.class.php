@@ -28,5 +28,12 @@ class BO_CaracGroup
 			return $this->caracs[$id];
 		return null;
 	}
+	function asDeclination() {
+	    $result = new stdClass();
+	    $result->label = $this->titre;
+	    $result->caracdisp = $this->caracdisp;
+	    $result->items = $this->caracs;
+	    return $result;
+	}
 }
 ?>

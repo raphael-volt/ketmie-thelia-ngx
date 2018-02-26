@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from "@angular/flex-layout";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -31,10 +32,19 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatStepperModule
+  MatStepperModule,
+  MatDialogConfig
 } from '@angular/material';
+
+const defaultDialogConfig: MatDialogConfig = {
+  disableClose: true,
+  panelClass: 'overlay-pane-class',
+  hasBackdrop: true,
+  minWidth: 250
+}
 @NgModule({
   imports: [
+    FlexLayoutModule,
     CommonModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -69,6 +79,7 @@ import {
     MatStepperModule
   ],
   exports: [
+    FlexLayoutModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
@@ -104,3 +115,4 @@ import {
   declarations: []
 })
 export class MatModule { }
+export { defaultDialogConfig }

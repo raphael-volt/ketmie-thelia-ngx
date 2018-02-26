@@ -1,6 +1,10 @@
 <?php
 require_once (dirname(realpath(__FILE__)) . '/../../../classes/filtres/FiltreCustomBase.class.php');
-require_once __DIR__ . '/ProductHelper.php';
+
+require_once 'client/plugins/filtreapi/CardController.class.php';
+require_once 'client/plugins/filtreapi/Request.class.php';
+require_once 'client/plugins/filtreapi/HTTPReponseHelper.class.php';
+require_once 'client/plugins/filtreapi/ProductHelper.class.php';
 
 class Filtreapi extends FiltreCustomBase
 {
@@ -11,10 +15,13 @@ class Filtreapi extends FiltreCustomBase
      */
     private $productHelper;
 
+    private $createErrorMap;
+
     public function __construct()
     {
         parent::__construct("`\#FILTRE_api\(([^\|]+)\|\|([^\)]+)\)`");
         $this->productHelper = new ProductHelper();
+        $this->createErrorMap = new stdClass();
     }
 
     private function product($id)
@@ -81,7 +88,7 @@ ORDER BY parent, child_index";
         
         $result = $pdo->query($query);
         $result = $result->fetchAll(PDO::FETCH_CLASS, RubDesc::class);
-        $query = "SELECT d.titre as label, p.id, p.ref, p.rubrique FROM " . Produit::TABLE . " as p 
+        $query = "SELECT d.titre as label, p.id, p.ref, p.prix, p.rubrique FROM " . Produit::TABLE . " as p 
 LEFT JOIN " . Produitdesc::TABLE . " as d ON p.id=d.produit 
 WHERE ligne=1 ORDER BY rubrique, classement";
         $produits = $pdo->query($query);
@@ -93,6 +100,12 @@ WHERE ligne=1 ORDER BY rubrique, classement";
             $prodDict[$prod->rubrique][] = $prod;
             if ($prod->id == $this->currentProd)
                 ProdDesc::$current = $prod;
+            $carac = $this->productHelper->getCarac($prod->id);
+            if ($carac) {
+                $prod->declinations = array($carac->caracdisp);
+                $decli = $this->productHelper->getBoDeclinations($carac->caracdisp);
+                $prod->prix = $decli[0]->price;
+            }
         }
         $root = new RubDesc();
         $root->id = 0;
@@ -143,7 +156,6 @@ WHERE ligne=1 ORDER BY rubrique, classement";
 
     private function logout()
     {
-        //ActionsModules::instance()->appel_module("deconnexion");
         ActionsModules::instance()->appel_module("avantdeconnexion", $_SESSION['navig']->client);
         
         $_SESSION['navig']->client = new Client();
@@ -151,9 +163,19 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         $_SESSION['navig']->connecte = 0;
         $_SESSION['navig']->adresse = 0;
         
-        $_SESSION['navig']->urlpageret = supprimer_deconnexion($_SESSION['navig']->urlpageret);
-        
         ActionsModules::instance()->appel_module("apresdeconnexion");
+    }
+
+    /**
+     *
+     * @return Client|NULL
+     */
+    private function getCurrentCustomerId()
+    {
+        $client = $this->getCurrentCustomer();
+        if ($client)
+            return $client->id;
+        return null;
     }
 
     private function getCurrentCustomer()
@@ -162,6 +184,11 @@ WHERE ligne=1 ORDER BY rubrique, classement";
             return $_SESSION['navig']->client;
         }
         return null;
+    }
+
+    private function isConnected()
+    {
+        return (isset($_SESSION["navig"]) && $_SESSION['navig']->connecte == 1);
     }
 
     private function log($data)
@@ -195,19 +222,211 @@ WHERE ligne=1 ORDER BY rubrique, classement";
         return $client;
     }
 
+    private function getCustomerAddress()
+    {
+        $customer = $this->getCurrentCustomer();
+        if (! $customer)
+            return null;
+        $id = $customer->id;
+        $pdo = PDOThelia::getInstance();
+        $q = "SELECT * FROM " . Adresse::TABLE . " WHERE client={$id}";
+        $stmt = $pdo->query($q);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        return $stmt->fetchAll();
+    }
+
+    private function getEmailTaken($email)
+    {
+        $pdo = PDOThelia::getInstance();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM " . Client::TABLE . " WHERE email=?");
+        $stmt->bindParam(1, $email);
+        $stmt->execute();
+        $res = (int) $stmt->fetchColumn(0);
+        return $res == 1;
+    }
+
+    private function updateEmail($email)
+    {
+        $test = new Client();
+        if ($test->existe($email))
+            return false;
+        $client = new Client();
+        $client->charger_id($_SESSION['navig']->client->id);
+        $client->email = $email;
+        
+        ActionsModules::instance()->appel_module("avantmodifcompte");
+        
+        $client->maj();
+        $_SESSION['navig']->client = $client;
+        
+        ActionsModules::instance()->appel_module("apresmodifcompte", $client);
+        
+        return true;
+    }
+
+    private function updatePassword($pwd)
+    {
+        if (strlen($pwd) < 6)
+            return false;
+        $client = new Client($_SESSION['navig']->client->id);
+        $client->motdepasse = strip_tags($pwd);
+        $client->crypter();
+        $client->maj();
+        
+        $_SESSION['navig']->client = $client;
+        
+        ActionsModules::instance()->appel_module("apresmodifcompte", $client);
+        
+        return true;
+    }
+
+    /**
+     *
+     * @param stdClass $json
+     */
+    private function updateCustomer($json)
+    {
+        $client = new Client();
+        $client->charger_id($_SESSION['navig']->client->id);
+        foreach ($json as $key => $value) {
+            $client->{$key} = $value;
+        }
+        ActionsModules::instance()->appel_module("avantmodifcompte");
+        $client->maj();
+        $_SESSION['navig']->client = $client;
+        ActionsModules::instance()->appel_module("apresmodifcompte", $client);
+        return true;
+    }
+
+    /**
+     *
+     * @param stdClass $json
+     */
+    private function createCustomer($json)
+    {
+        $test = new Client();
+        $valid = true;
+        $props = array(
+            "raison",
+            "nom",
+            "prenom",
+            "email",
+            "motdepasse",
+            "adresse1",
+            "cpostal",
+            "ville",
+            "pays"
+        );
+        $this->createErrorMap->missingProperties = array();
+        foreach ($props as $prop) {
+            if (! property_exists($json, $prop)) {
+                $valid = false;
+                $this->createErrorMap->missingProperties[] = $prop;
+            }
+        }
+        if (! property_exists($json, "telfix") && ! property_exists($json, "telport")) {
+            $this->createErrorMap->missingProperties[] = "telfix|telport";
+            $valid = false;
+        }
+        if (! $valid)
+            return null;
+        if ($test->existe($json->email)) {
+            $this->createErrorMap->emailExists = true;
+            return null;
+        }
+        
+        $client = new Client();
+        foreach ($json as $key => $value) {
+            $client->{$key} = $value;
+        }
+        $client->type = "0";
+        $client->lang = ActionsLang::instance()->get_id_langue_courante();
+        
+        ActionsModules::instance()->appel_module("avantclient");
+        
+        $client->crypter();
+        $client->id = $client->add();
+        
+        return $client;
+    }
+
+    private function createAddress($address)
+    {
+        $result = new Adresse();
+        foreach ($address as $key => $value) {
+            $result->{$key} = $value;
+        }
+        $result->client = $this->getCurrentCustomerId();
+        if ($result->client == null)
+            return null;
+        $result->id = $result->add();
+        return $result;
+    }
+
+    private function updateAddress($address)
+    {
+        if (! property_exists($address, "id"))
+            return null;
+        $id = $address->id;
+        $result = new Adresse();
+        $result->charger_id($id);
+        foreach ($address as $key => $value) {
+            $result->{$key} = $value;
+        }
+        $result->maj();
+        return true;
+    }
+
+    private function deleteAddress($address)
+    {
+        if (! property_exists($address, "id"))
+            return null;
+        $id = $address->id;
+        $result = new Adresse();
+        $result->charger_id($id);
+        $result->delete();
+        return true;
+    }
+
+    private function getCountries()
+    {
+        $pdo = PDOThelia::getInstance();
+        $stmt = "SELECT d.titre as name, p.id FROM " . Pays::TABLE . " as p
+LEFT JOIN " . Paysdesc::TABLE . " as d on d.id=p.id
+WHERE zone<=7
+ORDER BY titre";
+        $stmt = $pdo->query($stmt);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        return $stmt->fetchAll();
+    }
+
     public function calcule($match)
     {
+        $isPost = $_SERVER['REQUEST_METHOD'] == 'POST';
         $match = parent::calcule($match);
         $response = new Response(true);
         $action = $this->paramsUtil->action;
         $result = new stdClass();
         try {
             switch ($action) {
+                case 'card':
+                    {
+                        $result = null;
+                        $card = new CardController();
+                        $map = 0;
+                        if ($this->paramsUtil->getNumParameters() > 1)
+                            $map = $this->paramsUtil->parameters[1];
+                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson() : null, $map);
+                        break;
+                    }
+                case 'countries':
+                    {
+                        $result = $this->getCountries();
+                        break;
+                    }
                 case 'session':
                     {
-                        
                         $result->session_id = session_id();
-                        
                         break;
                     }
                 case "catalog":
@@ -222,7 +441,7 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                     }
                 case "descriptions":
                     {
-                        $result = $this->descriptions($this->paramsUtil->parameters[0], $this->paramsUtil->parameters[1]);
+                        $result = $this->descriptions($this->paramsUtil, $this->paramsUtil->parameters[1]);
                         break;
                     }
                 
@@ -236,7 +455,68 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                         $method = $this->paramsUtil->parameters[0];
                         
                         switch ($method) {
-                            
+                            case "create":
+                                {
+                                    $response->success = false;
+                                    
+                                    $json = $this->getPostJson();
+                                    
+                                    if ($json == null) {
+                                        $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        $this->createErrorMap->reason = "missing post data";
+                                        $result = $this->createErrorMap;
+                                        // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        break;
+                                    }
+                                    
+                                    $json = $this->createCustomer($json);
+                                    if ($json == null) {
+                                        $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        $this->createErrorMap->reason = "createCustomer FAIL";
+                                        $result = $this->createErrorMap;
+                                        // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        break;
+                                    }
+                                    
+                                    $result = $response->baseobj($json);
+                                    unset($result->motdepasse);
+                                    $response->success = true;
+                                    break;
+                                }
+                            case "update":
+                                {
+                                    $response->success = false;
+                                    if (! $this->isConnected()) {
+                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
+                                        break;
+                                    }
+                                    
+                                    $json = $this->getPostJson();
+                                    
+                                    if ($json == null) {
+                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                        break;
+                                    }
+                                    
+                                    if (property_exists($json, "email")) {
+                                        $response->success = $this->updateEmail($json->email);
+                                    } else {
+                                        if (property_exists($json, "password")) {
+                                            $response->success = $this->updatePassword($json->password);
+                                        } else {
+                                            if (property_exists($json, "customer")) {
+                                                $response->success = $this->updateCustomer($json->customer);
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            case "emailTaken":
+                                {
+                                    $email = $this->paramsUtil->parameters[1];
+                                    $result->taken = $this->getEmailTaken($email);
+                                    break;
+                                }
                             case "login":
                                 {
                                     $json = $this->getPostJson();
@@ -248,8 +528,10 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                                     if ($json) {
                                         $result = $response->baseobj($json);
                                         $response->success = true;
-                                    } else
+                                    } else {
                                         $response->success = false;
+                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
+                                    }
                                     break;
                                 }
                             case 'logout':
@@ -264,6 +546,63 @@ WHERE ligne=1 ORDER BY rubrique, classement";
                                     $response->success = $result != null;
                                     break;
                                 }
+                            case 'address':
+                                {
+                                    if ($isPost) {
+                                        $response->success = false;
+                                        if (! $this->isConnected()) {
+                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
+                                            break;
+                                        }
+                                        $json = $this->getPostJson();
+                                        if ($json == null) {
+                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                            break;
+                                        }
+                                        if (property_exists($json, "method")) {
+                                            $method = $json->method;
+                                            if (property_exists($json, "address")) {
+                                                $address = $json->address;
+                                                switch ($method) {
+                                                    case "create":
+                                                        {
+                                                            $result = $this->createAddress($address);
+                                                            break;
+                                                        }
+                                                    case "delete":
+                                                        {
+                                                            
+                                                            $result = $this->deleteAddress($address);
+                                                            break;
+                                                        }
+                                                    case "update":
+                                                        {
+                                                            
+                                                            $result = $this->updateAddress($address);
+                                                            break;
+                                                        }
+                                                    default:
+                                                        {
+                                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                                            break;
+                                                        }
+                                                }
+                                                if (! $result) {
+                                                    $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                                } else {
+                                                    $response->success = true;
+                                                }
+                                            } else {
+                                                $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        $result = $this->getCustomerAddress();
+                                        $response->success = $this->isConnected();
+                                    }
+                                    break;
+                                }
                             default:
                                 ;
                                 break;
@@ -275,231 +614,10 @@ WHERE ligne=1 ORDER BY rubrique, classement";
             $result = HTTPReponseHelper::getErrorJson(500, $e->getMessage());
             $response->success = false;
         }
-        // $this->logPrint(array("action"=>$action, "session"=> $_SESSION));
-        // session_write_close();
-        $response->body = $result;
-        /*
-         * $this->logPrint(array(
-         * "action" => $action,
-         * "method" => $method,
-         * "result"=>$response
-         * ));
-         *
-         * $result = $response->serialize();
-         * return $result;
-         */
+        if ($result)
+            $response->body = $result;
+        
         return $response->serialize();
     }
 }
 
-class Response
-{
-
-    public $body;
-
-    public $success;
-
-    function __construct($success = false, $body = null)
-    {
-        $this->success = $success;
-        $this->body = $body;
-    }
-
-    /**
-     *
-     * @param Baseobj $obj
-     */
-    static function baseobj($obj)
-    {
-        $o = new stdClass();
-        $props = $obj->bddvars;
-        foreach ($props as $p) {
-            if (property_exists($obj, $p))
-                $o->{$p} = $obj->{$p};
-        }
-        return $o;
-    }
-
-    function serialize()
-    {
-        $body = $this->body;
-        if ($body instanceof Baseobj) {
-            $body = self::baseobj($body);
-        }
-        $obj = new stdClass();
-        $obj->success = $this->success;
-        $obj->body = $body;
-        return json_encode($obj); // , JSON_PRETTY_PRINT);
-    }
-}
-
-class HTTPReponseHelper
-{
-
-    static $OK = 200;
-
-    static $BAD_REQUEST = 400;
-
-    static $UNAUTHORIZED = 401;
-
-    static $PAYMENT_REQUIRED = 402;
-
-    static $METHOD_NOT_ALLOWED = 402;
-
-    static $FORBIDDEN = 403;
-
-    static function getErrorJson($code, $message = null, $stringify = false)
-    {
-        $e = new stdClass();
-        if (! $message) {
-            $message = self::getMessage($code);
-        }
-        $e->code = $code;
-        $e->message = $message;
-        if ($stringify)
-            return json_encode($e);
-        return $e;
-    }
-
-    static function getResultError($code, $message = null)
-    {
-        return new Response(false, self::getErrorJson($code, $message));
-    }
-
-    static function getResult($success, $body = null)
-    {
-        return new Response($success, $body);
-    }
-
-    static function getMessage($code)
-    {
-        $text = 'Unknown http status code "' . $code . '"';
-        switch ($code) {
-            case 100:
-                $text = 'Continue';
-                break;
-            case 101:
-                $text = 'Switching Protocols';
-                break;
-            case 200:
-                $text = 'OK';
-                break;
-            case 201:
-                $text = 'Created';
-                break;
-            case 202:
-                $text = 'Accepted';
-                break;
-            case 203:
-                $text = 'Non-Authoritative Information';
-                break;
-            case 204:
-                $text = 'No Content';
-                break;
-            case 205:
-                $text = 'Reset Content';
-                break;
-            case 206:
-                $text = 'Partial Content';
-                break;
-            case 300:
-                $text = 'Multiple Choices';
-                break;
-            case 301:
-                $text = 'Moved Permanently';
-                break;
-            case 302:
-                $text = 'Moved Temporarily';
-                break;
-            case 303:
-                $text = 'See Other';
-                break;
-            case 304:
-                $text = 'Not Modified';
-                break;
-            case 305:
-                $text = 'Use Proxy';
-                break;
-            case 400:
-                $text = 'Bad Request';
-                break;
-            case 401:
-                $text = 'Unauthorized';
-                break;
-            case 402:
-                $text = 'Payment Required';
-                break;
-            case 403:
-                $text = 'Forbidden';
-                break;
-            case 404:
-                $text = 'Not Found';
-                break;
-            case 405:
-                $text = 'Method Not Allowed';
-                break;
-            case 406:
-                $text = 'Not Acceptable';
-                break;
-            case 407:
-                $text = 'Proxy Authentication Required';
-                break;
-            case 408:
-                $text = 'Request Time-out';
-                break;
-            case 409:
-                $text = 'Conflict';
-                break;
-            case 410:
-                $text = 'Gone';
-                break;
-            case 411:
-                $text = 'Length Required';
-                break;
-            case 412:
-                $text = 'Precondition Failed';
-                break;
-            case 413:
-                $text = 'Request Entity Too Large';
-                break;
-            case 414:
-                $text = 'Request-URI Too Large';
-                break;
-            case 415:
-                $text = 'Unsupported Media Type';
-                break;
-            case 500:
-                $text = 'Internal Server Error';
-                break;
-            case 501:
-                $text = 'Not Implemented';
-                break;
-            case 502:
-                $text = 'Bad Gateway';
-                break;
-            case 503:
-                $text = 'Service Unavailable';
-                break;
-            case 504:
-                $text = 'Gateway Time-out';
-                break;
-            case 505:
-                $text = 'HTTP Version not supported';
-                break;
-            default:
-                break;
-        }
-        return $text;
-    }
-
-    static function setHeader($code, $message = null)
-    {
-        if ($message == null)
-            $message = self::getMessage($code);
-        $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-        
-        header('HTTP/1.0 ' . $code . ' ' . $text);
-        
-        $GLOBALS['http_response_code'] = $code;
-    }
-}

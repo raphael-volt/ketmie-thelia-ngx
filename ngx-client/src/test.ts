@@ -14,7 +14,10 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
+var context
 // Then we find all the tests.
-const context = require.context('./', true, /card\.service\.spec\.ts$/);
+context = require.context('./', true, /card\.service\.spec\.ts$/);
 // And load the modules.
+context.keys().map(context);
+context = require.context('../packages/thelia', true, /\.spec\.ts$/);
 context.keys().map(context);

@@ -104,6 +104,11 @@ WHERE p.id=?";
         return $carac->getGroup($caracdisp);
     }
 
+    /**
+     * 
+     * @param unknown $caracdisp
+     * @return NULL|unknown[]
+     */
     public function getBoDeclinations($caracdisp)
     {
         if (! $caracdisp)

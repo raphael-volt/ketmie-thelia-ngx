@@ -24,7 +24,7 @@ export interface IIdentifiable {
 }
 
 export interface ILabelable extends IIdentifiable {
-    label: string
+    label?: string
 }
 
 export interface IDescriptable extends ILabelable {
@@ -32,20 +32,14 @@ export interface IDescriptable extends ILabelable {
 }
 
 export interface Product extends IDescriptable {
-
-}
-
-export interface ProductDeclination extends IIdentifiable {
-    size: string
-    price: string
+    price?: string
+    ref?: string
+    declinations?: string[]
 }
 
 export interface ProductDetail extends Product {
     images: string[]
-    declinations: string[]
-    price: string
     index: string
-    ref: string
 }
 
 export interface Category extends IDescriptable {
@@ -111,12 +105,11 @@ export interface CardItemPerso {
 
 export interface CardItem {
     index?: number
-    productId?: string
+    product?: Product
     decliId?: string
     quantity?: number
     parent?: string
     perso?: CardItemPerso[]
-    declinations?: string[]
 }
 
 export interface ICard {
@@ -150,7 +143,7 @@ export class Card {
 
     get numArticles(): number {
         let n = 0
-        this.items.forEach(value => { n += (value.quantity) })
+        this.items.forEach(value => { n += Number(value.quantity) })
         return n
     }
 }
@@ -224,7 +217,7 @@ const addressToCustomer = (address: Address, customer?: Customer): Customer => {
 const serializableCardItem = (item: CardItem): CardItem => {
     return {
         index: item.index,
-        productId: item.productId,
+        product: { id: item.product.id },
         decliId: item.decliId,
         quantity: item.quantity,
     }

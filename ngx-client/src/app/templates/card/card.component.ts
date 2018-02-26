@@ -61,17 +61,17 @@ const getTableDataProvider = () => {
   const data = new TableData<CardItem>()
   data.addColumn("-", "decliId",
     "image", "0")
-  data.addColumn("Produit", "productId",
+  data.addColumn("Produit", "product",
     "product", "0")
-  data.addColumn("Options", "declinations",
+  data.addColumn("Options", "decliId",
     "options", "0")
   data.addColumn("Qantité", "quantity",
     "quantity", "0")
-  data.addColumn("Prix", "productId",
+  data.addColumn("Prix", "product",
     "price", "0")
-  data.addColumn("-", "productId",
+  data.addColumn("-", "product",
     "none", "1")
-  data.addColumn("-", "productId",
+  data.addColumn("-", "product",
     "action", "0")
   return data
 }
@@ -101,6 +101,7 @@ export class CardComponent extends SliderBaseComponent implements OnInit {
   }
 
   quantityChange(item: CardItem, value: number) {
+    value = Number(value)
     let p = serializableCardItem(item)
     p.quantity = value
     this.service.update(p, result => {

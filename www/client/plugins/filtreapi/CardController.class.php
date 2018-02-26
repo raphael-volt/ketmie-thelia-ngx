@@ -245,8 +245,13 @@ class CardController
     private function serializeArticle($article, $index = null)
     {
         $item = new stdClass();
-        $item->productId = $article->produit->id;
-        $item->quantity = $article->quantite;
+        $item->product = new stdClass();
+        $item->product->price = $article->produit->prix;
+        $item->product->ref = $article->produit->ref;
+        $item->product->label = $article->produitdesc->titre;
+        $item->product->id = $article->produit->id;
+        
+        $item->quantity = intval($article->quantite);
         $item->parent = $article->parent;
         $item->decliId = 0;
         if ($index !== null)
@@ -264,7 +269,7 @@ class CardController
             $decs = $this->productHelper->getBoDeclinations($carac->caracdisp);
             $decli->items = $decs;
             
-            $item->declinations = array($carac->caracdisp);
+            $item->product->declinations = array($carac->caracdisp);
             
             $price = $article->produit->prix;
             $dec = $this->getDecliByPrice($price, $decs);

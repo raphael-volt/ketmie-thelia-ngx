@@ -1,0 +1,17 @@
+<div class="content raised pad-16" *ngIf="cardItem" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
+  <div class="content raised" [squareBox]="200" fxLayout="row" fxLayoutAlign="center center">
+    <img apiImage [productId]="cardItem.product.id" [imgHeight]="180" [imgWidth]="180" />
+  </div>
+  <div fxLayout="column" fxLayoutAlign="space-evenly start">
+    <span>{{cardItem.product.label}}</span>
+    <span>ref: {{cardItem.product.ref}}</span>
+    <span>prix unitaire : {{cardItem.product.price}}</span>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="end start">
+    <span *ngIf="!cardItem.decliId">prix : {{cardItem.product.price}}</span>
+    <decli-select *ngIf="cardItem.decliId" matInput [cardItem]="cardItem" (declinationItemChange)="declinationChange.emit($event)"></decli-select>
+    <mat-select matInput [(ngModel)]="cardItem.quantity" (ngModelChange)="quantityChange.emit($event)">
+      <mat-option *ngFor="let v of [1,2,3,4,5,6,7,8,9]" [value]="v">{{v}}</mat-option>
+    </mat-select>
+  </div>
+</div>

@@ -1,3 +1,7 @@
+/**
+ * @TODO must be a directive for mat-select or mat-option group
+ */
+
 import {
     Component, Injectable,
     Input, Output, EventEmitter,
@@ -5,7 +9,7 @@ import {
     OnChanges, SimpleChanges
 } from "@angular/core";
 import { DeclinationService } from "../declination.service";
-import { IDeclination, IDeclinationItem, CardItem, ProductDetail, ProductDeclination } from "../api.model";
+import { IDeclination, IDeclinationItem, CardItem, ProductDetail, Product } from "../api.model";
 const styleUrl: string = './declination-controller.css'
 @Component({
     selector: 'decli-base',
@@ -110,19 +114,20 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
         let product: ProductDetail = productChange ? this.product : null
 
         if (itemChange || productChange) {
-            if (itemChange && !isWith(item, 'declinations')) {
+            if (itemChange && !isWith(item, 'product')) {
                 item = null
             }
             if (productChange && !isWith(product, 'declinations')) {
                 product = null
             }
             if (product && item) {
-                if (product.id != item.productId)
+                if (product.id != item.product.id)
                     throw new EvalError('product.id must equals cardItem.productId')
             }
             target = product || item
-            if (target) {
-                declinationId = decli.findDeclination(target.declinations)
+            let p: Product = product || item.product
+            if (p) {
+                declinationId = decli.findDeclination(p.declinations)
             }
         }
 
@@ -143,8 +148,7 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
         if (item)
             decliItem = decli.getItem(declinationId, item.decliId)
         else
-            if (!isWith(decliItem, "id") || !decli.hasItem(declinationId, decliItem.id))
-                decliItem = null
+            decliItem = null
 
 
         if (decliItem != this.declinationItem) {
@@ -171,7 +175,7 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
 }
 
 const isWith = <T extends Object, K extends keyof T>(v: T, p: K): v is T => {
-    if (typeof v == 'object') {
+    if (v && typeof v == 'object') {
         return v.hasOwnProperty(p)
     }
     return false

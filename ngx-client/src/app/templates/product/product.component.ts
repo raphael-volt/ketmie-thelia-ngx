@@ -161,7 +161,10 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   decliItemId: string
 
   declinationChange(value: IDeclinationItem) {
-    this.productPrice = value ? value.price : undefined
+    if(value) {
+      this.canAddToCard = true
+      this.productPrice = value ? value.price : undefined
+    }
   }
 
   categoryId: string
@@ -182,10 +185,11 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
         let apiSub = this.api.getProductDescription(params.id).subscribe(product => {
           if (product.description == "")
             product.description = null
-          
+
           this.product = product
           this.hasDeclination = this.decli.declined(product)
           this.canAddToCard = (product && !this.hasDeclination)
+          this.productPrice = this.hasDeclination ? undefined : product.price
           if (this.sliderState == "none") {
             this.slideIn()
           }

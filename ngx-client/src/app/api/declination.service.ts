@@ -43,7 +43,7 @@ export class DeclinationService {
   }
 
   getCardItemtDeclinationId(item: CardItem): string {
-    return this.findDeclination(item.declinations)
+    return this.findDeclination(item.product.declinations)
   }
 
   getProductDeclinationId(product: ProductDetail): string {

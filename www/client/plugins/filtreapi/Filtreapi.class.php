@@ -88,7 +88,7 @@ ORDER BY parent, child_index";
         
         $result = $pdo->query($query);
         $result = $result->fetchAll(PDO::FETCH_CLASS, RubDesc::class);
-        $query = "SELECT d.titre as label, p.id, p.ref, p.rubrique FROM " . Produit::TABLE . " as p 
+        $query = "SELECT d.titre as label, p.id, p.ref, p.prix, p.rubrique FROM " . Produit::TABLE . " as p 
 LEFT JOIN " . Produitdesc::TABLE . " as d ON p.id=d.produit 
 WHERE ligne=1 ORDER BY rubrique, classement";
         $produits = $pdo->query($query);
@@ -100,6 +100,12 @@ WHERE ligne=1 ORDER BY rubrique, classement";
             $prodDict[$prod->rubrique][] = $prod;
             if ($prod->id == $this->currentProd)
                 ProdDesc::$current = $prod;
+            $carac = $this->productHelper->getCarac($prod->id);
+            if ($carac) {
+                $prod->declinations = array($carac->caracdisp);
+                $decli = $this->productHelper->getBoDeclinations($carac->caracdisp);
+                $prod->prix = $decli[0]->price;
+            }
         }
         $root = new RubDesc();
         $root->id = 0;
@@ -408,9 +414,9 @@ ORDER BY titre";
                         $result = null;
                         $card = new CardController();
                         $map = 0;
-                        if($this->paramsUtil->getNumParameters()>1)
+                        if ($this->paramsUtil->getNumParameters() > 1)
                             $map = $this->paramsUtil->parameters[1];
-                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson():null, $map);
+                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson() : null, $map);
                         break;
                     }
                 case 'countries':

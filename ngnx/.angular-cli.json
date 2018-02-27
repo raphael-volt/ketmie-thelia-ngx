@@ -71,14 +71,20 @@
       }
     },
     {
-      "name": "thelia",
-      "root": "libs/thelia/src",
+      "name": "rzl/math",
+      "root": "libs/rzl/math/src",
       "test": "../../../test.js",
       "appRoot": ""
     },
     {
-      "name": "rzl/math",
-      "root": "libs/rzl/math/src",
+      "name": "rzl/tween",
+      "root": "libs/rzl/tween",
+      "test": "../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia",
+      "root": "libs/thelia/src",
       "test": "../../../test.js",
       "appRoot": ""
     }

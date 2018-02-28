@@ -2,12 +2,10 @@ import { Injectable, EventEmitter } from "@angular/core";
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Observable, Observer, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
-import { ApiService } from "../api/api.service";
-import { RequestService } from "../api/request.service";
-import { SessionService } from "../api/session.service";
-import { APISession } from "../api/api.model";
-import { CardService } from "../api/card.service";
-import { one } from "../shared/utils/subscription.utils";
+
+import { RequestService, SessionService, CardService, ApiService } from "@thelia/api";
+import { APISession } from "@thelia/model";
+import { one } from "@thelia/utils";
 @Injectable()
 export class CatalogGuard implements CanActivate {
 

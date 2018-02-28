@@ -6,6 +6,7 @@ import { RequestService } from "./request.service";
 import { SessionService } from "./session.service";
 import { LocalStorageModule, LocalStorageService } from "angular-2-local-storage";
 import { CardService } from './card.service';
+import { DeclinationService } from './declination.service';
 import { Card, ICard, ProductDeclination, CardItem, CardItemPerso, Product, ProductDetail } from "../api/api.model";
 import { map } from "rxjs/operators";
 let api: ApiService
@@ -19,6 +20,59 @@ const cardI = (p: ProductDetail, dI, q = 1): CardItem => {
     quantity: q
   }
 }
+describe('CardService', () => { 
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        RequestService,
+        DeclinationService,
+        LocalStorageService,
+        XHRBackend,
+        BaseRequestOptions,
+        {
+          provide: Http,
+          deps: [XHRBackend, BaseRequestOptions],
+          useFactory: (xhr: XHRBackend, opt: BaseRequestOptions) => {
+            return new Http(xhr, opt)
+          }
+        },
+        {
+          provide: SessionService,
+          deps: [LocalStorageService],
+          useFactory: (storage: LocalStorageService) => {
+            return new SessionService(storage)
+          }
+        },
+        {
+          provide: ApiService,
+          deps: [Http, RequestService, SessionService],
+          useFactory: (h: Http, request: RequestService, session: SessionService) => {
+            if (!api)
+              api = new ApiService(h, session, request)
+            return api
+          }
+        },
+        {
+          provide: CardService,
+          deps: [ApiService, RequestService, DeclinationService],
+          useFactory: (_api: ApiService, request: RequestService, decli: DeclinationService) => {
+            if (!service)
+              service = new CardService(_api, request, decli)
+            return service
+          }
+        }
+      ],
+      imports: [
+        HttpModule,
+        ApiModule
+      ]
+    });
+  });
+
+  it('should be created', inject([CardService], (cardService: CardService) => {
+    expect(service).toBeTruthy();
+  }));
+})
 /*
 describe('CardService', () => {
 

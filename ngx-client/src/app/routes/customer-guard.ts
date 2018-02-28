@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { Observable, Observer, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
-import { CustomerService } from "../api/customer.service";
-import { ConnectionFormComponent } from "../templates/customer/connection-form/connection-form.component"
-import { PopupService } from "../popup.service";
+import { PopupService } from "@thelia/common";
+import { CustomerService } from "@thelia/api";
+import { ConnectionFormComponent } from "@thelia/components"
 @Injectable()
 export class CustomerGuard implements CanActivate {
 

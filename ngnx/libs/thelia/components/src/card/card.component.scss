@@ -1,0 +1,73 @@
+// try to overide defaults mat-table
+/*
+
+.basis-auto {
+    &.mat-cell, &.mat-header-cell {
+        flex-basis: auto;
+        flex-shrink: 0;
+        flex-grow: 0;
+        &.shrink {
+            flex-shrink: 1;
+        }
+        &.grow {
+            flex-grow: 1;
+        }
+    }
+}
+.basis-auto {
+    &.mat-cell, &.mat-header-cell {
+        flex-basis: auto;
+    }
+}
+.mat-cell.basis-auto, .mat-header-cell.basis-auto { 
+    flex-basis: auto;
+}
+.mat-cell.shrink, .mat-header-cell.shrink {
+  flex-shrink: 1;
+}
+
+.mat-cell.shrink-auto, .mat-header-cell {
+  flex: 0 1 auto;
+}
+*/
+
+.table {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+.column {
+  order: 0;
+  flex: 0 1 auto;
+  align-self: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+  align-items: stretch;
+}
+
+.column.fill {
+  order: 0;
+  flex: 1 1 auto;
+  align-self: auto;
+}
+
+.cell {
+  height: 200px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-content: flex-start;
+  align-items: center;
+}
+
+cart-item {
+    margin: 16px;
+}

@@ -5,7 +5,7 @@ import {
     RouterStateSnapshot
 } from "@angular/router";
 import { Observable, Observer, Subscription } from "rxjs";
-import { DeactivableComponent } from "./deactivable.component";
+import { DeactivableComponent } from "@thelia/common";
 
 @Injectable()
 export class DeactivableGuard implements CanDeactivate<DeactivableComponent> {

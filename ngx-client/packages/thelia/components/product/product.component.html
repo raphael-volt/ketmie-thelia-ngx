@@ -1,0 +1,38 @@
+<div #overlay class="menu-offset main-ctn" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <div *ngIf="product" class="main-fx mat-elevation-z8">
+    <i (click)="close()" class="close k-i k-i_close-circle i-button text-shadow" aria-hidden="true"></i>
+
+    <section class='h-ctn content raised'>
+      <div class="l-col dark">
+        <div class="product-title flati">N° {{product.id}}</div>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-subtitle>Prix: {{productPrice}}
+              <span *ngIf="productPrice"> €</span>
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <section *ngIf="product.description" [innerHTML]="product.description"></section>
+            <section *ngIf="hasDeclination">
+              <label>Choisiseez une taille:</label>
+              <decli-radio-group 
+                [product]="product" (declinationItemChange)="declinationChange($event)">
+              </decli-radio-group>
+              </section>
+          </mat-card-content>
+          <mat-card-actions>
+            <button color="primary" mat-raised-button [disabled]="!productPrice" (click)="addToCard()">Ajouter au panier</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+      <div class="r-col img-box-row">
+        <i (click)="imgBox.prev()" [class.on]="canNavImages" class="box-item k-i k-i_chevron-left i-button text-shadow" aria-hidden="true"></i>
+        <div class="img-box box-item">
+          <canvas [imgBox]="boxProduct"></canvas>
+        </div>
+        <i (click)="imgBox.next()" [class.on]="canNavImages" class="box-item k-i k-i_chevron-right i-button text-shadow" aria-hidden="true"></i>
+      </div>
+    </section>
+  </div>
+</div>

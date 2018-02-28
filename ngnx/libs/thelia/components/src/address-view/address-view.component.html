@@ -1,0 +1,42 @@
+<!-- 
+<section *ngIf="address">
+  <h3>{{address.libelle}}</h3>
+  <h4>{{address.raison | raison : 'long'}} {{address.nom}} {{address.prenom}} </h4>
+  <p>{{address.adresse1}}</p>
+  <p *ngIf="address.adresse2">{{address.adresse2}}</p>
+  <p *ngIf="address.adresse3">{{address.adresse3}}</p>
+  <p class="cp-town">{{address.cpostal}} {{address.ville}}</p>
+  <p class="contry">{{address.pays | country}}</p>
+  <p><i class="fa fa-phone" aria-hidden="true"></i> {{address.tel}}</p>
+                  <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="8px">
+                    <button mat-raised-button color="warn" (click)="delete.emit()">{{deleteLabel}}</button> 
+                    <button mat-raised-button color="primary" (click)="edit.emit(address)">{{changeLabel}}</button> 
+                  </div>
+</section> -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <h3>{{address.libelle}}</h3>
+    </mat-card-title>
+    <mat-card-subtitle>
+      <h4>{{address.raison | raison : 'long'}} {{address.nom}} {{address.prenom}}</h4>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{address.adresse1}}</p>
+    <p *ngIf="address.adresse2">{{address.adresse2}}</p>
+    <p *ngIf="address.adresse3">{{address.adresse3}}</p>
+    <p class="cp-town">{{address.cpostal}} {{address.ville}}</p>
+    <p *ngIf="!address.adresse2" class="empty"></p>
+    <p *ngIf="!address.adresse3" class="empty"></p>
+    <p class="contry">{{address.pays | country}}</p>
+    <p><i class="fa fa-phone" aria-hidden="true"></i> {{address.tel}}</p>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-toolbar>
+        <button mat-raised-button color="warn" (click)="delete.emit()">{{deleteLabel}}</button> 
+        <span class="flex-fill-width"></span>
+        <button mat-raised-button color="primary" (click)="edit.emit(address)">{{changeLabel}}</button>
+    </mat-toolbar>
+  </mat-card-footer>
+</mat-card>

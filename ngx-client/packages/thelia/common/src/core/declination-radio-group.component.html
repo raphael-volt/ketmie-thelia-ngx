@@ -1,0 +1,8 @@
+<mat-radio-group
+  fxLayoutGap="8px" fxLayout="column" fxLayoutAlign="start start"
+  [(ngModel)]="declinationItem" 
+  (ngModelChange)="modelChange($event)">
+  <mat-radio-button *ngFor="let d of declinationItems" color="primary" [value]="d">
+    {{d | declination}}
+  </mat-radio-button>
+</mat-radio-group>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : ketmie_t_db
--- Généré le :  jeu. 25 jan. 2018 à 16:59
+-- Généré le :  mer. 28 fév. 2018 à 15:32
 -- Version du serveur :  5.5.56
 -- Version de PHP :  7.0.16
 
@@ -56,7 +56,8 @@ CREATE TABLE `administrateur` (
 --
 
 INSERT INTO `administrateur` (`id`, `identifiant`, `motdepasse`, `prenom`, `nom`, `profil`, `lang`) VALUES
-(2, 'admin', '*A4B6157319038724E3560894F7F932C8886EBFCF', 'Admin', 'Dev', 1, 1);
+(2, 'admin', '*A4B6157319038724E3560894F7F932C8886EBFCF', 'Admin', 'Dev', 1, 1),
+(4, 'devadmin', '*BCDB46F9759BC3C7C2679D4E81145B53EE616059', 'devadmin', 'devadmin', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -89,7 +90,12 @@ INSERT INTO `adresse` (`id`, `libelle`, `client`, `raison`, `entreprise`, `nom`,
 (15, 'Adresse 2', 6, 1, '', 'Mousquey', 'Stéphanie', 'Le champs aux moines', '', '', '22630', 'St-André-des-eaux', '0265847884', 64),
 (17, 'uygjyg', 29, 1, '', 'jhbjbjb', '1010', '101', '', '', '000', 'MMM', '1010', 64),
 (18, 'Chez oim', 30, 3, '', 'Volt', 'Raphaël', '23 place Jules Ferry', 'Résidence Rohan', 'Bâtiement Nord , étage 1', '56100', 'LORIENT', '0674654493', 64),
-(19, 'Chez MFP', 30, 1, '', 'Piel', 'Marie-France', 'Le champs aux moines', '', '', '22630', 'St-André-des-eaux', '0296274818', 64);
+(19, 'Chez MFP', 30, 1, '', 'Piel', 'Marie-France', 'Le champs aux moines', '', '', '22630', 'St-André-des-eaux', '0296274818', 64),
+(21, 'Adresse 1', 35, 3, '', 'Durand', 'Giles', '6 rue Foo-Bar', 'comp 1', '', '45680', 'Saintt-Genoux', '0674568976', 64),
+(23, 'Adresse 3', 35, 1, '', 'Durand', 'Françoise', '6 rue Foo-bar', '', '', '45680', 'St-Genoux', '0244549875', 64),
+(24, 'Adresse 4', 35, 3, '', 'Jjhjh ', 'kjkjhkjh', 'mlkkkmlk mlk mlk', 'mlk kmlk k', 'mlkmk mlk ', '1234', 'lkjlkj', '321321321', 64),
+(25, 'Adresse 5', 35, 1, '', 'MLKmlk', 'mlkmlk', 'lkjlj', 'lkjlkj', 'lkjlkj', '123456', 'mlkmlk', '321321', 64),
+(26, 'Adresse 6', 35, 2, 'lkjjjlkj', 'Llkjjjlkj', 'gfdgfd', 'LK', '', '', '456', 'poi', '123456', 64);
 
 -- --------------------------------------------------------
 
@@ -534,7 +540,10 @@ CREATE TABLE `client` (
 
 INSERT INTO `client` (`id`, `ref`, `datecrea`, `raison`, `entreprise`, `siret`, `intracom`, `nom`, `prenom`, `adresse1`, `adresse2`, `adresse3`, `cpostal`, `ville`, `pays`, `telfixe`, `telport`, `email`, `motdepasse`, `parrain`, `type`, `pourcentage`, `lang`) VALUES
 (32, '1512091216000032', '2015-12-09 12:16:17', 1, '', '', '', 'DE THEZY', 'Cécile', '14 rue Louis Rossel', '', '14 rue Louis Rossel', '35000', 'RENNES', 64, '0642278619', '', 'ceciledethezy@gmail.com', '*AD36C11F9BB7E12236E7ED7A81AC303AD142A5D4', 0, 0, 0, 1),
-(33, '1702021827000033', '2017-02-02 18:27:38', 1, '', '', '', 'kjh', 'kjh', 'kjh', 'kjh', 'kjh', '200', 'kjh', 64, '00000', '00000', 'fionnvolt@gmail.com', '*F2E84D3EB14990103E27F92513BB854ECAA8C727', 0, 0, 0, 1);
+(33, '1702021827000033', '2017-02-02 18:27:38', 1, '', '', '', 'kjh', 'kjh', 'kjh', 'kjh', 'kjh', '200', 'kjh', 64, '00000', '00000', 'fionnvolt@gmail.com', '*F2E84D3EB14990103E27F92513BB854ECAA8C727', 0, 0, 0, 1),
+(35, '', '2018-02-01 00:00:00', 3, '', '', '', 'Dev', 'Customer', '3 rue Foo', 'bâtiment Bar', '', '22100', 'Dinan', 64, '0296020202', '', 'dev@ketmie.com', '*6AA8EB9A65BACAE2C7C32A207A8C8D0112413BE8', 0, 0, 0, 1),
+(36, '1802200224000036', '2018-02-20 02:24:34', 3, '', '', '', 'Test', 'Nouveau', 'address', 'complement', '', '66222', 'dioui', 64, '0202020202', '0202020202', 'test1@ketmie.com', '*6AA8EB9A65BACAE2C7C32A207A8C8D0112413BE8', 0, 0, 0, 1),
+(37, '1802202109000037', '2018-02-20 21:09:01', 2, '', '', '', 'Durand', 'Véronique', '3 rue du bois', '', '', '24850', 'St Genoux', 64, '01245768', '01245768', 'dev5@ketmie.com', '*6BB4837EB74329105EE4568DDA7DC67ED2CA2AD9', 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -661,6 +670,15 @@ CREATE TABLE `declidisp` (
   `declinaison` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `declidisp`
+--
+
+INSERT INTO `declidisp` (`id`, `declinaison`) VALUES
+(1, 1),
+(2, 1),
+(3, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -675,6 +693,15 @@ CREATE TABLE `declidispdesc` (
   `classement` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `declidispdesc`
+--
+
+INSERT INTO `declidispdesc` (`id`, `declidisp`, `lang`, `titre`, `classement`) VALUES
+(1, 1, 1, '5', 1),
+(2, 2, 1, '6', 2),
+(3, 3, 1, '7', 3);
+
 -- --------------------------------------------------------
 
 --
@@ -685,6 +712,13 @@ CREATE TABLE `declinaison` (
   `id` int(11) NOT NULL,
   `classement` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `declinaison`
+--
+
+INSERT INTO `declinaison` (`id`, `classement`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -700,6 +734,13 @@ CREATE TABLE `declinaisondesc` (
   `chapo` text NOT NULL,
   `description` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `declinaisondesc`
+--
+
+INSERT INTO `declinaisondesc` (`id`, `declinaison`, `lang`, `titre`, `chapo`, `description`) VALUES
+(1, 1, 1, 'boucle_decli_a', '', '');
 
 -- --------------------------------------------------------
 
@@ -1241,13 +1282,8 @@ INSERT INTO `modules` (`id`, `nom`, `type`, `actif`, `classement`) VALUES
 (19, 'colissimo', 2, 1, 1),
 (20, 'cheque', 1, 1, 1),
 (21, 'virement', 1, 1, 2),
-(28, 'filtreajaxform', 4, 0, 1),
 (24, 'tinymce4', 3, 1, 1),
-(25, 'filtrecarac', 4, 0, 0),
-(26, 'filtreimglist', 4, 0, 0),
-(27, 'filtremenu', 4, 0, 0),
-(29, 'filtreamf', 4, 0, 2),
-(30, 'filtreapi', 4, 1, 3);
+(30, 'filtreapi', 4, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -3309,7 +3345,9 @@ CREATE TABLE `rubdeclinaison` (
 --
 
 INSERT INTO `rubdeclinaison` (`id`, `rubrique`, `declinaison`) VALUES
-(5, 3, 0);
+(5, 3, 0),
+(6, 3, 0),
+(7, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -3517,7 +3555,7 @@ INSERT INTO `variable` (`id`, `nom`, `valeur`, `protege`, `cache`) VALUES
 (13, 'prx_allow_debug', '1', 0, 1),
 (14, 'prx_cache_file_lifetime', '240', 0, 1),
 (15, 'prx_cache_check_period', '240', 0, 1),
-(16, 'prx_cache_check_time', '1516896966', 0, 1),
+(16, 'prx_cache_check_time', '1519513611', 0, 1),
 (17, 'verifstock', '0', 1, 0),
 (18, 'un_domaine_par_langue', '0', 0, 1),
 (19, 'action_si_trad_absente', '1', 0, 1),
@@ -4143,12 +4181,12 @@ ALTER TABLE `accessoire`
 -- AUTO_INCREMENT pour la table `administrateur`
 --
 ALTER TABLE `administrateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT pour la table `adresse`
 --
 ALTER TABLE `adresse`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT pour la table `autorisation`
 --
@@ -4213,7 +4251,7 @@ ALTER TABLE `carac_price`
 -- AUTO_INCREMENT pour la table `client`
 --
 ALTER TABLE `client`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 --
 -- AUTO_INCREMENT pour la table `commande`
 --
@@ -4243,22 +4281,22 @@ ALTER TABLE `dbtest`
 -- AUTO_INCREMENT pour la table `declidisp`
 --
 ALTER TABLE `declidisp`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT pour la table `declidispdesc`
 --
 ALTER TABLE `declidispdesc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT pour la table `declinaison`
 --
 ALTER TABLE `declinaison`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT pour la table `declinaisondesc`
 --
 ALTER TABLE `declinaisondesc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT pour la table `devise`
 --
@@ -4383,7 +4421,7 @@ ALTER TABLE `rubcaracteristique`
 -- AUTO_INCREMENT pour la table `rubdeclinaison`
 --
 ALTER TABLE `rubdeclinaison`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT pour la table `rubrique`
 --

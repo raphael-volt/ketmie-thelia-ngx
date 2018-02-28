@@ -127,11 +127,21 @@ if (count($pre))
 else
     $pre = "";
 $html = join(PHP_EOL, $html);
-
+$maxtime = ini_get("session.gc_maxlifetime");
+$params = print_r(
+    array(
+        "cookie"=>session_get_cookie_params(),
+        "maxtime"=>$maxtime
+    )
+    ,true);
 echo <<<EOL
 <html>
 <body>
 	<div>{$html}</div>
+    <div>
+        <h3>session_get_cookie_params</h3>
+        <pre>{$params}</pre>    
+    </div>
     <div>
         <pre>{$pre}</pre>
     </div>

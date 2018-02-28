@@ -42,9 +42,6 @@ RUN apt-get install --yes --force-yes libmagickwand-dev libmagickcore-dev
 RUN yes '' | pecl install -f imagick
 RUN docker-php-ext-enable imagick
 
-# PHP configuration
-COPY config/ketmie.ini /usr/local/etc/php/conf.d/ketmie.ini
-
 # Change file mod and owner
 RUN usermod -u 1000 www-data
 RUN chown -R www-data:www-data /var/www/html/

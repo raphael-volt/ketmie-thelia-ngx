@@ -2,10 +2,11 @@
 
 require_once 'fonctions/autoload.php';
 require_once 'client/config_thelia.php';
+/*
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
-
+*/
 function parseSessions($callback)
 {
     $old = session_id();
@@ -54,9 +55,7 @@ $session_id = isset($_GET["id"]) ? $_GET["id"] : "";
 $html = array();
 $pre = array();
 $sessions = array();
-$pdo = PDOThelia::getInstance();
-$q = "SELECT id, identifiant FROM administrateur";
-$res = $pdo->query($q);
+
 parseSessions(function ($i, $s, $f) {
     global $html;
     global $sessions;
@@ -137,8 +136,6 @@ $html = join(PHP_EOL, $html);
 $maxtime = ini_get("session.gc_maxlifetime");
 $params = print_r(
     array(
-        "admins"=>$res->fetchAll(PDO::FETCH_OBJ),
-        "extension"=>ini_get('extension'),
         "cookie"=>session_get_cookie_params(),
         "maxtime"=>$maxtime
     )

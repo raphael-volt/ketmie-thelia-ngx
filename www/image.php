@@ -7,13 +7,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     header("HTTP/1.1 200 OK");
     exit();
 }
-if (isset($_GET["reset"])) {
-    if (file_exists(__DIR__ . "/image.txt"))
-        file_put_contents(__DIR__ . "/image.txt", "");
-    die("image.txt cleared");
-}
 
-$logStr = array();
 include_once 'client/image_max.php';
 $name = null;
 
@@ -46,8 +40,6 @@ if ($name) {
     
     $nb = isset($_GET["nb"]) ? "nb" : "";
     $type = isset($_GET["type"]) ? $_GET["type"] : "produit";
-    if ($type == "grid")
-        $type = "grids";
     
     $w = isset($_GET["width"]) ? $_GET["width"] : NAN;
     $h = isset($_GET["height"]) ? $_GET["height"] : NAN;
@@ -117,12 +109,8 @@ if ($name) {
 }
 if ($name) {
     $create_img = ! file_exists($pathcache);
-    if ($type == "grids") {
-        $logStr[] = "$name w:$w, h:$h exists:" . ($create_img ? "false" : "true");
-    }
     if ($create_img) {
         $image_new = imagecreatetruecolor($w, $h);
-        
         switch ($img_type) {
             case IMAGETYPE_JPEG:
                 {
@@ -182,13 +170,6 @@ if ($name) {
 if (! $name) {
     $pathcache = __DIR__ . "/template/_gfx/no-image.png";
     $sizes = getimagesize($pathcache);
-} else {
-    if ($type == "grids") {
-        $logStr[] = $nomcache;
-    }
-}
-if (count($logStr)) {
-    file_put_contents(__DIR__ . "/image.txt", print_r($logStr, true) . PHP_EOL, FILE_APPEND);
 }
 
 header('Content-Length: ' . filesize($pathcache));

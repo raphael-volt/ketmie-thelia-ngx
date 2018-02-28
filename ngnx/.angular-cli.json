@@ -61,7 +61,11 @@
       "testTsconfig": "../../../tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css"
+        "../../../assets/ki/style.css",
+        "../../../assets/flati/flati.css",
+        "theme.scss",
+        "styles.css",
+        "../../../node_modules/font-awesome/css/font-awesome.min.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
@@ -69,6 +73,12 @@
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts"
       }
+    },
+    {
+      "name": "mat-env",
+      "root": "libs/mat-env/src",
+      "test": "../../../test.js",
+      "appRoot": ""
     },
     {
       "name": "rzl/math",
@@ -83,9 +93,57 @@
       "appRoot": ""
     },
     {
-      "name": "thelia",
-      "root": "libs/thelia/src",
-      "test": "../../../test.js",
+      "name": "thelia/api",
+      "root": "libs/thelia/api/src",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/assets",
+      "root": "libs/thelia/assets",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/common",
+      "root": "libs/thelia/common/src",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/components",
+      "root": "libs/thelia/components/src",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/core",
+      "root": "libs/thelia/core/src",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/guards",
+      "root": "libs/thelia/guards/src",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/model",
+      "root": "libs/thelia/model",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/shared",
+      "root": "libs/thelia/shared/src",
+      "test": "../../../../test.js",
+      "appRoot": ""
+    },
+    {
+      "name": "thelia/utils",
+      "root": "libs/thelia/utils/src",
+      "test": "../../../../test.js",
       "appRoot": ""
     }
   ]

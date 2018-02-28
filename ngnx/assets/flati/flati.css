@@ -1,0 +1,11 @@
+@font-face {
+	font-family: 'Flati';
+	src: url('./flati-webfont.eot');
+	src: url('./flati-webfont.eot?#iefix') format('embedded-opentype'),
+		url('./flati-webfont.woff2') format('woff2'),
+		url('./flati-webfont.woff') format('woff'),
+		url('./flati-webfont.ttf') format('truetype'),
+		url('./flati-webfont.svg#flatironitc_ttregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}

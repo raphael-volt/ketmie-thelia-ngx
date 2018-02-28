@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title><h2>{{ title }}</h2></mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <address-form [address]="address" [isCustomerAddress]="isCustomer"
+      [saveButton]="false" [cancelButton]="false" 
+      (valid)="validChange($event)"></address-form>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-toolbar>
+      <span style="flex: 1 1 auto;"></span>
+      <button mat-raised-button color="warn" (click)="cancel()">{{ cancelLabel }}</button>
+      <button [disabled]="!canSave" mat-raised-button color="primary" (click)="save()">{{ saveLabel }}</button>
+    </mat-toolbar>
+  </mat-card-footer>
+</mat-card>

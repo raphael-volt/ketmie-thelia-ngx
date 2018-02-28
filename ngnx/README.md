@@ -1,4 +1,38 @@
-# Ngnx
+# Thelia nx workspace 
+
+## Generate a scoped lib
+
+```bash
+ng g lib components --directory thelia    
+```
+Will add an app in `.angular-cli.json`
+```json
+{
+    "name": "thelia/components",
+    "root": "libs/thelia/components/src",
+    "test": "../../../../test.js",
+    "appRoot": ""
+}
+```
+And generate file structure below :
+```bash
+libs/
+└── thelia
+    └── components
+        ├── index.ts
+        └── src
+            ├── components.module.spec.ts
+            └── components.module.ts
+```
+
+Import the library module :
+
+```typescript
+import { ComponentsModule } from '@ngnx/thelia/components';
+```
+
+
+## Ngnx
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.5 using [Nrwl Nx](https://nrwl.io/nx).
 

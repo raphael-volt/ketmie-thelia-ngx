@@ -17,7 +17,8 @@ getTestBed().initTestEnvironment(
 // And load the modules.
 //contextApps.keys().map(contextApps);
 
-const contextLibs = require.context('./libs', true, /tween-base\.spec\.ts$/);
+// const contextLibs = require.context('./libs', true, /tween-base\.spec\.ts$/);
+const contextLibs = require.context('./libs', true, /card\.service\.spec\.ts$/);
 // And load the modules.
 contextLibs.keys().map(contextLibs);
 

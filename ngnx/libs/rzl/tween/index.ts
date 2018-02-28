@@ -1,2 +1,2 @@
 export * from './ease';
-export * from './tween-base'
+export * from './tween-base';

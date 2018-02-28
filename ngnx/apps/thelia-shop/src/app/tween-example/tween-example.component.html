@@ -1,0 +1,16 @@
+<div mat-content class="mat-card">
+    <h1>Tween Example</h1>
+    <div style="padding: 4px">
+      <button mat-raised-button (click)="toggle()">{{toggleLabel}}</button>
+    </div>
+    <div style="padding: 4px">
+      <button mat-raised-button (click)="start()">{{startLabel}}</button>
+    </div>
+    <div style="padding: 4px">
+      <button mat-raised-button (click)="reverse()">REVERSE</button>
+    </div>
+    <h2>Tween status: '{{statusLabel}}'</h2>
+    <div>
+      <img #img width="300" src="assets/nx-logo.png">
+    </div>
+  </div>

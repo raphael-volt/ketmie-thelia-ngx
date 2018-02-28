@@ -1,99 +1,43 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Rect } from '@ngnx/rzl/math';
-import { TweenBase, TweenStatus, TweenChangeEvent, TweenData, Quadratic } from '@ngnx/rzl/tween';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from "rxjs";
+import { ApiService } from '@ngnx/thelia/api'
+
+import { ShopTree, CMSContent, Category } from "@ngnx/thelia/model";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, AfterViewInit {
-  constructor() { }
+export class AppComponent implements OnInit, OnDestroy {
 
-  startLabel: string = "PLAY"
-  toggleLabel: string = "IN"
-  statusLabel: TweenStatus
+  constructor(private apiService: ApiService) { }
 
-  @ViewChild('img') img: ElementRef | undefined;
+  categories: Category[] = []
+  cmsContents: CMSContent[] = []
 
-  tween: TweenBase;
+  private treeSub: Subscription
+
   ngOnInit() {
-    let t: TweenBase = new TweenBase({
-      duration: 2000,
-      start: 0,
-      end: 100,
-      ease: Quadratic.inOut
-    });
-    this.tween = t
-    this.statusLabel = t.status
-  }
-
-  ngAfterViewInit() {
-    let i: HTMLElement = this.img.nativeElement;
-    const f = (v: number) => {
-      i.style.transform = `translateX(${v}%)`;
-    };
-    const t = this.tween
-    t.events.subscribe((e: TweenChangeEvent) => {
-      f(e.value)
-    })
-    t.statusChange.subscribe(s => {
-      this.statusLabel = s
-      switch (s) {
-        case "pause":
-          this.startLabel = "PLAY"
-
-          break;
-        case "in":
-          this.toggleLabel = 'OUT'
-          this.startLabel = "PAUSE"
-          //t.data.ease = Quadratic.in
-          break;
-
-        case "out":
-          this.toggleLabel = 'IN'
-          this.startLabel = "PAUSE"
-          //t.data.ease = Quadratic.out
-          break;
-
-        case "begin":
-          this.startLabel = "PLAY"
-          this.toggleLabel = 'IN'
-
-          break;
-
-        case "end":
-          this.startLabel = "PLAY"
-          this.toggleLabel = 'OUT'
-
-          break;
-
-        default:
-          break;
-      }
-    })
-  }
-  start() {
-    const t = this.tween
-    if (t.status == "begin" || t.status == "end") {
-      t.start()
+    const api = this.apiService
+    if (api.initialized) {
+      this.loadTree()
     }
     else {
-      if (this.tween.running) {
-        t.pause()
-      }
-      else {
-        t.resume()
-      }
-
+      let sub = api.initializedChange.subscribe(initialized => {
+        sub.unsubscribe()
+        this.loadTree()
+      })
     }
   }
-  toggle() {
-    this.tween.toggle()
+
+  private loadTree = (initialized?) => {
+    this.treeSub = this.apiService.getShopTree().subscribe(shop => {
+      this.categories = shop.shopCategories
+      this.cmsContents = shop.cmsContents
+    })
   }
-  resume() {
-    this.tween.resume()
-  }
-  reverse() {
-    this.tween.reverse()
+
+  ngOnDestroy() {
+    this.treeSub.unsubscribe()
   }
 }

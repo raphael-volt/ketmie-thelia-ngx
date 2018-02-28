@@ -1,4 +1,3 @@
-
 type EaseFunction = (time: number, start: number, end: number, duration: number) => number;
 
 export class Linear {

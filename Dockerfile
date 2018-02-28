@@ -1,7 +1,7 @@
 FROM php:5.6-apache
-
-MAINTAINER Raphaël Volt <raphael@ketmie.com>
 # Based on Aurélien Lavorel <aurelien@lavoweb.net>
+
+LABEL maintainer "Raphaël Volt <raphael@ketmie.com>"
 
 RUN apt-get update
 RUN apt-get install --yes --force-yes cron g++ gettext libicu-dev openssl libc-client-dev libkrb5-dev  libxml2-dev libfreetype6-dev libgd-dev libmcrypt-dev bzip2 libbz2-dev libtidy-dev libcurl4-openssl-dev libz-dev libmemcached-dev libxslt-dev
@@ -19,7 +19,10 @@ RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
 RUN docker-php-ext-install imap
 RUN docker-php-ext-install intl
 RUN docker-php-ext-install mcrypt
-RUN docker-php-ext-install mysql mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysql
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pdo
+RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install soap
 RUN docker-php-ext-install tidy
 RUN docker-php-ext-install xmlrpc

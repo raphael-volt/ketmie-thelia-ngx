@@ -441,7 +441,7 @@ ORDER BY titre";
                     }
                 case "descriptions":
                     {
-                        $result = $this->descriptions($this->paramsUtil, $this->paramsUtil->parameters[1]);
+                        $result = $this->descriptions($this->paramsUtil->parameters[0], $this->paramsUtil->parameters[1]);
                         break;
                     }
                 

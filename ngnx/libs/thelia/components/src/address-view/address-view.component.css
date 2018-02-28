@@ -1,0 +1,16 @@
+
+mat-card {
+    min-width: 300px;
+}
+
+.contry {
+    font-style: italic;
+}
+
+.cp-town {
+    font-weight: bold;
+}
+
+p.empty:before {
+    content: "\00a0";
+}

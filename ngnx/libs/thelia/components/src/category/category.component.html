@@ -1,0 +1,10 @@
+<div class="main" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <h2>{{categoryLabel}}</h2>
+  <div #imgCtn class="imgCtn blur" [class.on]="selectedProduct">
+    <img *ngFor="let p of children" routerLink="/category/{{categoryId}}/product/{{p.id}}"
+      apiImage [productId]="p.id" [imgHeight]="imgHeight" (loaderEvent)="imgLoad($event)" />
+  </div>
+  <mat-progress-bar *ngIf="loading" mode="determinate" [value]="percentLoaded">
+  </mat-progress-bar>
+</div>
+<router-outlet></router-outlet>

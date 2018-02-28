@@ -1,0 +1,85 @@
+.imgCtn {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  box-sizing: content-box;
+}
+
+.imgCtn>img {
+  position: absolute;
+  cursor: pointer;
+}
+
+mat-progress-bar {
+  width: 50vw;
+  position: fixed;
+  left: 25vw;
+  top: 50vh;
+}
+
+@mixin keyframes($name) {
+  @keyframes #{$name} {
+    @content;
+  }
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @-o-keyframes #{$name} {
+    @content;
+  }
+}
+
+@mixin sepia($s) {
+  filter: sepia(#{$s});
+}
+
+@mixin blurSepia($b, $s) {
+  filter: blur(#{$b}) sepia(#{$s});
+  /*margin: - $b;*/
+}
+
+@mixin anim($value, $cls) {
+  #{$cls} {
+    animation: $value;
+    -webkit-animation: $value;
+    -moz-animation: $value;
+    -ms-animation: $value;
+    -o-animation: $value;
+    @content;
+  }
+}
+
+$blur-d: 350ms;
+$blur: "."+blur;
+$blurin: blurin;
+$blurout: blurout;
+$on: on;
+$blur-on: $blur+"."+$on;
+$blurin-anim: $blurin $blur-d;
+$blurout-anim: $blurout $blur-d;
+$b-0: 0px;
+$b-1: 1px;
+$s-0: 0%;
+$s-1: 100%;
+@mixin sepiaAnim($kf, $cls, $anim, $s0, $s1) {
+  @include keyframes($kf) {
+    from {
+      @include sepia($s0);
+    }
+    to {
+      @include sepia($s1);
+    }
+  }
+  @include anim($anim, $cls) {
+    @include sepia($s1);
+  }
+}
+
+@include sepiaAnim($blurin, $blur-on, $blurin-anim, $s-0, $s-1);
+@include sepiaAnim($blurout, $blur, $blurout-anim, $s-1, $s-0);

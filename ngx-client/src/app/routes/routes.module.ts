@@ -5,14 +5,14 @@ import { RouterModule, Routes } from '@angular/router'
 import { DeactivableGuard } from "./deactivable-guard";
 import { CatalogGuard } from "./catalog-guard";
 import { CustomerGuard } from "./customer-guard";
-
-import { DeactivableComponent } from "./deactivable.component";
-import { ThemeComponent } from "../templates/theme/theme.component";
-import { CategoryComponent } from "../templates/category/category.component";
-import { CmsContentComponent } from "../templates/cms-content/cms-content.component";
-import { ProductComponent } from "../templates/product/product.component";
-import { CustomerComponent } from "../templates/customer/customer.component";
-import { CardComponent } from "../templates/card/card.component";
+import { DeactivableComponent } from "@thelia/common";
+import { 
+  CategoryComponent, 
+  CmsContentComponent, 
+  ProductComponent, 
+  CustomerComponent, 
+  CardComponent 
+} from "@thelia/components";
 const routes: Routes = [
   {
     path: '',
@@ -51,10 +51,6 @@ const routes: Routes = [
         path: "card",
         canActivate: [CatalogGuard],
         component: CardComponent
-      },
-      {
-        path: "theme",
-        component: ThemeComponent 
       }
     ]
   },

@@ -1,0 +1,26 @@
+<ketmie-background class="svg-bg"></ketmie-background>
+<div class="app-ctn dark k-dark">
+  <nav class="menu-bar tool-bar" menu-bar (menu)="sidenav.toggle()" (itemClick)="sidenav.close()" (barClick)="sidenav.close()"></nav>
+  <mat-sidenav-container>
+    <mat-sidenav #sidenav opened="false" [disableClose]="false">
+      <mat-nav-list class="nav-list">
+        <mat-list-item *ngFor="let c of categories" 
+          (click)="sidenav.close()" 
+          routerLink="/category/{{c.id}}">
+          <span matLine class="flati wrap">{{ c.label }}</span>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item *ngFor="let c of cmsContents" 
+          (click)="sidenav.close()" 
+          routerLink="/cms-content/{{c.id}}">
+          <span matLine class="flati wrap">{{ c.label }}</span>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div id="router-container" class="light k-light">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

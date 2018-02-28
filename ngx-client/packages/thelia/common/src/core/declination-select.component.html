@@ -1,0 +1,8 @@
+<mat-select 
+  [(ngModel)]="declinationItem" 
+  (ngModelChange)="modelChange($event)">
+  <mat-option *ngFor="let d of declinationItems" 
+    [value]="d">
+      {{d | declination}}
+  </mat-option>
+</mat-select>

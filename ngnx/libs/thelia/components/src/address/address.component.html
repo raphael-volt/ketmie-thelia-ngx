@@ -1,0 +1,88 @@
+<div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="16px" >
+  <div [formGroup]="nameGroup">
+    <mat-form-field *ngIf="!isCustomerAddress">
+      <input matInput placeholder="Libellé" formControlName="libelle" [(ngModel)]="data.libelle">
+      <mat-error *ngIf="nameGroup.controls.libelle.invalid">
+        {{requiredError}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div [formGroup]="formGroup" fxLayout="row" fxLayoutAlign="center start"
+  fxLayout.lt-md="column" fxLayoutAlign.lt-md="start none" fxLayoutGap.lt-md="0px">
+    <div class="form-col" fxLayout="column" fxLayoutAlign="start none" fxFlex="50">
+      <mat-form-field>
+        <mat-select placeholder="Civilité" formControlName="raison" [(ngModel)]="data.raison">
+          <mat-option *ngFor="let v of raisons" [value]="v.id">
+            {{ v.view }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="formGroup.controls.raison.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Nom" formControlName="nom" [(ngModel)]="data.nom">
+        <mat-error *ngIf="formGroup.controls.nom.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Prénom" formControlName="prenom" [(ngModel)]="data.prenom">
+        <mat-error *ngIf="formGroup.controls.prenom.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput="tel" placeholder="Téléphone" formControlName="tel" [(ngModel)]="data.tel">
+        <mat-error *ngIf="formGroup.controls.tel.invalid">
+          Ce n° de téléphone n'est pas valide.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Entreprise" formControlName="entreprise" [(ngModel)]="data.entreprise">
+        <mat-error *ngIf="formGroup.controls.entreprise.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="h-sep"></div>
+    <div class="form-col" fxLayout="column" fxLayoutAlign="start none" fxFlex="50">
+      <mat-form-field>
+        <mat-select matInput placeholder="Pays" formControlName="pays" [(ngModel)]="data.pays">
+          <mat-option *ngFor="let c of countries" value="{{c.id}}">{{c.name}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="formGroup.controls.pays.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Adresse" formControlName="adresse1" [(ngModel)]="data.adresse1">
+        <mat-error *ngIf="formGroup.controls.adresse1.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Complément d'adresse" formControlName="adresse2" [(ngModel)]="data.adresse2">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Complément d'adresse 2" formControlName="adresse3" [(ngModel)]="data.adresse3">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Code postal" formControlName="cpostal" [(ngModel)]="data.cpostal">
+        <mat-error *ngIf="formGroup.controls.cpostal.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Ville" formControlName="ville" [(ngModel)]="data.ville">
+        <mat-error *ngIf="formGroup.controls.ville.invalid">
+          {{requiredError}}
+        </mat-error>
+      </mat-form-field>
+      <div fxLayout="row" fxLayoutWrap fxLayoutAlign="end none" fxLayoutGap="8px" *ngIf="saveButton||cancelButton">
+        <button *ngIf="cancelButton" mat-raised-button color="warn" (click)="cancelHandler()">{{cancelButtonLabel}}</button>
+        <button *ngIf="saveButton" mat-raised-button [disabled]="!canSave" color="primary" (click)="saveHandler()">{{saveButtonLabel}}</button>
+      </div>
+    </div>
+  </div>
+</div>

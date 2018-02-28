@@ -1,0 +1,58 @@
+:host{
+    font-size: 22px;
+    padding: 12px;
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+    
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+    text-align: center;
+}
+.menu-ctn { 
+    font-size: .5em;
+    margin-bottom: 1em;
+    position: relative;
+}
+.menu-ctn > i {
+    position: absolute;
+    /* transform: rotate(270deg) translate(-100%, -100%);
+    transform-origin: top left; */
+}
+i {
+    cursor: pointer;
+}
+.card-box {
+    position: relative;
+}
+.card-box > div > span {
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+}
+.card-box .ripple {
+    /* 
+    margin-top: 9px;
+    position: absolute;
+    top:9pw;
+    top: 50%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    */
+}
+.card-box > div.art-count {
+    cursor: pointer;
+    font-size: 11px;
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    position: absolute;
+    right: -33%;
+    top: -33%;
+}

@@ -1,0 +1,74 @@
+<div class="main example-container mat-elevation-z8" style="background: white" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+  <h2>Panier</h2>
+  <div *ngIf="service.isEmpty">
+    <h3>Votre panier est vide</h3>
+  </div>
+  <div *ngIf="!service.isEmpty">
+      <h3>Total panier: {{card.total}} €</h3>
+      <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutWrap>
+        <cart-item *ngFor="let i of card.items" [cardItem]="i"
+          (declinationChange)="declinationChange(i, $event)"
+          (quantityChange)="quantityChange(i, $event)"></cart-item>
+      </div>
+    </div>
+      <!--
+  <div class="example-container mat-elevation-z8">
+    <mat-table #table [dataSource]="card.items">
+
+      <ng-container matColumnDef="img">
+        <mat-header-cell *matHeaderCellDef class="basis-auto shrink grow"></mat-header-cell>
+        <mat-cell *matCellDef="let e">
+          <img apiImage [productId]="e.product.id" [imgHeight]="180" [imgHeight]="180" />
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <mat-header-cell *matHeaderCellDef class="basis-auto shrink grow">Quantité</mat-header-cell>
+        <mat-cell *matCellDef="let e">
+          <mat-select matInput [(ngModel)]="e.quantity" (ngModelChange)="quantityChange(e, $event)">
+            <mat-option *ngFor="let v of [1,2,3,4,5,6,7,8,9]" [value]="e.quantity">{{v}}</mat-option>
+          </mat-select>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="decli">
+        <mat-header-cell *matHeaderCellDef class="basis-auto shrink grow">Options</mat-header-cell>
+        <mat-cell *matCellDef="let e" class="basis-auto shrink">
+          <decli-select [cardItem]="e" (declinationItemChange)="declinationChange(e, $event)"></decli-select>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="['img', 'quantity', 'decli']"></mat-header-row>
+
+      <mat-row *matRowDef="let row; columns: ['img', 'quantity', 'decli'];"></mat-row>
+
+    </mat-table>
+  </div>
+
+
+  <div *ngIf="tableData" class="table">
+    <div [class.fill]="col.flex == '1'" class="column" *ngFor="let col of tableData.columns">
+      <div style="margin: 8px; padding: 3px 5px" class="content border raised accent ">
+        <span>{{col.label}} t:{{col.type}} fx{{col.flex}}</span>
+      </div>
+      <div class="cell-column" *ngFor="let i of tableData.rows">
+        <div class="cell" [ngSwitch]="cellTypes[col.type]">
+          <div *ngSwitchCase="'0'"></div>
+          <img *ngSwitchCase="'1'" apiImage [productId]="i.productId" [imgHeight]="180" [imgHeight]="180" />
+          <div *ngSwitchCase="'2'">productId:{{i.productId}}</div>
+          <div *ngSwitchCase="'3'">
+            <mat-select [(value)]="e.quantity">
+              <mat-option value="{{v}}" *ngFor="let v of [1,2,3,4,5,6,7,8,9]">{{v}}</mat-option>
+            </mat-select>
+          </div>
+          <decli-select *ngSwitchCase="'4'" [cardItem]="i" (declinationItemChange)="declinationChange(e, $event)"></decli-select>
+          <div *ngSwitchCase="'5'">getPrice({{i.productId}}, {{i.quantity}}, {{i.decliId}})</div>
+          <div *ngSwitchCase="'6'">
+            <button mat-raised-button color="warn">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->
+</div>

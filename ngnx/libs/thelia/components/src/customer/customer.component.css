@@ -1,0 +1,43 @@
+.demo-tab-content {
+    font-size: 28px;
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 16px;
+}
+
+.account-tab-group.header-border {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.tab-ctn {
+    position: relative;
+    padding: 0px;
+}
+
+.tab-content {
+    padding-bottom: 16px;
+}
+
+.account-tab-group {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    bottom: 0px;
+}
+
+.customr-content {
+    padding: 16px;
+}
+
+.mat-tab-labels {
+    justify-content: center;
+}
+[address-view] {
+    margin: 16px 8px;
+    margin-top: 0;
+}

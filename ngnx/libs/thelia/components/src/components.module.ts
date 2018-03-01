@@ -28,13 +28,14 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { RaisonPipe } from './raison.pipe';
 import { AddressModalComponent } from './address-modal/address-modal.component';
 import { ApiModule } from '@ngnx/thelia/api';
-import { 
+import {
   DeclinationController,
-  DeclinationRadioGroupComponent, 
-  DeclinationSelectComponent 
+  DeclinationRadioGroupComponent,
+  DeclinationSelectComponent
 } from './declinations/declination-controller';
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { CardItemPricePipe } from './card-item-price.pipe';
+import { CardTableComponent } from './card/card-table/card-table.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -73,7 +74,8 @@ import { CardItemPricePipe } from './card-item-price.pipe';
     DeclinationRadioGroupComponent,
     DeclinationSelectComponent,
     MenuBarComponent,
-    CardItemPricePipe
+    CardItemPricePipe,
+    CardTableComponent
   ],
   exports: [
     KetmieBackgroundComponent,

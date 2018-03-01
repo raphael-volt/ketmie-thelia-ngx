@@ -61,11 +61,11 @@
       "testTsconfig": "../../../tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "../../../assets/ki/style.css",
-        "../../../assets/flati/flati.css",
+        "libs/flati/flati.css",
+        "libs/k-i/style.css",
+        "../../../node_modules/font-awesome/css/font-awesome.min.css",
         "theme.scss",
-        "styles.css",
-        "../../../node_modules/font-awesome/css/font-awesome.min.css"
+        "styles.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
@@ -99,12 +99,6 @@
       "appRoot": ""
     },
     {
-      "name": "thelia/assets",
-      "root": "libs/thelia/assets",
-      "test": "../../../../test.js",
-      "appRoot": ""
-    },
-    {
       "name": "thelia/common",
       "root": "libs/thelia/common/src",
       "test": "../../../../test.js",
@@ -120,7 +114,11 @@
       "name": "thelia/core",
       "root": "libs/thelia/core/src",
       "test": "../../../../test.js",
-      "appRoot": ""
+      "appRoot": "",
+      "styles": [
+        "assets/ki/style.css",
+        "assets/flati/flati.css"
+      ]
     },
     {
       "name": "thelia/guards",

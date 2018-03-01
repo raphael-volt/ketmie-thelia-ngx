@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DELETE } from '@ngnx/thelia/common'
+import { DELETE } from '@ngnx/thelia/common';
 @Component({
   selector: 'cart-item',
   templateUrl: './cart-item.component.html',
@@ -14,5 +14,5 @@ export class CartItemComponent implements OnInit {
   @Input() cardItem;
   ngOnInit() {}
 
-  deleteLabel: string = DELETE
+  deleteLabel: string = DELETE;
 }

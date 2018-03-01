@@ -1,6 +1,12 @@
 <?php
-require_once 'fonctions/autoload.php';
 
+require_once 'fonctions/autoload.php';
+require_once 'client/config_thelia.php';
+/*
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+*/
 function parseSessions($callback)
 {
     $old = session_id();
@@ -127,11 +133,21 @@ if (count($pre))
 else
     $pre = "";
 $html = join(PHP_EOL, $html);
-
+$maxtime = ini_get("session.gc_maxlifetime");
+$params = print_r(
+    array(
+        "cookie"=>session_get_cookie_params(),
+        "maxtime"=>$maxtime
+    )
+    ,true);
 echo <<<EOL
 <html>
 <body>
 	<div>{$html}</div>
+    <div>
+        <h3>session_get_cookie_params</h3>
+        <pre>{$params}</pre>    
+    </div>
     <div>
         <pre>{$pre}</pre>
     </div>

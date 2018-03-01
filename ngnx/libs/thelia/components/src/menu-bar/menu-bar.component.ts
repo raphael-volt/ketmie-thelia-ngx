@@ -14,7 +14,7 @@ export class MenuBarComponent implements AfterViewChecked {
   private target: HTMLElement;
   constructor(ref: ElementRef, public cardService: CardService, public customerService: CustomerService) {
     this.target = ref.nativeElement;
-    console.log('MenuBarComponent.construct')
+    console.log('MenuBarComponent.construct');
   }
 
   @Output() barClick: EventEmitter<void> = new EventEmitter();
@@ -32,11 +32,10 @@ export class MenuBarComponent implements AfterViewChecked {
   @ViewChild('menuIcon') menuIcon: ElementRef | undefined;
 
   ngAfterViewChecked() {
-    
     const icon: HTMLElement = this.menuIcon.nativeElement;
     icon.style.transform = 'none';
     const bounds = icon.getBoundingClientRect(); // ${bounds.height}px, ${0}px
-    icon.style.transform = `rotate(270deg) translate(-${bounds.width}px,-${bounds.height/2}px)`;
+    icon.style.transform = `rotate(270deg) translate(-${bounds.width}px,-${bounds.height / 2}px)`;
     icon.style.transformOrigin = '0% 0%';
 
     const ctn: HTMLElement = this.menuCtn.nativeElement;

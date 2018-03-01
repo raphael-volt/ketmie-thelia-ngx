@@ -109,7 +109,7 @@ class CardController
      */
     public function add($item)
     {
-        $ref = $this->getProductRef($item->productId);
+        $ref = $this->getProductRef($item->product->id);
         if ($item->perso)
             $item->perso = $this->getPersos($item);
         $n = count($this->card->tabarticle);

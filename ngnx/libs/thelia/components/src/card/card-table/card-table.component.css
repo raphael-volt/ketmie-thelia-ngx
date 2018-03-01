@@ -1,0 +1,36 @@
+.img-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: center;
+}
+
+.img-box>img {
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+}
+
+:host {
+    border-collapse: collapse!important;
+    border-spacing: 0!important;
+}
+:host th {
+    vertical-align:top;
+}
+:host th, :host td {
+    padding: .5em!important;
+    border: 1px solid #999!important;
+}
+
+:host td.del-btn {
+    font-size: 22px;
+}
+:host mat-form-field.q-select,
+:host mat-form-field.q-select .mat-select-trigger { 
+    min-width: 50px; 
+
+    width: 50px;
+}

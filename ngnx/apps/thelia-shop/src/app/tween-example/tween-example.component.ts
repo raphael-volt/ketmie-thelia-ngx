@@ -8,7 +8,7 @@ import { TweenBase, TweenStatus, TweenChangeEvent, TweenData, Quadratic } from '
   styleUrls: ['./tween-example.component.css']
 })
 export class TweenExampleComponent implements OnInit {
-  @ViewChild('img') img: ElementRef | undefined;
+  @ViewChild('img') img: any;
 
   constructor() {}
 

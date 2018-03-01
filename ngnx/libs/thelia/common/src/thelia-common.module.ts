@@ -9,37 +9,21 @@ import { SnackBarViewComponent } from './components/snack-bar-view/snack-bar-vie
 import { ImgLoaderService } from './img-loader.service';
 import { MatEnvModule } from '@ngnx/mat-env';
 import { ApiModule } from '@ngnx/thelia/api';
-import { CustomerEmailDirective } from "./directives/customer-email.directive";
-import { DeclinationPipe } from "./directives/declination.pipe";
-import { SliderDirective } from "./directives/slider.directive";
-import { LayoutService } from "./layout.service";
+import { CustomerEmailDirective } from './directives/customer-email.directive';
+import { DeclinationPipe } from './directives/declination.pipe';
+import { SliderDirective } from './directives/slider.directive';
+import { LayoutService } from './layout.service';
 @NgModule({
-  imports: [
-    CommonModule,
-    MatEnvModule,
-    ApiModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, MatEnvModule, ApiModule, FormsModule, ReactiveFormsModule],
   declarations: [
     SnackBarViewComponent,
     DialogContentComponent,
     DeclinationPipe,
-    CustomerEmailDirective
+    CustomerEmailDirective,
+    SliderDirective
   ],
-  exports: [
-    DeclinationPipe,
-    CustomerEmailDirective
-  ],
-  providers: [
-    SnackBarService,
-    PopupService,
-    ImgLoaderService,
-    LayoutService
-  ],
-  entryComponents: [
-    SnackBarViewComponent,
-    DialogContentComponent
-  ]
+  exports: [DeclinationPipe, CustomerEmailDirective, SliderDirective],
+  providers: [SnackBarService, PopupService, ImgLoaderService, LayoutService],
+  entryComponents: [SnackBarViewComponent, DialogContentComponent]
 })
-export class TheliaCommonModule { }
+export class TheliaCommonModule {}

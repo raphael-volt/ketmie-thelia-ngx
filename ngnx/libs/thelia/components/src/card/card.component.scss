@@ -29,45 +29,46 @@
 .mat-cell.shrink-auto, .mat-header-cell {
   flex: 0 1 auto;
 }
-*/
 
 .table {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-content: stretch;
-  align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: stretch;
 }
 
 .column {
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  align-items: stretch;
+    order: 0;
+    flex: 0 1 auto;
+    align-self: auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: stretch;
 }
 
 .column.fill {
-  order: 0;
-  flex: 1 1 auto;
-  align-self: auto;
+    order: 0;
+    flex: 1 1 auto;
+    align-self: auto;
 }
 
 .cell {
-  height: 200px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-content: flex-start;
-  align-items: center;
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: flex-start;
+    align-items: center;
 }
 
+*/
+
 cart-item {
-    margin: 16px;
+  margin: 16px;
 }

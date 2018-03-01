@@ -1,4 +1,4 @@
-import { DeactivableComponent } from '@ngnx/thelia/shared'
+import { DeactivableComponent } from '@ngnx/thelia/shared';
 import { SliderDirection, SliderState, SliderEvent } from './slider.directive';
 export class SliderBaseComponent extends DeactivableComponent {
   sliderState: SliderState = 'none';

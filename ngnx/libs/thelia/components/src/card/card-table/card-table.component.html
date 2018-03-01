@@ -1,0 +1,51 @@
+<col>
+<colgroup span="2"></colgroup>
+<thead>
+  <tr>
+    <td rowspan="2"></td>
+    <th rowspan="2">Produit</th>
+    <th rowspan="2">Option</th>
+    <th rowspan="2">Quantité</th>
+    <th colspan="2" scope="colgroup">Prix</th>
+    <td rowspan="2"></td>
+  </tr>
+  <tr>
+    <th scope="col">unitaire</th>
+    <th scope="col">total</th>
+  </tr>
+</thead>
+<tbody *ngIf="card">
+  <tr *ngFor="let i of card.items">
+    <td scope="row">
+      <div class="img-box mat-elevation-z2" [squareBox]="180">
+        <img apiImage [productId]="i.product.id" [imgHeight]="180" [imgWidth]="180" />
+      </div>
+    </td>
+    <td>
+      <p>{{i.product.label}}</p>
+      <p>ref: {{i.product.ref}}</p>
+    </td>
+    <td>
+      <decli-select placeholder="" [cardItem]="i" (declinationItemChange)="declinationChange.emit({item:i, value:$event})"></decli-select>
+    </td>
+    <td>
+      <mat-form-field class="q-select">
+        <mat-select placeholder="" matInput [(ngModel)]="i.quantity" (ngModelChange)="quantityChange.emit({item:i, value:$event})">
+          <mat-option *ngFor="let v of [1,2,3,4,5,6,7,8,9]" [value]="v">{{v}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </td>
+    <td>{{i | cardItemPrice}} €</td>
+    <td>{{i | cardItemPrice:'quantity'}} €</td>
+    <td class="warn del-btn">
+      <i (click)="delete.emit(i)" class="i-button fa fa-align-center fa-times-circle" aria-hidden="true"></i>
+    </td>
+  </tr>
+</tbody>
+<tfoot>
+  <tr>
+    <td colspan="6" align="right">Total panier</td>
+    <td *ngIf="card">{{card.total}} €</td>
+    <td *ngIf="!card">0</td>
+  </tr>
+</tfoot>

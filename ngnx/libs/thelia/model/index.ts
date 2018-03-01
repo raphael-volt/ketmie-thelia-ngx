@@ -117,7 +117,7 @@ export interface ICard {
   total: number;
 }
 
-export class Card {
+export class Card implements ICard {
   constructor(json?: ICard) {
     if (json) this.update(json);
   }

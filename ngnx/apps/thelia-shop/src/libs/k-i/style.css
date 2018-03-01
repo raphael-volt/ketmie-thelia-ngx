@@ -9,7 +9,7 @@
   font-style: normal;
 }
 
-i {
+i.k-i {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'ketmie-icons' !important;
   speak: none;

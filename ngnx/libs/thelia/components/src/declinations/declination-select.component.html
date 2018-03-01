@@ -1,5 +1,7 @@
-<mat-select matInput [(ngModel)]="declinationItem" (ngModelChange)="modelChange($event)">
-  <mat-option *ngFor="let d of declinationItems" [value]="d">
-    {{d | declination}}
-  </mat-option>
-</mat-select>
+<mat-form-field [class.disabled]="!hasDeclination">
+  <mat-select [disabled]="!hasDeclination" matInput [placeholder]="placeholder" [(ngModel)]="declinationItem" (ngModelChange)="modelChange($event)">
+    <mat-option *ngFor="let d of declinationItems" [value]="d">
+      {{d | declination}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

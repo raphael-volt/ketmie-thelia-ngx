@@ -7,6 +7,6 @@ export * from './src/components/slider-base.component';
 export * from './src/components/dialog-content/dialog-content.component';
 export * from './src/components/snack-bar-view/snack-bar-view.component';
 export * from './src/directives/slider.directive';
-export * from './src/directives/customer-email.directive'
-export * from './src/directives/declination.pipe'
+export * from './src/directives/customer-email.directive';
+export * from './src/directives/declination.pipe';
 export * from './src/button-labels';

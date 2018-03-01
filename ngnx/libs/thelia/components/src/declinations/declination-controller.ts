@@ -24,10 +24,9 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
   @Output() declinationChange: EventEmitter<IDeclination> = new EventEmitter<IDeclination>();
   private _declination: IDeclination;
 
-  hasDeclination: boolean = false
+  hasDeclination: boolean = false;
 
-  @Input()
-  placeholder
+  @Input() placeholder;
   @Input()
   get declination(): IDeclination {
     return this._declination;
@@ -53,7 +52,6 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
     this._declinationItem = value;
 
     this.declinationItemChange.emit(value);
-    console.log(this.constructor.name + '#' + this.id + ' set declinationItem', value);
   }
   @Output() cardItemChange: EventEmitter<CardItem> = new EventEmitter<CardItem>();
   private _cardItem: CardItem;
@@ -85,7 +83,6 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
 
   constructor(protected service: DeclinationService) {
     this.id = String(DeclinationController.ID++);
-    console.log(this.constructor.name + '#' + this.id, 'constructor');
   }
 
   private _declinationId: string;
@@ -124,7 +121,7 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
       let p: Product = product || item.product;
       if (p) {
         declinationId = decli.findDeclination(p.declinations);
-        this.hasDeclination = declinationId != null
+        this.hasDeclination = declinationId != null;
       }
     }
 
@@ -135,8 +132,7 @@ export class DeclinationController implements OnChanges, OnInit, OnDestroy {
     if (declinationId != currentId) {
       this._declinationId = declinationId;
       this.declination = decli.get(declinationId);
-      if(this.declination)
-        this.declinationItems = decli.map(this.declination, 'size');
+      if (this.declination) this.declinationItems = decli.map(this.declination, 'size');
     }
     if (!declinationId && this.declinationItems.length) this.declinationItems.length = 0;
 

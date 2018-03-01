@@ -72,8 +72,7 @@ export class DeclinationService {
   //  map<T extends Object, K extends keyof T>(declinations: IDeclination, sort?: K, numeric?: boolean): IDeclinationItem[] {
   map<K extends keyof IDeclinationItem>(declinations: IDeclination, sort?: K, numeric?: boolean): IDeclinationItem[] {
     const items: IDeclinationItem[] = [];
-    if(! declinations)
-      return null
+    if (!declinations) return null;
     for (const id in declinations.items) items.push(declinations.items[id]);
     if (sort) {
       this.sort(items, sort, numeric);

@@ -14,34 +14,16 @@ import { DeclinationPipe } from './directives/declination.pipe';
 import { SliderDirective } from './directives/slider.directive';
 import { LayoutService } from './layout.service';
 @NgModule({
-  imports: [
-    CommonModule, 
-    MatEnvModule, 
-    ApiModule, 
-    FormsModule, 
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, MatEnvModule, ApiModule, FormsModule, ReactiveFormsModule],
   declarations: [
-    SnackBarViewComponent, 
-    DialogContentComponent, 
-    DeclinationPipe, 
+    SnackBarViewComponent,
+    DialogContentComponent,
+    DeclinationPipe,
     CustomerEmailDirective,
     SliderDirective
   ],
-  exports: [
-    DeclinationPipe, 
-    CustomerEmailDirective,
-    SliderDirective
-  ],
-  providers: [
-    SnackBarService, 
-    PopupService, 
-    ImgLoaderService, 
-    LayoutService
-  ],
-  entryComponents: [
-    SnackBarViewComponent, 
-    DialogContentComponent
-  ]
+  exports: [DeclinationPipe, CustomerEmailDirective, SliderDirective],
+  providers: [SnackBarService, PopupService, ImgLoaderService, LayoutService],
+  entryComponents: [SnackBarViewComponent, DialogContentComponent]
 })
 export class TheliaCommonModule {}

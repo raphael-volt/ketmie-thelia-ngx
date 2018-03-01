@@ -18,8 +18,8 @@
     <ng-container *ngIf="group.value == 'items'">
       <h3>Total panier: {{card.total}} €</h3>
       <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutWrap>
-        <cart-item *ngFor="let i of card.items" [cardItem]="i" (delete)="deleteItem(i)" (declinationChange)="declinationChange(i, $event)"
-          (quantityChange)="quantityChange(i, $event)"></cart-item>
+        <card-item *ngFor="let i of card.items" [cardItem]="i" (delete)="deleteItem(i)" (declinationChange)="declinationChange(i, $event)"
+          (quantityChange)="quantityChange(i, $event)"></card-item>
       </div>
     </ng-container>
     <div *ngIf="group.value == 'table'" fxLayout="row" fxLayoutAlign="center start">

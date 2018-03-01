@@ -13,7 +13,7 @@ import { CategoryComponent } from './category/category.component';
 import { ProductComponent } from './product/product.component';
 import { ImRowComponent } from './im-row/im-row.component';
 import { CardComponent } from './card/card.component';
-import { CartItemComponent } from './card/cart-item/cart-item.component';
+import { CardItemComponent } from './card/card-item/card-item.component';
 import { SquareBoxDirective } from './square-box.directive';
 import { InnerHtmlDirective } from './inner-html.directive';
 import { SliderDirective } from './slider.directive';
@@ -69,7 +69,7 @@ import { CardTableComponent } from './card/card-table/card-table.component';
     AddressModalComponent,
     ConnectionFormComponent,
     CardComponent,
-    CartItemComponent,
+    CardItemComponent,
     DeclinationController,
     DeclinationRadioGroupComponent,
     DeclinationSelectComponent,

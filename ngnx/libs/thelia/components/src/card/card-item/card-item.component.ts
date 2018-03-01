@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DELETE } from '@ngnx/thelia/common';
 @Component({
-  selector: 'cart-item',
-  templateUrl: './cart-item.component.html',
-  styleUrls: ['./cart-item.component.css']
+  selector: 'card-item',
+  templateUrl: './card-item.component.html',
+  styleUrls: ['./card-item.component.css']
 })
-export class CartItemComponent implements OnInit {
+export class CardItemComponent implements OnInit {
   constructor() {}
   @Output() declinationChange: EventEmitter<any> = new EventEmitter();
   @Output() quantityChange: EventEmitter<any> = new EventEmitter();

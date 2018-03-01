@@ -4,7 +4,7 @@ export * from './src/address-modal/address-modal.component';
 export * from './src/address-view/address-view.component';
 export * from './src/api-image.directive';
 export * from './src/card/card.component';
-export * from './src/card/cart-item/cart-item.component';
+export * from './src/card/card-item/card-item.component';
 export * from './src/category/category.component';
 export * from './src/cms-content/cms-content.component';
 export * from './src/country.pipe';

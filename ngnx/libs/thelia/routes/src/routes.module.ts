@@ -46,8 +46,8 @@ const routes: Routes = [
       },
       {
         path: 'card',
-        canActivate: [CatalogGuard],
-        component: CardComponent
+        component: CardComponent,
+        canDeactivate: [DeactivableGuard]
       }
     ]
   },

@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  declinationMap,
-  IDeclination,
-  IDeclinationItem,
-  IDeclinationMap,
-  ProductDetail,
-  CardItem
-} from '@ngnx/thelia/model';
+import { declinationMap, IDeclination, IDeclinationItem, IDeclinationMap, Product, CardItem } from '@ngnx/thelia/model';
 const sortString = (a: string, b: string): number => {
   return a > b ? 1 : -1;
 };
@@ -32,7 +25,7 @@ export class DeclinationService {
     return hasProperty(declinationMap, id);
   }
 
-  declined(product: ProductDetail): boolean {
+  declined(product: Product): boolean {
     const id = this.getProductDeclinationId(product);
     return id != null;
   }
@@ -46,11 +39,11 @@ export class DeclinationService {
     return this.findDeclination(item.product.declinations);
   }
 
-  getProductDeclinationId(product: ProductDetail): string {
+  getProductDeclinationId(product: Product): string {
     return this.findDeclination(product.declinations);
   }
 
-  getDeclination(product: ProductDetail): IDeclination {
+  getDeclination(product: Product): IDeclination {
     const id = this.getProductDeclinationId(product);
     if (id) return this.get(id);
     return null;
@@ -79,6 +72,8 @@ export class DeclinationService {
   //  map<T extends Object, K extends keyof T>(declinations: IDeclination, sort?: K, numeric?: boolean): IDeclinationItem[] {
   map<K extends keyof IDeclinationItem>(declinations: IDeclination, sort?: K, numeric?: boolean): IDeclinationItem[] {
     const items: IDeclinationItem[] = [];
+    if(! declinations)
+      return null
     for (const id in declinations.items) items.push(declinations.items[id]);
     if (sort) {
       this.sort(items, sort, numeric);

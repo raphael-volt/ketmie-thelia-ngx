@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SliderBaseComponent } from '../slider-base.component';
 import { DeclinationService, CardService } from '@ngnx/thelia/api';
 import { serializableCardItem, Card, CardItem, IDeclination, IDeclinationItem } from '@ngnx/thelia/model';
 export type CellType = string & 'image' | 'quantity' | 'options' | 'product' | 'price' | 'action' | 'none';
-type TypeMap<K extends string, T> = { [P in K]?: T };
+type TypeMap<K extends string, T> = {[P in K]?: T };
 type TemplateMap = TypeMap<CellType, string>;
 
 const templateMap = (): TemplateMap => {
@@ -62,7 +62,7 @@ const getTableDataProvider = () => {
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss']
 })
-export class CardComponent extends SliderBaseComponent implements OnInit {
+export class CardComponent extends SliderBaseComponent implements OnInit, AfterViewInit {
   tableData: TableData<CardItem>;
   constructor(private decli: DeclinationService, public service: CardService) {
     super();
@@ -75,6 +75,9 @@ export class CardComponent extends SliderBaseComponent implements OnInit {
     this.card = this.service.card;
     this.tableData = getTableDataProvider();
     this.tableData.rows = this.card.items;
+  }
+  
+  ngAfterViewInit() {
     this.slideIn();
   }
 
@@ -92,5 +95,11 @@ export class CardComponent extends SliderBaseComponent implements OnInit {
     this.service.update(p, result => {
       item.decliId = p.decliId;
     });
+  }
+  deleteItem(item: CardItem) {
+    const i = item.index
+    this.service.remove(item, next => {
+      // nothing to do
+    })
   }
 }

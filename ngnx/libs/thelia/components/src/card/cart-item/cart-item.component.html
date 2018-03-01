@@ -1,17 +1,66 @@
-<div class="content raised pad-16" *ngIf="cardItem" fxLayout="row" fxLayoutAlign="start stretch" fxLayoutGap="10px">
-  <div class="content raised" [squareBox]="200" fxLayout="row" fxLayoutAlign="center center">
+<!--
+<div class="content raised pad-16 card-item" *ngIf="cardItem">
+  <div class="content raised img-box" [squareBox]="200">
     <img apiImage [productId]="cardItem.product.id" [imgHeight]="180" [imgWidth]="180" />
   </div>
-  <div fxLayout="column" fxLayoutAlign="space-evenly start">
+  <div class="product-info">
     <span>{{cardItem.product.label}}</span>
     <span>ref: {{cardItem.product.ref}}</span>
-    <span>prix unitaire : {{cardItem.product.price}}</span>
+    <span>prix unitaire : {{cardItem | cardItemPrice}} €</span>
   </div>
-  <div fxLayout="column" fxLayoutAlign="end start">
-    <span *ngIf="!cardItem.decliId">prix : {{cardItem.product.price}}</span>
-    <decli-select *ngIf="cardItem.decliId" matInput [cardItem]="cardItem" (declinationItemChange)="declinationChange.emit($event)"></decli-select>
-    <mat-select matInput [(ngModel)]="cardItem.quantity" (ngModelChange)="quantityChange.emit($event)">
-      <mat-option *ngFor="let v of [1,2,3,4,5,6,7,8,9]" [value]="v">{{v}}</mat-option>
-    </mat-select>
+  <div class="cart-ctrl">
+    <ng-container *ngIf="cardItem.decliId">
+      <decli-select placeholder="Option" [cardItem]="cardItem" (declinationItemChange)="declinationChange.emit($event)"></decli-select>
+    </ng-container>
+    <mat-form-field>
+      <mat-select  placeholder="Quantité" matInput [(ngModel)]="cardItem.quantity" (ngModelChange)="quantityChange.emit($event)">
+        <mat-option *ngFor="let v of [1,2,3,4,5,6,7,8,9]" [value]="v">{{v}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span>
+      total: {{cardItem | cardItemPrice:true}} €
+    </span>
   </div>
 </div>
+<div class="header-box">
+  <div class="content raised img-box" [squareBox]="200">
+    <img apiImage [productId]="cardItem.product.id" [imgHeight]="180" [imgWidth]="180" />
+  </div>
+  <div>
+    <mat-card-title>{{cardItem.product.label}}</mat-card-title>
+    <mat-card-subtitle>ref: {{cardItem.product.ref}}</mat-card-subtitle>
+  </div>
+</div>
+-->
+<mat-card>
+  <div class="img-box" [squareBox]="180">
+    <img apiImage [productId]="cardItem.product.id" [imgHeight]="180" [imgWidth]="180" />
+  </div>
+  <mat-card-header>
+    <mat-card-title>{{cardItem.product.label}}</mat-card-title>
+    <mat-card-subtitle>ref: {{cardItem.product.ref}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="cart-ctrl">
+      <span *ngIf="cardItem.decliId">A patir de {{cardItem | cardItemPrice:'first'}} €</span>
+      <span *ngIf="!cardItem.decliId">Prix: {{cardItem | cardItemPrice}} €</span>
+      <ng-container>
+        <decli-select placeholder="Option" [cardItem]="cardItem" (declinationItemChange)="declinationChange.emit($event)"></decli-select>
+      </ng-container>
+      <mat-form-field>
+        <mat-select placeholder="Quantité" matInput [(ngModel)]="cardItem.quantity" (ngModelChange)="quantityChange.emit($event)">
+          <mat-option *ngFor="let v of [1,2,3,4,5,6,7,8,9]" [value]="v">{{v}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span>
+        total: {{cardItem | cardItemPrice:'quantity'}} €
+      </span>
+    </div>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-toolbar>
+      <span class="flex-fill-width"></span>
+      <button mat-raised-button color="warn" (click)="delete.emit()">{{deleteLabel}}</button>
+    </mat-toolbar>
+  </mat-card-footer>
+</mat-card>

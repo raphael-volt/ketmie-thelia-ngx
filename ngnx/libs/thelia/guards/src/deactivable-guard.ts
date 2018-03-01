@@ -1,7 +1,7 @@
 import { Component, Injectable, EventEmitter } from '@angular/core';
 import { CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, Observer, Subscription } from 'rxjs';
-import { DeactivableComponent } from '@ngnx/thelia/shared'
+import { DeactivableComponent } from '@ngnx/thelia/shared';
 @Injectable()
 export class DeactivableGuard implements CanDeactivate<DeactivableComponent> {
   private deactivables: DeactivableComponent[] = [];

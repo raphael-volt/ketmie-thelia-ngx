@@ -13,7 +13,7 @@ import {
   IDeclinationItem,
   CardItem,
   CardItemPerso,
-  ProductDetail
+  Product
 } from '@ngnx/thelia/model';
 import { one, ListBase } from '@ngnx/thelia/utils';
 export type CardAction = 'get' | 'add' | 'remove' | 'update' | 'clear';
@@ -139,9 +139,9 @@ export class CardService implements ICardImpl<Card, CardItem> {
     }
   }
 
-  createItem(product: ProductDetail, decliId?: any, q: number = 1) {
+  createItem(product: Product, decliId?: any, q: number = 1) {
     let res: CardItem = {
-      product: { id: product.id },
+      product: product,
       quantity: q
     };
     if (this.declinationService.declined(product)) {
@@ -154,8 +154,11 @@ export class CardService implements ICardImpl<Card, CardItem> {
 
   add(item: CardItem, next) {
     this.checkCard;
+    let product = item.product;
+    item.product = { id: product.id };
     this.one('add', item, resopnse => {
       item.index = this.list.add(item) - 1;
+      item.product = product;
       this.validateProperties(resopnse.body.total);
       this.notify('add', item);
       this.checkEmpty();

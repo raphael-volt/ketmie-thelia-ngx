@@ -1,4 +1,5 @@
-<div class="main example-container mat-elevation-z8" style="background: white" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
+<div class="main" 
+  sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
   <h2>Panier</h2>
   <div *ngIf="service.isEmpty">
     <h3>Votre panier est vide</h3>
@@ -7,6 +8,7 @@
       <h3>Total panier: {{card.total}} €</h3>
       <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutWrap>
         <cart-item *ngFor="let i of card.items" [cardItem]="i"
+          (delete)="deleteItem(i)"
           (declinationChange)="declinationChange(i, $event)"
           (quantityChange)="quantityChange(i, $event)"></cart-item>
       </div>

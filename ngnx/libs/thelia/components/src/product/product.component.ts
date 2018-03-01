@@ -23,7 +23,6 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   boxProduct: ProductDetail = undefined;
 
   loaded: boolean;
-  declinationId: string = null;
 
   canAddToCard: boolean;
   product: ProductDetail;
@@ -151,7 +150,8 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   declinationChange(value: IDeclinationItem) {
     if (value) {
       this.canAddToCard = true;
-      this.productPrice = value ? value.price : undefined;
+      this.productPrice = value.price;
+      this.decliItemId = value.id;
     }
   }
 
@@ -159,7 +159,7 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
   private category: Category;
 
   addToCard() {
-    let item = this.card.createItem(this.product, this.declinationId);
+    let item = this.card.createItem(this.product, this.decliItemId);
     this.card.add(item, () => {
       console.log('added to card', item);
     });
@@ -177,6 +177,7 @@ export class ProductComponent extends SliderBaseComponent implements OnInit, OnD
           this.hasDeclination = this.decli.declined(product);
           this.canAddToCard = product && !this.hasDeclination;
           this.productPrice = this.hasDeclination ? undefined : product.price;
+          this.decliItemId = undefined;
           if (this.sliderState == 'none') {
             this.slideIn();
           } else {

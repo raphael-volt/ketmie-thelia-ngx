@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
-import { TheliaCommonModule } from '@ngnx/thelia/common'
+import { TheliaCommonModule } from '@ngnx/thelia/common';
 import { ApiImageDirective } from './api-image.directive';
 import { ImgTileService } from './img-tile.service';
 import { MatEnvModule } from '@ngnx/mat-env';
@@ -28,8 +28,13 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { RaisonPipe } from './raison.pipe';
 import { AddressModalComponent } from './address-modal/address-modal.component';
 import { ApiModule } from '@ngnx/thelia/api';
-import { DeclinationRadioGroupComponent, DeclinationSelectComponent } from "./declinations/declination-controller";
-import { MenuBarComponent } from "./menu-bar/menu-bar.component";
+import { 
+  DeclinationController,
+  DeclinationRadioGroupComponent, 
+  DeclinationSelectComponent 
+} from './declinations/declination-controller';
+import { MenuBarComponent } from './menu-bar/menu-bar.component';
+import { CardItemPricePipe } from './card-item-price.pipe';
 @NgModule({
   imports: [
     CommonModule,
@@ -64,9 +69,11 @@ import { MenuBarComponent } from "./menu-bar/menu-bar.component";
     ConnectionFormComponent,
     CardComponent,
     CartItemComponent,
+    DeclinationController,
     DeclinationRadioGroupComponent,
     DeclinationSelectComponent,
-    MenuBarComponent
+    MenuBarComponent,
+    CardItemPricePipe
   ],
   exports: [
     KetmieBackgroundComponent,
@@ -83,4 +90,4 @@ import { MenuBarComponent } from "./menu-bar/menu-bar.component";
   entryComponents: [AddressComponent, AddressModalComponent, ConnectionFormComponent, CardComponent],
   providers: [ImgTileService]
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

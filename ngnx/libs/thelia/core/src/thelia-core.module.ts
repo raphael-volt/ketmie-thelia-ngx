@@ -7,13 +7,11 @@ import { ApiModule } from '@ngnx/thelia/api';
 import { MatEnvModule } from '@ngnx/mat-env';
 import { TheliaCommonModule } from '@ngnx/thelia/common';
 import { ComponentsModule } from '@ngnx/thelia/components';
-import { AssetsModule } from '@ngnx/thelia/assets';
 import { RoutesModule } from '@ngnx/thelia/routes';
 import { GuardsModule } from '@ngnx/thelia/guards';
-import { SharedModule } from '@ngnx/thelia/shared'
+import { SharedModule } from '@ngnx/thelia/shared';
 @NgModule({
   imports: [
-    AssetsModule,
     SharedModule,
     CommonModule,
     FormsModule,
@@ -27,7 +25,6 @@ import { SharedModule } from '@ngnx/thelia/shared'
     GuardsModule
   ],
   exports: [
-    AssetsModule,
     SharedModule,
     FormsModule,
     ReactiveFormsModule,

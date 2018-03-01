@@ -22,3 +22,4 @@ export * from './src/slider-base.component';
 export * from './src/slider.directive';
 export * from './src/square-box.directive';
 export * from './src/template.directive';
+export * from './src/card-item-price.pipe'

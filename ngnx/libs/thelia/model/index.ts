@@ -3,6 +3,7 @@ const FR_ID: string = '64';
 export interface APIResponse {
   success: boolean;
   body: any;
+  sessionId: string;
 }
 
 export interface APIResponseError {

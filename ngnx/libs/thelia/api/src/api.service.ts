@@ -116,8 +116,9 @@ export class ApiService {
     };
     if (this.session.hasSession) {
       this.request.setSessionId(this.session.sessionId);
-      return this._getShopTree().pipe(map(treeMap));
     }
+    return this._getShopTree().pipe(map(treeMap));
+    /*
     return Observable.create((observer: Observer<ShopTree>) => {
       let sub = this.get(this.request.getRequest(this.request.getSessionParams())).subscribe(response => {
         const session: APISession = response.body;
@@ -135,6 +136,7 @@ export class ApiService {
         });
       });
     });
+    */
   }
   private shopTreeRequesting = false;
   private shopTreeRequestingObservers: Observer<any>[] = [];
@@ -147,17 +149,26 @@ export class ApiService {
   }
   get(request: Request): Observable<APIResponse> {
     request.method = RequestMethod.Get;
-    return this.http.request(request).pipe(map(response => response.json()));
+    return this.http.request(request).pipe(
+      map(response => {
+        return this._checkResponse(response.json());
+      })
+    );
   }
 
   post(request: Request): Observable<APIResponse> {
     request.method = RequestMethod.Post;
     return this.http.request(request).pipe(
       map(response => {
-        let res = response.json();
-        return res;
+        return this._checkResponse(response.json());
       })
     );
+  }
+
+  private _checkResponse(response: APIResponse): APIResponse {
+    this.request.setSessionId(response.sessionId);
+    this.session.update(response.sessionId);
+    return response;
   }
 
   private _getShopTree(): Observable<ShopTree> {
@@ -219,6 +230,15 @@ export class ApiService {
       }
     }
     return result;
+  }
+
+  getProductCategory(productId: string): string {
+    for(const c of this._shopTree.shopCategories) {
+      for(const p of c.children)
+        if(p.id == productId)
+          return c.id
+    }
+    return null
   }
 
   getProductDescription(id: string): Observable<ProductDetail> {

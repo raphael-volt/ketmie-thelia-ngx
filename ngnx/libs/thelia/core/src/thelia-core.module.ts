@@ -22,7 +22,7 @@ import { SharedModule } from '@ngnx/thelia/shared';
     ApiModule,
     RoutesModule,
     GuardsModule,
-    ComponentsModule,
+    ComponentsModule
   ],
   exports: [
     SharedModule,

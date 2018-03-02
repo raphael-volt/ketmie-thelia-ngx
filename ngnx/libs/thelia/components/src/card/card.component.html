@@ -3,17 +3,14 @@
     <h2 fxFlex="0 1 auto">Panier</h2>
     <span fxFlex="1 1 auto"></span>
     <mat-button-toggle-group fxFlex="0 1 auto" #group="matButtonToggleGroup">
-      <mat-button-toggle value="table" [checked]="true">
-        <mat-icon class="fa fa-th-list" aria-hidden="true"></mat-icon>
+      <mat-button-toggle mat-icon-button value="table" [checked]="true">
+        <i class="fa fa-th-list" aria-hidden="true"></i>
       </mat-button-toggle>
-      <mat-button-toggle value="items">
-        <mat-icon class="fa fa-th" aria-hidden="true"></mat-icon>
+      <mat-button-toggle mat-icon-button value="items">
+        <i class="fa fa-th" aria-hidden="true"></i>
       </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
-  <span menu-button></span>
-  <button mat-raised-button>MAT-BUTTON</button>
-      
   <div *ngIf="service.isEmpty">
     <h3>Votre panier est vide</h3>
   </div>

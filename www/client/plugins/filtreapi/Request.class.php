@@ -36,6 +36,7 @@ class Response
         $obj = new stdClass();
         $obj->success = $this->success;
         $obj->body = $body;
+        $obj->sessionId = session_id();
         return json_encode($obj); // , JSON_PRETTY_PRINT);
     }
 }

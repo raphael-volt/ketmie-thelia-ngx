@@ -1,6 +1,10 @@
 <ketmie-background class="svg-bg"></ketmie-background>
 <div class="app-ctn dark k-dark">
-  <nav class="menu-bar tool-bar" menu-bar (menu)="sidenav.toggle()" (itemClick)="sidenav.close()" (barClick)="sidenav.close()"></nav>
+  <nav class="menu-bar tool-bar" menu-bar 
+    (menu)="sidenav.toggle()" 
+    (itemClick)="sidenav.close()" 
+    (barClick)="sidenav.close()"
+    fxLayout="column" fxLayoutAlign=" center" ></nav>
   <mat-sidenav-container>
     <mat-sidenav #sidenav opened="false" [disableClose]="false">
       <mat-nav-list class="nav-list">

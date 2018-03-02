@@ -16,6 +16,7 @@ export * from './src/img-tile.service';
 export * from './src/inner-html.directive';
 export * from './src/ketmie-background/ketmie-background.component';
 export * from './src/menu-bar/menu-bar.component';
+export * from './src/menu-bar/menu-button/menu-button.component';
 export * from './src/product/product.component';
 export * from './src/raison.pipe';
 export * from './src/slider-base.component';

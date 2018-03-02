@@ -28,6 +28,7 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { RaisonPipe } from './raison.pipe';
 import { AddressModalComponent } from './address-modal/address-modal.component';
 import { ApiModule } from '@ngnx/thelia/api';
+import { MenuButtonComponent } from "./menu-bar/menu-button/menu-button.component";
 import {
   DeclinationController,
   DeclinationRadioGroupComponent,
@@ -74,12 +75,14 @@ import { CardTableComponent } from './card/card-table/card-table.component';
     DeclinationRadioGroupComponent,
     DeclinationSelectComponent,
     MenuBarComponent,
+    MenuButtonComponent,
     CardItemPricePipe,
     CardTableComponent
   ],
   exports: [
     KetmieBackgroundComponent,
     MenuBarComponent,
+    MenuButtonComponent,
     TemplateDirective,
     ImRowComponent,
     SliderDirective,

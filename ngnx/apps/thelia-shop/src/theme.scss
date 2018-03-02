@@ -181,10 +181,10 @@ $menu-gap-xs: 3;
 $menu-gap-sm: 5;
 $menu-gap-md: 6;
 $menu-gap-lg: 8;
-$menu-font-size-xs: 16;
-$menu-font-size-sm: 20;
+$menu-font-size-xs: 12;
+$menu-font-size-sm: 18;
 $menu-font-size-md: 24;
-$menu-font-size-lg: 30;
+$menu-font-size-lg: 28;
 $menu-item-mb: .5em;
 // slider
 $slider-duration :350ms;
@@ -223,6 +223,9 @@ $slider-property :transform;
 @mixin menuBar ($width, $gap, $size) {
   font-size: ($size)+px;
   padding: ($gap)+px;
+  i {
+    font-size: ($size)+px;
+  }
 }
 
 @mixin menuBarChildren ($gap) {

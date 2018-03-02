@@ -12,10 +12,6 @@
     align-items: stretch;
 }
 
-.app-ctn>.menu-bar {
-    
-}
-
 .app-ctn>mat-sidenav-container {
     order: 0;
     flex: 1 1 auto;

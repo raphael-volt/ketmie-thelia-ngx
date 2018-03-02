@@ -1,0 +1,19 @@
+.trigger {
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+}
+
+.counter {
+    position: absolute;
+    font-size: 11px;
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    top: -33%;
+    right: -33%;
+}
+:host {
+    padding-top: .2em;
+}

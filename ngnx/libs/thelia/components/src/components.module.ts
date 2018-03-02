@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatCommonModule, MatRippleModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { TheliaCommonModule } from '@ngnx/thelia/common';
 import { ApiImageDirective } from './api-image.directive';
@@ -28,6 +29,7 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { RaisonPipe } from './raison.pipe';
 import { AddressModalComponent } from './address-modal/address-modal.component';
 import { ApiModule } from '@ngnx/thelia/api';
+import { MenuButtonComponent } from './menu-bar/menu-button/menu-button.component';
 import {
   DeclinationController,
   DeclinationRadioGroupComponent,
@@ -36,8 +38,10 @@ import {
 import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { CardItemPricePipe } from './card-item-price.pipe';
 import { CardTableComponent } from './card/card-table/card-table.component';
+import { IconButtonComponent } from './menu-bar/icon-button/icon-button.component';
 @NgModule({
   imports: [
+    MatCommonModule, MatRippleModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -74,12 +78,15 @@ import { CardTableComponent } from './card/card-table/card-table.component';
     DeclinationRadioGroupComponent,
     DeclinationSelectComponent,
     MenuBarComponent,
+    MenuButtonComponent,
     CardItemPricePipe,
-    CardTableComponent
+    CardTableComponent,
+    IconButtonComponent
   ],
   exports: [
     KetmieBackgroundComponent,
     MenuBarComponent,
+    MenuButtonComponent,
     TemplateDirective,
     ImRowComponent,
     SliderDirective,
@@ -87,9 +94,10 @@ import { CardTableComponent } from './card/card-table/card-table.component';
     SquareBoxDirective,
     FillParentDirective,
     BlurChildDirective,
-    ApiImageDirective
+    ApiImageDirective,
+    IconButtonComponent
   ],
   entryComponents: [AddressComponent, AddressModalComponent, ConnectionFormComponent, CardComponent],
   providers: [ImgTileService]
 })
-export class ComponentsModule {}
+export class ComponentsModule { }

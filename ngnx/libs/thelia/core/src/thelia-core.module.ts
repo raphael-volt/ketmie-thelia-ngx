@@ -12,17 +12,17 @@ import { GuardsModule } from '@ngnx/thelia/guards';
 import { SharedModule } from '@ngnx/thelia/shared';
 @NgModule({
   imports: [
+    MatEnvModule,
     SharedModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatEnvModule,
     TheliaCommonModule,
     ApiModule,
-    ComponentsModule,
     RoutesModule,
-    GuardsModule
+    GuardsModule,
+    ComponentsModule,
   ],
   exports: [
     SharedModule,
@@ -32,9 +32,9 @@ import { SharedModule } from '@ngnx/thelia/shared';
     ApiModule,
     MatEnvModule,
     TheliaCommonModule,
-    ComponentsModule,
     RoutesModule,
-    GuardsModule
+    GuardsModule,
+    ComponentsModule
   ]
 })
 export class TheliaCoreModule {}

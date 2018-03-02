@@ -41,7 +41,7 @@ export class CardComponent extends SliderBaseComponent implements OnInit, AfterV
       item.decliId = p.decliId;
     });
   }
-  
+
   deleteItem(item: CardItem) {
     const i = item.index;
     this.service.remove(item, next => {

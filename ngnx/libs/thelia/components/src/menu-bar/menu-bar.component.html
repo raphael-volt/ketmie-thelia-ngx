@@ -1,16 +1,18 @@
-<menu-button (click)="menu.emit(true)"></menu-button>
-<button mat-icon-button (click)="home.emit(true)" routerLink="/">
-  <i class="k-i k-i_home"></i>
-</button>
-<button mat-icon-button (click)="customer.emit(true)" routerLink="/customer">
-  <i class="k-i k-i_user-crcle" [class.primary]="customerService.logedIn"></i>
-</button>
-<div #cardIcon class="card-box" (click)="card.emit(true)" routerLink="/card">
-  <button mat-icon-button>
-    <i [class.primary]="!cardService.isEmpty" class="k-i k-i_card"></i>
-  </button>
-  <div class="border-2 accent art-count" fxLayout="row" fxLayoutAlign="space-around center">
-    <span class="accent">{{cardService.numArticles}}</span>
-  </div>
+<!--
+Hack to fix ripple position. 
+-->
+<button mat-button style="display: none;"></button> 
+<div menu-button (click)="menu.emit(true)"></div>
+<div icon-button kiIcon="k-i_home" 
+  (click)="home.emit(true)" routerLink="/">
+</div>
+<div icon-button kiIcon="k-i_user-crcle" 
+  [class.primary]="customerService.logedIn" 
+  (click)="customer.emit(true)" routerLink="/customer">
+</div>
+<div icon-button kiIcon="k-i_card" 
+  [class.primary]="!cardService.isEmpty"
+  [counter]="cardService.numArticles" 
+  (click)="card.emit(true)" routerLink="/card">
 </div>
 <ng-content></ng-content>

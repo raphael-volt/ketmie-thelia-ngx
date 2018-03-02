@@ -1,0 +1,10 @@
+<i class="k-i" [ngClass]="iconClass" aria-hidden="true"></i>
+<div *ngIf="counter>0" class="border-2 accent counter" fxLayout="row" fxLayoutAlign="space-around center">
+  <span class="accent">{{counter}}</span>
+<!-- </div>
+<div class="trigger"> -->
+</div>
+<div #ripple matRipple class="mat-button-ripple"
+  [matRippleUnbounded]="true"
+  [matRippleCentered]="true"
+  [matRippleTrigger]="target"></div>

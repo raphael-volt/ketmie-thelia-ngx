@@ -1,5 +1,6 @@
-import { Component, ElementRef, EventEmitter, Output} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output } from '@angular/core';
 import { CustomerService, CardService } from '@ngnx/thelia/api';
+import { MatRipple } from '@angular/material';
 @Component({
   selector: '[menu-bar]',
   templateUrl: './menu-bar.component.html',
@@ -9,7 +10,10 @@ import { CustomerService, CardService } from '@ngnx/thelia/api';
   }
 })
 export class MenuBarComponent {
-  constructor(private target: ElementRef, public cardService: CardService, public customerService: CustomerService) { }
+  private target: HTMLElement;
+  constructor(private ref: ElementRef, public cardService: CardService, public customerService: CustomerService) {
+    this.target = ref.nativeElement;
+  }
 
   @Output() barClick: EventEmitter<void> = new EventEmitter();
 
@@ -22,7 +26,6 @@ export class MenuBarComponent {
   @Output() card: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   barClickHandler(event: MouseEvent) {
-    if (event.target == this.target.nativeElement) 
-      this.barClick.emit();
+    if (event.target == this.target) this.barClick.emit();
   }
 }

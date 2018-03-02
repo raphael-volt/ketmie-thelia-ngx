@@ -1,15 +1,18 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { MatRipple } from "@angular/material";
 
 @Component({
-  selector: 'menu-button',
+  selector: '[menu-button]',
   templateUrl: './menu-button.component.html',
-  styleUrls: ['./menu-button.component.css']
+  styleUrls: ['../menu-button-base.scss', './menu-button.component.css']
 })
 export class MenuButtonComponent implements OnInit {
-  constructor(ref: ElementRef) {
-    this.host = ref.nativeElement
-  }
 
-  host: HTMLElement
+  @ViewChild(MatRipple) ripple: MatRipple;
+
+  target: HTMLElement
+  constructor(ref: ElementRef) {
+    this.target = ref.nativeElement
+  }
   ngOnInit() {}
 }

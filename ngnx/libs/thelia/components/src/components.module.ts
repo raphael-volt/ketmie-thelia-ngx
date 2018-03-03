@@ -41,7 +41,8 @@ import { CardTableComponent } from './card/card-table/card-table.component';
 import { IconButtonComponent } from './menu-bar/icon-button/icon-button.component';
 @NgModule({
   imports: [
-    MatCommonModule, MatRippleModule,
+    MatCommonModule,
+    MatRippleModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -100,4 +101,4 @@ import { IconButtonComponent } from './menu-bar/icon-button/icon-button.componen
   entryComponents: [AddressComponent, AddressModalComponent, ConnectionFormComponent, CardComponent],
   providers: [ImgTileService]
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

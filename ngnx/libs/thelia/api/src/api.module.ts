@@ -9,6 +9,7 @@ import { SessionService } from './session.service';
 import { CustomerService } from './customer.service';
 import { CardService } from './card.service';
 import { DeclinationService } from './declination.service';
+import { ProductUrlPipe } from './product-url.pipe';
 
 const storageConfig: ILocalStorageServiceConfig = {
   prefix: 'ketmie',
@@ -16,7 +17,20 @@ const storageConfig: ILocalStorageServiceConfig = {
 };
 
 @NgModule({
-  imports: [CommonModule, HttpModule, LocalStorageModule.withConfig(storageConfig)],
-  providers: [ApiService, SessionService, RequestService, CustomerService, CardService, DeclinationService]
+  imports: [
+    CommonModule, 
+    HttpModule, 
+    LocalStorageModule.withConfig(storageConfig)
+  ],
+  providers: [
+    ApiService, 
+    SessionService, 
+    RequestService, 
+    CustomerService, 
+    CardService, 
+    DeclinationService
+  ],
+  exports: [ProductUrlPipe],
+  declarations: [ProductUrlPipe]
 })
 export class ApiModule {}

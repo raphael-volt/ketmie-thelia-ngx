@@ -67,6 +67,7 @@ parseSessions(function ($i, $s, $f) {
 <button name="nav" type="submit">Nav</button>
 <button name="customer" type="submit">Customer</button>
 <button name="order" type="submit">Order</button>
+<button name="clear" type="submit">Clear</button>
 <label>{$i}</label>
 <input type="hidden" name="id" value="{$i}">
 </form>
@@ -77,43 +78,70 @@ $nav = null;
 $card = null;
 $j = null;
 if (isset($sessions[$session_id])) {
-    $sess = $sessions[$session_id];
-    $nav = $sess["navig"];
-    $nav instanceof Navigation;
-    $j = new stdClass();
-    $j->customer = new stdClass();
-    $j = new stdClass();
-    $j->card = new stdClass();
-    $j->card->items = array();
-    $j->order = new stdClass();
-    $customer = $nav->client;
-    $customer instanceof Client;
-    if($customer) 
-    {
-        /*
-        foreach ($customer->bddvars as $key) {
-            $j->customer->{$key} = $customer->{$key};
+    if(isset($_GET['clear'])) {
+        session_id($session_id);
+        session_start();
+        
+        // Détruit toutes les variables de session
+        $_SESSION = array();
+        
+        // Si vous voulez détruire complètement la session, effacez également
+        // le cookie de session.
+        // Note : cela détruira la session et pas seulement les données de session !
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+                );
         }
-        */
+        
+        // Finalement, on détruit la session.
+        session_destroy();
     }
-    $c = $nav->panier;
-    $c instanceof Panier;
-    if($c) {
-        $j->card->total = $c->total();
-        foreach ($c->tabarticle as $key => $i) {
-            $i instanceof Article;
-            $ci = new stdClass();
-            $ci->product = new stdClass();
-            $ci->quantity = $i->quantite;
-            $ci->perso = $i->perso;
-            $p = $i->produit;
-            $p instanceof Produit;
-            foreach ($p->bddvars as $key) {
-                $ci->product->{$key} = $p->{$key};
+    else {
+        $sess = $sessions[$session_id];
+        $nav = $sess["navig"];
+        $nav instanceof Navigation;
+        $j = new stdClass();
+        $j->customer = new stdClass();
+        $j = new stdClass();
+        $j->card = new stdClass();
+        $j->card->items = array();
+        $j->order = new stdClass();
+        $customer = $nav->client;
+        $customer instanceof Client;
+        if($customer)
+        {
+            /*
+             foreach ($customer->bddvars as $key) {
+             $j->customer->{$key} = $customer->{$key};
+             }
+             */
+        }
+        $c = $nav->panier;
+        $c instanceof Panier;
+        if($c) {
+            $j->card->total = $c->total();
+            // die("<pre>" . print_r($c));
+            foreach ($c->tabarticle as $key => $i) {
+                $i instanceof Article;
+                $ci = new stdClass();
+                $ci->product = new stdClass();
+                $ci->quantity = $i->quantite;
+                $ci->perso = $i->perso;
+                /*
+                 $p = $i->produit;
+                 $p instanceof Produit;
+                 foreach ($p->bddvars as $key) {
+                 $ci->product->{$key} = $p->{$key};
+                 }
+                 */
+                $j->card->items[] = $ci;
             }
-            $j->card->items[] = $ci;
-        }        
+        }
     }
+    
 }
 if (isset($_GET["card"]) && $sess) {
     session_id($session_id);

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { MatRipple } from "@angular/material";
+import { MatRipple } from '@angular/material';
 
 @Component({
   selector: '[menu-button]',
@@ -7,12 +7,11 @@ import { MatRipple } from "@angular/material";
   styleUrls: ['../menu-button-base.scss', './menu-button.component.css']
 })
 export class MenuButtonComponent implements OnInit {
-
   @ViewChild(MatRipple) ripple: MatRipple;
 
-  target: HTMLElement
+  target: HTMLElement;
   constructor(ref: ElementRef) {
-    this.target = ref.nativeElement
+    this.target = ref.nativeElement;
   }
   ngOnInit() {}
 }

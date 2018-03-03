@@ -11,26 +11,35 @@
     order: 0;
     flex: 0 1 auto;
     align-self: auto;
+    cursor: pointer;
 }
 
 :host {
     border-collapse: collapse!important;
     border-spacing: 0!important;
 }
+
 :host th {
-    vertical-align:top;
+    vertical-align: text-bottom;
 }
+
+.total-row {
+    font-size: 1.15em;
+}
+
 :host th, :host td {
     padding: .5em!important;
-    border: 1px solid #999!important;
 }
 
 :host td.del-btn {
     font-size: 22px;
 }
-:host mat-form-field.q-select,
-:host mat-form-field.q-select .mat-select-trigger { 
-    min-width: 50px; 
 
-    width: 50px;
+:host mat-form-field.q-select, :host mat-form-field.q-select .mat-select-trigger {
+    min-width: 30px;
+    width: 30px;
+}
+
+.aligh-right {
+    text-align: right;
 }

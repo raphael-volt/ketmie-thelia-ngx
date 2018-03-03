@@ -1,5 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { Request, URLSearchParams, RequestMethod, ResponseContentType, Headers } from '@angular/http';
+import { Request, URLSearchParams, RequestMethod, ResponseContentType, Headers, Response } from '@angular/http';
+import { APIResponse } from '@ngnx/thelia/model';
 const API: string = 'api/';
 const X_API_SESSION_ID: string = 'X-Api-Session-Id';
 
@@ -21,6 +22,8 @@ export class RequestService {
   }
 
   setSessionId(id: string) {
+    if (this._headers.has(X_API_SESSION_ID) && this._headers.get(X_API_SESSION_ID) == id) return;
+    console.warn('[RequestService] X_API_SESSION_ID CHANGED');
     this._headers.set(X_API_SESSION_ID, id);
   }
 

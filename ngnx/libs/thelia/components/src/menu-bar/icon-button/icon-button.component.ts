@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
-import { MenuButtonComponent } from "../menu-button/menu-button.component";
-import { MatRipple } from "@angular/material";
+import { MenuButtonComponent } from '../menu-button/menu-button.component';
+import { MatRipple } from '@angular/material';
 @Component({
   selector: '[icon-button]',
   templateUrl: './icon-button.component.html',
@@ -8,7 +8,7 @@ import { MatRipple } from "@angular/material";
 })
 export class IconButtonComponent extends MenuButtonComponent {
   constructor(ref: ElementRef) {
-    super(ref)
+    super(ref);
   }
 
   iconClass: string[] = [];

@@ -26,8 +26,12 @@ export class SessionService {
 
   update(sessionId: string) {
     if (!this._sessionCookie) this._sessionCookie = { session_id: sessionId };
-    else this._sessionCookie.session_id = sessionId;
-    this.storage.set(COOKIE_ID, this._sessionCookie);
+    else {
+      if (this._sessionCookie.session_id == sessionId) return;
+      this._sessionCookie.session_id = sessionId;
+      console.warn('[SessionService] SESSION_ID CHANGED');
+      this.storage.set(COOKIE_ID, this._sessionCookie);
+    }
   }
 
   private get cookie(): SessionCookie {

@@ -182,10 +182,10 @@ export class CardService implements ICardImpl<Card, CardItem> {
     if (i < 0) return next(null);
 
     this.one('remove', { index: item.index }, resopnse => {
-      l.remove(item);
       item.index = -1;
       item.quantity = 0;
       const n = l.length;
+      l.remove(item);
       for (var j = i; j < n - 1; j++) l.at(j).index = j;
       this.validateProperties(resopnse.body.total);
       this.notify('remove', item);

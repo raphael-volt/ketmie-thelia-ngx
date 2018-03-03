@@ -5,8 +5,8 @@
     <mat-card-subtitle *ngIf="!isClient">Nouveau client</mat-card-subtitle>
   </mat-card-header>
   <mat-card-actions>
-    <button *ngIf="isClient" mat-raised-button (click)="isClient=false">Créer mon compte</button>
-    <button *ngIf="!isClient" mat-raised-button (click)="isClient=true">Me connecter</button>
+    <button *ngIf="isClient" mat-raised-button (click)="setIsClient(false)">Créer mon compte</button>
+    <button *ngIf="!isClient" mat-raised-button (click)="setIsClient(true)">Me connecter</button>
   </mat-card-actions>
   <mat-card-content *ngIf="isClient" class="connect-content">
     <mat-card-content *ngIf="loginError" class="k-light">
@@ -28,43 +28,40 @@
     </div>
   </mat-card-content>
   <mat-card-content *ngIf="!isClient" class="connect-content">
-    <mat-horizontal-stepper [linear]="true">
+    <mat-horizontal-stepper (selectionChange)="selectionChange($event)" [linear]="true" >
       <mat-step [stepControl]="createForm" [completed]="false">
         <div [formGroup]="createForm" fxLayout="column" fxLayoutAlign="start stretch">
           <ng-template matStepLabel>Mes données de connexion</ng-template>
+          <input type="hidden" formControlName="emailTaken" [(ngModel)]="emailTaken">
           <mat-form-field>
             <input matInput placeholder="Email" formControlName="email" [(ngModel)]="data.email">
-            <mat-error *ngIf="createForm.controls.email.invalid">
-              Cet email n'est pas valide.
+            <mat-error *ngIf="errors.e1">
+              {{errors.e1}}
             </mat-error>
           </mat-form-field>
           <mat-form-field>
             <input matInput placeholder="Vérification de l'email" formControlName="email2" [(ngModel)]="data.email2">
-            <mat-error *ngIf="createForm.controls.email2.invalid">
-              {{getEmailError(createForm.controls.email2)}}
+            <mat-error *ngIf="errors.e2">
+              {{errors.e2}}
             </mat-error>
           </mat-form-field>
           <mat-form-field>
             <input matInput type="password" placeholder="Mot de passe" formControlName="password" [(ngModel)]="data.password">
-            <mat-error *ngIf="createForm.controls.password.invalid">
-              {{getPwdError(createForm.controls.password, true)}}
+            <mat-error *ngIf="errors.p1">
+              {{errors.p1}}
             </mat-error>
           </mat-form-field>
           <mat-form-field>
             <input matInput type="password" placeholder="Vérification du mot de passe" formControlName="password2" [(ngModel)]="data.password2">
-            <mat-error *ngIf="createForm.controls.password2.invalid">
-              {{getPwdError(createForm.controls.password2)}}
+            <mat-error *ngIf="errors.p2">
+              {{errors.p2}}
             </mat-error>
           </mat-form-field>
-          <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="8px">
-            <span *ngIf="emailTakenError" class="warn">Cet email est déjà associé à un compte.</span>
-            <button [disabled]="emailTaken" mat-raised-button color="primary" matStepperNext>Suivant</button>
-          </div>
         </div>
       </mat-step>
       <mat-step [stepControl]="addressForm.formGroup" [completed]="false">
         <ng-template matStepLabel>Mon addresse</ng-template>
-        <address-form #addressForm [address]="data.address" [saveButton]="false" [cancelButton]="false" (valid)="addressValid($event)"></address-form>
+        <address-form #addressForm [isCustomerAddress]="true" [address]="data.address" [saveButton]="false" [cancelButton]="false" (valid)="addressValid($event)"></address-form>
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card-content>
@@ -72,7 +69,7 @@
     <mat-toolbar>
       <span style="flex: 1 1 auto;"></span>
       <button mat-raised-button color="accent" (click)="dialogRef.close()">{{cancelLabel}}</button>
-      <button [disabled]="!submitable" mat-raised-button color="primary" (click)="submit()">{{sendLabel}}</button>
+      <button [disabled]="!canNext()" mat-raised-button color="primary" (click)="next()">{{sendLabel}}</button>
     </mat-toolbar>
   </mat-card-footer>
 </mat-card>

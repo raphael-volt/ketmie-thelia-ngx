@@ -160,7 +160,7 @@ class CardController
      * @param unknown $input
      * @return Response
      */
-    public function setRequestParameters($method, $input, $map=0)
+    public function setRequestParameters($method, $input, $map = 0)
     {
         $this->_response = new Response();
         $item = new CardItem($input);
@@ -205,8 +205,8 @@ class CardController
         $data = new stdClass();
         $data->total = $this->card->total();
         $data->data = $body;
-        if($map == 1) {
-            $data->map = $this->productHelper->getDeclinationsMap();            
+        if ($map == 1) {
+            $data->map = $this->productHelper->getDeclinationsMap();
         }
         
         $this->_response->success = $sucess;
@@ -269,7 +269,9 @@ class CardController
             $decs = $this->productHelper->getBoDeclinations($carac->caracdisp);
             $decli->items = $decs;
             
-            $item->product->declinations = array($carac->caracdisp);
+            $item->product->declinations = array(
+                $carac->caracdisp
+            );
             
             $price = $article->produit->prix;
             $dec = $this->getDecliByPrice($price, $decs);
@@ -301,8 +303,6 @@ class CardController
         
         return $item;
     }
-
-
 
     /**
      *

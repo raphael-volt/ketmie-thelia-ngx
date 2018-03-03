@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Directive, OnInit, AfterViewInit } from '@angular/core';
 import { SliderBaseComponent } from '../slider-base.component';
 import { DeclinationService, CardService } from '@ngnx/thelia/api';
 import { serializableCardItem, Card, CardItem, IDeclination, IDeclinationItem } from '@ngnx/thelia/model';
@@ -49,3 +49,9 @@ export class CardComponent extends SliderBaseComponent implements OnInit, AfterV
     });
   }
 }
+
+@Directive({
+  selector: 'action-row',
+  host: {'class': 'action-row'}
+})
+export class ActionRow {}

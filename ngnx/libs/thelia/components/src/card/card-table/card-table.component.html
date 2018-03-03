@@ -50,4 +50,9 @@
     <td *ngIf="card">{{card.total}} €</td>
     <td *ngIf="!card">0</td>
   </tr>
+  <tr class="action-row">
+    <td colspan="6" class="aligh-right">
+      <ng-content select="action-row"></ng-content>
+    </td>
+  </tr>
 </tfoot>

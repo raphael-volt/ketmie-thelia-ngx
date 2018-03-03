@@ -24,7 +24,9 @@
     </ng-container>
     <div *ngIf="group.value == 'table'" fxLayout="row" fxLayoutAlign="center start">
       <table card-table [card]="card" (declinationChange)="declinationChange($event.item, $event.value)" (quantityChange)="quantityChange($event.item, $event.value)"
-        (delete)="deleteItem($event)"></table>
+        (delete)="deleteItem($event)">
+        <action-row><button mat-raised-button color="primary">Commander</button></action-row>
+      </table>
     </div>
   </ng-container>
 </div>

@@ -13,7 +13,7 @@ import { CmsContentComponent } from './cms-content/cms-content.component';
 import { CategoryComponent } from './category/category.component';
 import { ProductComponent } from './product/product.component';
 import { ImRowComponent } from './im-row/im-row.component';
-import { CardComponent } from './card/card.component';
+import { CardComponent, ActionRow } from './card/card.component';
 import { CardItemComponent } from './card/card-item/card-item.component';
 import { SquareBoxDirective } from './square-box.directive';
 import { InnerHtmlDirective } from './inner-html.directive';
@@ -74,6 +74,7 @@ import { IconButtonComponent } from './menu-bar/icon-button/icon-button.componen
     AddressModalComponent,
     ConnectionFormComponent,
     CardComponent,
+    ActionRow,
     CardItemComponent,
     DeclinationController,
     DeclinationRadioGroupComponent,
@@ -96,7 +97,8 @@ import { IconButtonComponent } from './menu-bar/icon-button/icon-button.componen
     FillParentDirective,
     BlurChildDirective,
     ApiImageDirective,
-    IconButtonComponent
+    IconButtonComponent,
+    ActionRow
   ],
   entryComponents: [AddressComponent, AddressModalComponent, ConnectionFormComponent, CardComponent],
   providers: [ImgTileService]

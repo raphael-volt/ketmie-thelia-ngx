@@ -1,6 +1,11 @@
 <col>
 <colgroup span="2"></colgroup>
 <thead>
+  <tr class="action-row">
+    <td colspan="6" class="aligh-right">
+      <ng-content select="action-row"></ng-content>
+    </td>
+  </tr>
   <tr class="light-text">
     <td rowspan="2"></td>
     <th class="table-border" rowspan="2">Produit</th>
@@ -49,10 +54,5 @@
     <td colspan="5" class="aligh-right">Total panier</td>
     <td *ngIf="card">{{card.total}} €</td>
     <td *ngIf="!card">0</td>
-  </tr>
-  <tr class="action-row">
-    <td colspan="6" class="aligh-right">
-      <ng-content select="action-row"></ng-content>
-    </td>
   </tr>
 </tfoot>

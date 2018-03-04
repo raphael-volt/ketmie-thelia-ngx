@@ -15,8 +15,8 @@
 }
 
 :host {
-    border-collapse: collapse!important;
-    border-spacing: 0!important;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 :host th {
@@ -28,7 +28,10 @@
 }
 
 :host th, :host td {
-    padding: .5em!important;
+    padding: .5em;
+}
+:host tr.action-row, :host tr.action-row td {
+    padding: .5em 0;
 }
 
 :host td.del-btn {

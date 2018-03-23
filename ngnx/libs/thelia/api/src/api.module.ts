@@ -17,19 +17,8 @@ const storageConfig: ILocalStorageServiceConfig = {
 };
 
 @NgModule({
-  imports: [
-    CommonModule, 
-    HttpModule, 
-    LocalStorageModule.withConfig(storageConfig)
-  ],
-  providers: [
-    ApiService, 
-    SessionService, 
-    RequestService, 
-    CustomerService, 
-    CardService, 
-    DeclinationService
-  ],
+  imports: [CommonModule, HttpModule, LocalStorageModule.withConfig(storageConfig)],
+  providers: [ApiService, SessionService, RequestService, CustomerService, CardService, DeclinationService],
   exports: [ProductUrlPipe],
   declarations: [ProductUrlPipe]
 })

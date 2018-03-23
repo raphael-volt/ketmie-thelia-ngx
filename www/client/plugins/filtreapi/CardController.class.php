@@ -1,7 +1,8 @@
 <?php
-require_once 'client/plugins/filtreapi/Request.class.php';
-require_once 'client/plugins/filtreapi/HTTPReponseHelper.class.php';
-require_once 'client/plugins/filtreapi/ProductHelper.class.php';
+
+require_once dirname(realpath(__FILE__)) . '/Request.class.php';
+require_once dirname(realpath(__FILE__)) . '/HTTPReponseHelper.class.php';
+require_once dirname(realpath(__FILE__)) . '/ProductHelper.class.php';
 define("BO_ID", 5);
 
 class CardItem

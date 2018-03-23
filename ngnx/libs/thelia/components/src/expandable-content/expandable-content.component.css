@@ -1,0 +1,13 @@
+/*
+
+.expansion.animated, .expansion.animated.expanded {
+    overflow: hidden;
+}
+
+.expansion.expanded {
+  overflow: visible;
+}
+
+ [class.animated]="animated" [class.expanded]="expanded">
+  <ng-content></ng-content>
+  */

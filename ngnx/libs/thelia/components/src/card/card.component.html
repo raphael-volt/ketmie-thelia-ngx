@@ -1,7 +1,8 @@
 <div class="main" sliderDirection="left" [sliderState]="sliderState" (events)="sliderEvents($event)">
-  <div fxLayout="row" fxLayoutAlign="start center">
-    <h2 fxFlex="0 1 auto">Panier</h2>
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+    <h2 fxFlex="0 1 auto">Panier {{orderState}}</h2>
     <span fxFlex="1 1 auto"></span>
+    <button mat-raised-button (click)="hasStepper = !hasStepper" [color]="topActionColor">{{topActionLabel}}</button>
     <mat-button-toggle-group fxFlex="0 1 auto" #group="matButtonToggleGroup">
       <mat-button-toggle mat-icon-button value="table" [checked]="true">
         <i class="fa fa-th-list" aria-hidden="true"></i>
@@ -14,7 +15,7 @@
   <div *ngIf="service.isEmpty">
     <h3>Votre panier est vide</h3>
   </div>
-  <ng-container *ngIf="!service.isEmpty">
+  <ng-container>
     <ng-container *ngIf="group.value == 'items'">
       <h3>Total panier: {{card.total}} €</h3>
       <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutWrap>
@@ -23,10 +24,29 @@
       </div>
     </ng-container>
     <div *ngIf="group.value == 'table'" fxLayout="row" fxLayoutAlign="center start">
-      <table card-table [card]="card" (declinationChange)="declinationChange($event.item, $event.value)" (quantityChange)="quantityChange($event.item, $event.value)"
-        (delete)="deleteItem($event)">
-        <action-row><button mat-raised-button color="primary">Commander</button></action-row>
-      </table>
+      <mat-horizontal-stepper class="card-stepper" [class.order]="hasStepper"  linear>
+          <mat-step>
+              <div>
+                <!--
+                <button mat-button matStepperNext type="button">Next</button>
+                -->
+                <table card-table [card]="card" (declinationChange)="declinationChange($event.item, $event.value)"
+                  (quantityChange)="quantityChange($event.item, $event.value)" (delete)="deleteItem($event)">
+                </table>
+              </div>
+            </mat-step>
+      </mat-horizontal-stepper>
+      <!--
+      <div>
+        <expandable-content [expanded]=hasStepper>
+          <div>
+            <button mat-raised-button (click)="setOrderState('card')">to card</button>
+            <button mat-raised-button (click)="setOrderState('validate')">to validate</button>
+            <button mat-raised-button (click)="setOrderState('billingAddress')">to billingAddress</button>
+          </div>
+        </expandable-content>
+      </div>
+    -->
     </div>
   </ng-container>
 </div>

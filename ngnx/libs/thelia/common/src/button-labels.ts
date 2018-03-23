@@ -14,5 +14,24 @@ const CHANGE: string = 'Modifier';
 const DELETE: string = 'Supprimer';
 const ADD: string = 'Ajouter';
 const CREATE: string = 'Créer';
+const ORDER: string = 'Commander';
 
-export { OK, YES, NO, ADD, DELETE, CREATE, CLOSE, SAVE, CANCEL, GIVE_UP, CHANGE, CONTINUE, VALIDATE, SEND, NEXT, PREV };
+export {
+  OK,
+  YES,
+  NO,
+  ADD,
+  DELETE,
+  CREATE,
+  CLOSE,
+  SAVE,
+  CANCEL,
+  GIVE_UP,
+  CHANGE,
+  CONTINUE,
+  VALIDATE,
+  SEND,
+  NEXT,
+  PREV,
+  ORDER
+};

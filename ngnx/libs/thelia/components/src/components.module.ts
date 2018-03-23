@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCommonModule, MatRippleModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { TheliaCommonModule } from '@ngnx/thelia/common';
@@ -13,7 +14,7 @@ import { CmsContentComponent } from './cms-content/cms-content.component';
 import { CategoryComponent } from './category/category.component';
 import { ProductComponent } from './product/product.component';
 import { ImRowComponent } from './im-row/im-row.component';
-import { CardComponent, ActionRow } from './card/card.component';
+import { CardComponent } from './card/card.component';
 import { CardItemComponent } from './card/card-item/card-item.component';
 import { SquareBoxDirective } from './square-box.directive';
 import { InnerHtmlDirective } from './inner-html.directive';
@@ -39,10 +40,13 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
 import { CardItemPricePipe } from './card-item-price.pipe';
 import { CardTableComponent } from './card/card-table/card-table.component';
 import { IconButtonComponent } from './menu-bar/icon-button/icon-button.component';
+import { ExpandableContentComponent } from './expandable-content/expandable-content.component';
+import { OrderStepperComponent } from './order-stepper/order-stepper.component';
 @NgModule({
   imports: [
     MatCommonModule,
     MatRippleModule,
+    BrowserAnimationsModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -74,7 +78,6 @@ import { IconButtonComponent } from './menu-bar/icon-button/icon-button.componen
     AddressModalComponent,
     ConnectionFormComponent,
     CardComponent,
-    ActionRow,
     CardItemComponent,
     DeclinationController,
     DeclinationRadioGroupComponent,
@@ -83,7 +86,9 @@ import { IconButtonComponent } from './menu-bar/icon-button/icon-button.componen
     MenuButtonComponent,
     CardItemPricePipe,
     CardTableComponent,
-    IconButtonComponent
+    IconButtonComponent,
+    ExpandableContentComponent,
+    OrderStepperComponent
   ],
   exports: [
     KetmieBackgroundComponent,
@@ -98,7 +103,7 @@ import { IconButtonComponent } from './menu-bar/icon-button/icon-button.componen
     BlurChildDirective,
     ApiImageDirective,
     IconButtonComponent,
-    ActionRow
+    ExpandableContentComponent
   ],
   entryComponents: [AddressComponent, AddressModalComponent, ConnectionFormComponent, CardComponent],
   providers: [ImgTileService]

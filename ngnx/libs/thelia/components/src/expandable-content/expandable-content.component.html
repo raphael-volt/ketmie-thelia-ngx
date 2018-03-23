@@ -1,0 +1,6 @@
+<div [@expansion2]="expandedState">
+  <div [@expansion]="expandedState" (@expansion.done)="expansionDone($event)" class="expansion" [class.animated]="animated"
+    [class.expanded]="expanded">
+    <ng-content></ng-content>
+  </div>
+</div>

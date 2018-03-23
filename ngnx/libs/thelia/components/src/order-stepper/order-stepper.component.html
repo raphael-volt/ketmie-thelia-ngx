@@ -1,0 +1,48 @@
+<mat-horizontal-stepper class="order-stepper" [linear]="true" #stepper>
+  <mat-step [stepControl]="deliveryFG">
+    <form [formGroup]="deliveryFG">
+      <ng-template matStepLabel>Adresse de livraison</ng-template>
+      <mat-form-field>
+        <select formControlName="address">
+          <option ngFor="let a of deliveryAddresses" [value]="a">{{a.libelle}}</option>
+        </select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="transportFG">
+    <form [formGroup]="transportFG">
+      <ng-template matStepLabel>Transport</ng-template>
+      <mat-form-field>
+        <mat-radio-group formControlName="transport">
+          <mat-radio-button ngFor="let t of transports" [value]="t">{{t.name}} | {{t.price}}</mat-radio-button>
+        </mat-radio-group>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Paiement</ng-template>
+    <mat-form-field>
+        <mat-radio-group formControlName="payment">
+          <mat-radio-button ngFor="let p of payments" [value]="p">{{p.name}}</mat-radio-button>
+        </mat-radio-group>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button (click)="paymentDone()">Next</button>
+    </div>
+  </mat-step>
+</mat-horizontal-stepper>
+<div class="card-content">
+  <ng-content></ng-content>
+</div>

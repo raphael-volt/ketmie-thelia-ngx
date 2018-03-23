@@ -1,0 +1,21 @@
+:host {
+    overflow: hidden;
+    position: relative;
+}
+
+
+.order-stepper, .card-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+}
+
+.order-stepper.out {
+    transform: translateY(-100%);
+}
+
+.card-content.out {
+    transform: translateX(-100%);
+}
+

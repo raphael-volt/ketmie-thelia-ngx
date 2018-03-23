@@ -1,10 +1,16 @@
 <?php
 require_once (dirname(realpath(__FILE__)) . '/../../../classes/filtres/FiltreCustomBase.class.php');
 
-require_once 'client/plugins/filtreapi/CardController.class.php';
-require_once 'client/plugins/filtreapi/Request.class.php';
-require_once 'client/plugins/filtreapi/HTTPReponseHelper.class.php';
-require_once 'client/plugins/filtreapi/ProductHelper.class.php';
+require_once dirname(realpath(__FILE__)) . '/CardController.class.php';
+require_once dirname(realpath(__FILE__)) . '/Request.class.php';
+require_once dirname(realpath(__FILE__)) . '/HTTPReponseHelper.class.php';
+require_once dirname(realpath(__FILE__)) . '/ProductHelper.class.php';
+
+function cleanText($text) {
+    $text = htmlentities($text);
+    $text = nl2br($text);
+    return preg_replace('/(\r\n|\n|\r)/', '', $text);
+}
 
 class Filtreapi extends FiltreCustomBase
 {
@@ -400,6 +406,44 @@ ORDER BY titre";
         return $stmt->fetchAll();
     }
 
+    private function getTransports() {
+        $modules = new Modules();
+        
+        $query = "SELECT id FROM $modules->table WHERE type='2' and actif='1' order by classement";
+        $pdo = PDOThelia::getInstance();
+        $stmt = $pdo->query($query);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        $resul = $stmt->fetchAll();
+        $transzone = new Transzone();
+        foreach ($resul as $row) {
+            
+            $modules = new Modules();
+            $modules->charger_id($row->id);
+            
+            try {
+                $instance = ActionsModules::instance()->instancier($modules->nom);
+                $row->port = round(port($row->id, $pays->id, $cpostal), 2);
+                $row->titre = $instance->getTitre();
+                $row->chapo = cleanText($instance->getChapo());
+                $row->description = cleanText($instance->getDescription());
+                
+            } catch (Exception $ex) {
+                $row->titre = $row->chapo = $row->description = '';
+            }
+            
+            // Chercher le logo
+            $exts = array('png', 'gif', 'jpeg', 'jpg');
+            $logo = false;
+            foreach ($exts as $ext) {
+                $tmp = ActionsModules::instance()->lire_chemin_base() . "/$row->nom/logo.$ext";
+                if (file_exists($tmp)) {
+                    $row->logo = ActionsModules::instance()->lire_url_base() . "/$row->nom/logo.$ext";
+                    break;
+                }
+            }
+        }
+        return $resul;
+    }
     public function calcule($match)
     {
         $isPost = $_SERVER['REQUEST_METHOD'] == 'POST';
@@ -409,6 +453,12 @@ ORDER BY titre";
         $result = new stdClass();
         try {
             switch ($action) {
+                case 'transports':
+                    {
+                        $result = $this->getTransports();
+                        break;
+                    }
+                    
                 case 'card':
                     {
                         $result = null;

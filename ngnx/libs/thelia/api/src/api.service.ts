@@ -233,12 +233,10 @@ export class ApiService {
   }
 
   getProductCategory(productId: string): string {
-    for(const c of this._shopTree.shopCategories) {
-      for(const p of c.children)
-        if(p.id == productId)
-          return c.id
+    for (const c of this._shopTree.shopCategories) {
+      for (const p of c.children) if (p.id == productId) return c.id;
     }
-    return null
+    return null;
   }
 
   getProductDescription(id: string): Observable<ProductDetail> {

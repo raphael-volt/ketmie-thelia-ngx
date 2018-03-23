@@ -24,3 +24,5 @@ export * from './src/slider.directive';
 export * from './src/square-box.directive';
 export * from './src/template.directive';
 export * from './src/card-item-price.pipe';
+export * from './src/expandable-content/expandable-content.component';
+

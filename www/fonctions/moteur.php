@@ -31,7 +31,7 @@ require_once (__DIR__ . "/../fonctions/error_reporting.php");
 // ini_set('display_startup_errors', '1');
 // error_reporting(E_STRICT);
 // die("<pre>" . print_r(array($_POST, $_GET), true));
-
+error_reporting(E_ERROR);
 require __DIR__ . "/autoload.php";
 
 /* Inclusions nécessaires avant ouverture de la session */

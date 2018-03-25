@@ -135,7 +135,7 @@ class Baseobjdesc extends Baseobj {
 	 * @param int $lang l'ID de la languie demandée. Si false, la langue courante sera utilisée
 	 * @param string $colonne la colonne de la table 'desc' à utiliser pour la recherche. Si false, c'est celle passée au constructeur qui est utilisée.
 	 * @param int $traiter_trad_vide indique comment traiter le cas d'une traduction absente, cf les constantes définies
-	 * @return 0 si la trdunction n' pas pu être chargée, 1 sinon.
+	 * @return int 0 si la trdunction n' pas pu être chargée, 1 sinon.
 	 */
 	public function charger_desc($fkey, $lang = false, $colonne = false, $traiter_trad_vide = self::TRAITER_TRAD_VIDE) {
 

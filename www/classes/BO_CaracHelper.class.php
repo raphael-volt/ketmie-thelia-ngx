@@ -34,7 +34,7 @@ class BO_CaracHelper
 		return false;
 	}
 	/**
-	 * @param unknown $row
+	 * @param mixed $row
 	 * @return BO_CaracGroup
 	 */
 	public function addRowGroup($rows)
@@ -47,7 +47,7 @@ class BO_CaracHelper
 		return $group;
 	}
 	/**
-	 * @param unknown $row
+	 * @param mixed $row
 	 * @return BO_CaracGroup
 	 */
 	public function addGroup($row)

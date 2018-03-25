@@ -8,7 +8,7 @@ class PDOThelia extends PDO
 	const QUERY = 2;
 	
 	/**
-	 * @param unknown $query
+	 * @param string $query
 	 * @return NULL|PDOStatement
 	 */
 	private function getStatement($query, $mode, $options = NULL)
@@ -22,8 +22,8 @@ class PDOThelia extends PDO
 	}
 
 	/**
-	 * @param unknown $query
-	 * @param unknown $mode
+	 * @param string $query
+	 * @param int $mode
 	 * @return NULL|PDOStatement
 	 */
 	private function createStatement($query, $mode, array $driver_options = null)
@@ -81,7 +81,6 @@ class PDOThelia extends PDO
 	{
 		if( ! self::$callStatic)
 			throw new Exception("Singleton usage");
-		
 		$dsn = "mysql:host=" . THELIA_BD_HOST . "; dbname=" . THELIA_BD_NOM . ";";
 		parent::__construct($dsn, THELIA_BD_LOGIN, THELIA_BD_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"set names utf8"));
 		$this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -103,8 +102,8 @@ class PDOThelia extends PDO
 	}
 	/**
 	 * @param PDOStatement $stmt
-	 * @param unknown $parameter
-	 * @param unknown $int
+	 * @param string|int $parameter
+	 * @param string|int $int
 	 */
 	public function bindInt(PDOStatement $stmt, $parameter, $int, $executeAfter=false)
 	{
@@ -114,8 +113,8 @@ class PDOThelia extends PDO
 	}
 	/**
 	 * @param PDOStatement $stmt
-	 * @param unknown $parameter
-	 * @param unknown $string
+	 * @param mixed $parameter
+	 * @param mixed $string
 	 */
 	public function bindString(PDOStatement $stmt, $parameter, $string, $executeAfter=false)
 	{
@@ -125,7 +124,7 @@ class PDOThelia extends PDO
 	}
 	/**
 	 * @param PDOStatement $stmt
-	 * @param unknown $class
+	 * @param mixed $class
 	 * @param string $executeBefore
 	 * @return mixed
 	 */
@@ -138,7 +137,7 @@ class PDOThelia extends PDO
 	}
 	/**
 	 * @param PDOStatement $stmt
-	 * @param unknown $class
+	 * @param mixed $class
 	 * @param string $executeBefore
 	 * @return multitype:
 	 */

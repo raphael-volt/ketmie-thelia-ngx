@@ -58,7 +58,7 @@ class Devise extends Baseobj {
 	/**
 	 * Charger la devise par défaut.
 	 *
-	 * @return la devise par defaut.
+	 * @return string la devise par defaut.
 	 */
 	public function charger_defaut() {
 		return $this->getVars("select * from $this->table where defaut<>0");

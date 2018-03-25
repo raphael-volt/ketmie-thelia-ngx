@@ -3,7 +3,7 @@
 class XMLUtils
 {
 	/**
-	 * @param unknown $str
+	 * @param string $str
 	 * @return DOMElement
 	 */
 	public static function getDom($str)
@@ -20,7 +20,7 @@ class XMLUtils
 	/**
 	 * @param DOMDocument $doc
 	 * @param DOMElement $parent
-	 * @param unknown $str
+	 * @param string $str
 	 * @return DOMNode new node
 	 */
 	public static function appendXML(DOMDocument $doc, DOMElement $parent, $str)

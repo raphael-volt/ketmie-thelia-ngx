@@ -1,40 +1,43 @@
 version: '2'
 
 services:
-  ketmie_t:
-    container_name: ketmie_t
+  ketmie_php7:
+    container_name: ketmie_php7
     build: .
     ports:
-      - 4501:80
+      - 4400:80
+    environment:
+      PHP_IDE_CONFIG: "serverName=ketmie_php7"
+      PHP_XDEBUG_ENABLED: 1
+      XDEBUG_CONFIG: "idekey=KETMIE remote_host=192.168.1.19 profiler_enable=1"
     volumes:
       - ./www:/var/www/html:rw
+      - ./shared:/shared:rw
+      - ./config/php/ketmie.ini:/usr/local/etc/php/conf.d/ketmie2.ini
     links:
-      - ketmie_t_db
+      - ketmie_mysql
     restart: 'no'
-  ketmie_t_pma:
-    container_name: ketmie_t_pma
+  ketmie_pma:
+    container_name: ketmie_pma
     image: phpmyadmin/phpmyadmin
     environment:
      - PMA_ARBITRARY=1
-     - PMA_HOST=ketmie_t_db
+     - PMA_HOST=ketmie_mysql
      - PMA_USER=ketmieuser
      - PMA_PASSWORD=k3tM1aDm1n
     ports:
-      - 4503:80
+      - 4401:80
     links:
-      - ketmie_t_db
+      - ketmie_mysql
     depends_on:
-      - ketmie_t
-      - ketmie_t_db
+      - ketmie_php7
+      - ketmie_mysql
     restart: 'no'
-  memcached:
-    image: memcached
-    restart: 'no'
-  ketmie_t_db:
-    container_name: ketmie_t_db
+  ketmie_mysql:
+    container_name: ketmie_mysql
     image: mysql:5.5
     ports:
-      - 4502:3306
+      - 4402:3306
     environment:
       - MYSQL_ROOT_PASSWORD=rootpwd
       - MYSQL_DATABASE=ketmieuser  

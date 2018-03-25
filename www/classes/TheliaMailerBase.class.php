@@ -45,7 +45,7 @@ class TheliaMailerBase extends PHPMailer
 	protected $pdo;
 	 
 	/**
-	 * @param unknown $messageNom
+	 * @param string $messageNom
 	 * @return Messagedesc
 	 */
 	protected function getMessageDescById($id)

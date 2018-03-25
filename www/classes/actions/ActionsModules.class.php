@@ -53,7 +53,7 @@ class ActionsModules extends ActionsBase {
 
 	/**
 	 * @method string Retourne le chemin d'accès au répertoire d'un module
-	 * @return Répertoire dans lequel se trouve le module
+	 * @return string Répertoire dans lequel se trouve le module
 	 * @throws TheliaException::MODULE_REPERTOIRE_NON_TROUVE si le repertoire module n'existe pas
 	 */
 	public function lire_chemin_module($nom_module, $controle_existence = true) {
@@ -101,7 +101,7 @@ class ActionsModules extends ActionsBase {
 	/**
 	 * Récupérer le contenu du descripteur XML d'un module
 	 *
-	 * @param Module $module le module concerné
+	 * @param Modules $module le module concerné
 	 * @throws TheliaException si le descripteur XML n'existe pas ou est invalide
 	 */
 	protected function lire_descripteur_xml($module) {
@@ -163,15 +163,11 @@ class ActionsModules extends ActionsBase {
 	public function lister($type = false, $actifs_seulement = false, $nom_module = '') {
 
 		$modules = new Modules();
-
 		$where = '';
-
 		if ($type !== false) $where .= "and type=$type ";
 		if ($actifs_seulement !== false) $where .= "and actif=1 ";
 		if ($nom_module !== '') $where .= "and nom='$nom_module' ";
-
-		$hash = md5($where);
-
+        $hash = md5($where);
 		if (! isset(self::$list_cache[$hash])) {
 			self::$list_cache[$hash] = array();
 

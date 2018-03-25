@@ -25,7 +25,7 @@ class ProductHelper
 
     /**
      *
-     * @param unknown $id
+     * @param string $id
      * @param boolean $declinations
      * @return ProductJSON|NULL
      */
@@ -93,7 +93,7 @@ WHERE p.id=?";
 
     /**
      *
-     * @param unknown $caracdisp
+     * @param mixed $caracdisp
      * @return BO_CaracGroup
      */
     public function getBoDecliGroup($caracdisp)
@@ -106,8 +106,8 @@ WHERE p.id=?";
 
     /**
      * 
-     * @param unknown $caracdisp
-     * @return NULL|unknown[]
+     * @param mixed $caracdisp
+     * @return NULL|mixed[]
      */
     public function getBoDeclinations($caracdisp)
     {
@@ -165,7 +165,7 @@ EOL;
 
     /**
      *
-     * @param unknown $declidisp
+     * @param mixed $declidisp
      * @return BO_CaracHelper
      */
     function loadCarac($declidisp, $metal = "zinc")
@@ -214,7 +214,7 @@ ORDER BY cdd.titre, bo.size;";
 
     /**
      *
-     * @param unknown $id_produit
+     * @param mixed $id_produit
      * @return Caracval
      */
     public function getCarac($id_produit)

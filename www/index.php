@@ -6,6 +6,8 @@
  * error_reporting(E_ALL);
  */
 
+error_reporting(E_ERROR);
+
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: HEAD, GET, POST, PUT, DELETE, OPTIONS");

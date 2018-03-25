@@ -98,7 +98,7 @@ class CacheBase {
         if (defined('IN_UPDATE_THELIA')) {
             return false;
         }
-
+        /*
 		$val = 1;
 
 		$hdl = $this->cnx->query("select valeur from ".Variable::TABLE." where nom = 'memcache'");
@@ -108,6 +108,8 @@ class CacheBase {
 		}
 
 		return intval($val) > 0;
+		*/
+        return false;
 	}
 
 
@@ -116,6 +118,7 @@ class CacheBase {
 	}
 
 	private function getMemcache() {
+	    /*
 		if (self::$LEVEL != self::MEMCACHE_CACHE)
 			return null;
 
@@ -132,6 +135,8 @@ class CacheBase {
 		}
 
 		return $this->memcache;
+		*/
+		return null;
 	}
 
 	private function setCache2($key, $value) {
@@ -189,12 +194,11 @@ class CacheBase {
 
 		if (!$data) {
 			$data = array();
-
+			if(! $clazz)
+			    $clazz = stdClass::class;
+			
 			$resul = $this->cnx->query($query);
-
-			while ($resul && $row = $this->fetch_object($resul, $clazz)) {
-				$data[] = $row;
-			}
+            $data = $resul->fetchAll(PDO::FETCH_CLASS, $clazz);
 			$this->set($query, $data);
 		}
 

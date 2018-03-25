@@ -157,8 +157,8 @@ class CardController
 
     /**
      *
-     * @param unknown $method
-     * @param unknown $input
+     * @param mixed $method
+     * @param mixed $input
      * @return Response
      */
     public function setRequestParameters($method, $input, $map = 0)
@@ -196,8 +196,8 @@ class CardController
 
     /**
      *
-     * @param unknown $sucess
-     * @param unknown $body
+     * @param mixed $sucess
+     * @param mixed $body
      * @return Response
      */
     private function setResponse($sucess, $body, $map)
@@ -307,7 +307,7 @@ class CardController
 
     /**
      *
-     * @param unknown $value
+     * @param mixed $value
      * @param BO_Carac[] $declis
      * @return BO_Carac
      */
@@ -370,7 +370,7 @@ class CardController
 
     /**
      *
-     * @param unknown $index
+     * @param mixed $index
      * @return multitype:Perso
      */
     private function getPanierBoPerso($index)
@@ -391,7 +391,7 @@ class CardController
 
     /**
      *
-     * @param unknown $index
+     * @param mixed $index
      * @return multitype:Perso
      */
     function getPanierPersosAt($index)
@@ -405,7 +405,7 @@ class CardController
 
     /**
      *
-     * @param unknown $index
+     * @param mixed $index
      * @return Article
      */
     function getPanierArticleAt($index)

@@ -4,6 +4,18 @@
 
 ## Docker
 
+The `xdebug.remote_host` must be set for debug:
+
+- with `php.ini`
+    ```ini
+    xdebug.remote_host=<HOST_IP>
+    ```
+- with `docker-compose`
+    ```yml
+    environment:
+        XDEBUG_CONFIG: remote_host=<HOST_IP>
+    ```
+
 ```bash
 # Build containers
 docker-compose build
@@ -11,20 +23,6 @@ docker-compose build
 docker-compose up --build
 # Run containers
 docker-compose up
-```
-
-### Usefull commands
-
-Stop all running containers :
-
-```bash
-docker stop $(docker ps -a -q)
-```
-
-Open a terminal in a container
-
-```bash
-docker exec -it <container-name|container_ID> bash
 ```
 
 # Eclipse PDT configuration #
@@ -67,7 +65,7 @@ docker exec -it <container-name|container_ID> bash
 
 Launch debugger from eclipse.
 
-Open a terminal in the container:
+Open a terminal in the `ketmie_php7` container:
 
 ```bash
 docker exec -it ketmie_php7 bash
@@ -84,4 +82,22 @@ cd /shared/
 ./phpunit.watch.sh
 ```
 
+## Usefull commands
 
+Get host IP address
+
+```bash
+hostname -I | awk '{print $1}'
+```
+
+Stop all running containers :
+
+```bash
+docker stop $(docker ps -a -q)
+```
+
+Open a terminal in a container
+
+```bash
+docker exec -it <container-name|container_ID> bash
+```

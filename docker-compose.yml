@@ -6,14 +6,10 @@ services:
     build: .
     ports:
       - 4400:80
-    environment:
-      PHP_IDE_CONFIG: "serverName=ketmie_php7"
-      PHP_XDEBUG_ENABLED: 1
-      XDEBUG_CONFIG: "idekey=KETMIE remote_host=192.168.1.19 profiler_enable=1"
     volumes:
       - ./www:/var/www/html:rw
       - ./shared:/shared:rw
-      - ./config/php/ketmie.ini:/usr/local/etc/php/conf.d/ketmie2.ini
+      - ./shared/ketmie.ini:/usr/local/etc/php/conf.d/ketmie.ini
     links:
       - ketmie_mysql
     restart: 'no'

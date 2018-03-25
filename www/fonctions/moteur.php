@@ -33,7 +33,11 @@ require_once (__DIR__ . "/../fonctions/error_reporting.php");
 // die("<pre>" . print_r(array($_POST, $_GET), true));
 error_reporting(E_ERROR);
 require __DIR__ . "/autoload.php";
-
+/*
+ * if (! isset($_GET['fond'])) {
+ * $_GET['fond'] = "api/arbo";
+ * }
+ */
 /* Inclusions nécessaires avant ouverture de la session */
 $modules = ActionsModules::instance()->lister(false, true);
 
@@ -48,17 +52,17 @@ foreach ($modules as $module) {
 }
 
 session_start();
-if (isset($_GET['fond']) && strpos($_GET['fond'], "api/") === 0){  
+if (isset($_GET['fond']) && strpos($_GET['fond'], "api/") === 0) {
     
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     // header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Api-Session-Id, Authorization");
     header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Api-Session-Id");
     
-    header("Content-type: application/json; charset=utf-8");
+    // header("Content-type: application/json; charset=utf-8");
+header("Content-type: text/html; charset=utf-8");
     header("HTTP/1.1 200 OK");
-}
-else
+} else
     header("Content-type: text/html; charset=utf-8");
 
 require_once (__DIR__ . "/../fonctions/boucles.php");
@@ -71,9 +75,11 @@ ActionsModules::instance()->appel_module("predemarrage"); // ajout 1.4.3
 require_once (__DIR__ . "/../fonctions/lire.php");
 require_once (__DIR__ . "/../fonctions/url.php");
 
-// initialisation des variables du couple php/html
-if (! isset($res))
-    $res = "";
+if (! isset($fond))
+    
+    // initialisation des variables du couple php/html
+    if (! isset($res))
+        $res = "";
 if (! isset($lang))
     $lang = "";
 if (! isset($devise))

@@ -1,11 +1,11 @@
 <?php
 
+error_reporting(E_ERROR);
 require_once 'fonctions/autoload.php';
 require_once 'client/config_thelia.php';
 /*
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
 */
 function parseSessions($callback)
 {

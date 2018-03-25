@@ -16,6 +16,7 @@ class PDOTest extends TestCase
         while ($row = $stmt->fetchObject(stdClass::class)) {
             $i ++;
         }
+        
         $this->assertGreaterThan(0, $i);
         $this->assertEquals($n, $i);
     }

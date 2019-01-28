@@ -39,7 +39,7 @@ class Rubdeclinaison extends Baseobj{
 			 $this->charger($rubrique, $declinaison);
 	}
 
-	public function charger($rubrique, $declinaison){
+	public function charger($rubrique, $declinaison=false){
 		return $this->getVars("select * from $this->table where rubrique=".intval($rubrique)." and declinaison=".intval($declinaison));
 	}
 }

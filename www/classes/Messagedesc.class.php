@@ -38,7 +38,7 @@ class Messagedesc extends Baseobjdesc {
 		parent::__construct('message', $message, $lang);
 	}
 
-	public function charger($message, $lang = false) {
+	public function charger($message, $lang=false) {
 		return $this->charger_desc($message, $lang);
 	}
 

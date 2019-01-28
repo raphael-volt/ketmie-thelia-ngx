@@ -44,10 +44,10 @@ class TlogDestinationConfig extends Variable {
         $this->defaut = $defaut;
         $this->type = $type;
 
-		$this->charger();
+		$this->charger(null);
     }
 
-    public function charger() {
+    public function charger($nom, $lang=false) {
          // La variable n'existe pas ? La créer en y affectant la valeur par defaut
         if (! parent::charger($this->nom)) {
         	$this->valeur = $this->defaut;

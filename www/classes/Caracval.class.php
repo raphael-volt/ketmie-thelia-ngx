@@ -42,7 +42,7 @@ class Caracval extends Baseobj{
                         $this->charger($produit, $caracteristique);	
         }
 
-        function charger($produit, $caracteristique){
+        function charger($produit, $caracteristique=false){
                 return $this->getVars("select * from $this->table where produit=\"$produit\" and caracteristique=\"$caracteristique\"");
         }
 

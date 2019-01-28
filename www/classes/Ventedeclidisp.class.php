@@ -42,7 +42,7 @@ class Ventedeclidisp extends Baseobj{
 			 $this->charger($id);
 	}
 
-	public function  charger($id){
+	public function  charger($id, $lang=false){
 		return $this->getVars("select * from $this->table where id=\"$id\"");
 	}
 

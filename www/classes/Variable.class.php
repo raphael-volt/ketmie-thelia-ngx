@@ -43,7 +43,7 @@ class Variable extends Baseobj {
 			$this->charger($nom);
 	}
 
-	function charger($nom){
+	function charger($nom, $lang=false){
 		return $this->getVars("select * from $this->table where nom=\"$nom\"");
 	}
 

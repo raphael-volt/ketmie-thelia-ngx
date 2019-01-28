@@ -198,7 +198,11 @@ class CacheBase {
 			    $clazz = stdClass::class;
 			
 			$resul = $this->cnx->query($query);
-            $data = $resul->fetchAll(PDO::FETCH_CLASS, $clazz);
+			if(! $resul) {
+			    $data = null;
+			}else {
+                $data = $resul->fetchAll(PDO::FETCH_CLASS, $clazz);			    
+			}
 			$this->set($query, $data);
 		}
 

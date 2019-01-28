@@ -120,7 +120,7 @@ class Client extends Baseobj
         return $this->id;
     }
 
-    function charger($email, $motdepasse)
+    function charger($email, $motdepasse=false)
     {
         $query = sprintf("select * from $this->table where email='%s' and motdepasse=PASSWORD('%s')", $this->escape_string($email), $this->escape_string($motdepasse));
         

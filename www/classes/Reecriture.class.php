@@ -43,7 +43,7 @@ class Reecriture extends Baseobj{
                   $this->charger($url);
         }
 
-        function charger($url){
+        function charger($url, $lang=false){
                 return $this->getVars("select * from $this->table where url=\"$url\" ORDER BY actif DESC");
         }
 

@@ -104,7 +104,7 @@ class PluginsClassiques extends Baseobj{
 
         function aprescommande(){}
 
-        function mail(){}
+        function mail($data){}
 
         function avantclient(){}
 

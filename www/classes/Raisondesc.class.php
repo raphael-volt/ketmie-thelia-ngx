@@ -38,7 +38,7 @@ class Raisondesc extends Baseobjdesc {
 		parent::__construct("raison", $raison, $lang);
 	}
 
-	function charger($raison, $lang = false){
+	function charger($raison, $lang=false){
 		return $this->charger_desc($raison, $lang);
 	}
 }

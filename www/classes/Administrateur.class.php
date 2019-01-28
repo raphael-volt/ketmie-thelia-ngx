@@ -65,83 +65,19 @@ class Administrateur extends Baseobj
             $this->charger_id($id);
     }
     
-    function charger($identifiant, $motdepasse) {
-        $identifiant = "devadmin";
-        $motdepasse = "devadmin";
-        $query = sprintf("select * from $this->table where identifiant='%s' and motdepasse=PASSWORD('%s')", $this->escape_string($identifiant), $this->escape_string($motdepasse));
-        
-        if ($this->getVars($query)) {
-            $this->autorisation();
-            return 1;
-            
-        } else {
-            
-            return 0;
-            
-        }
-        /*
-        
-        $pdo = StaticConnection::$pdo;
-        $q = "select * from {$this->table} where identifiant=? AND motdepasse=PASSWORD('?')";
-        $stmt = $pdo->prepare($q);
-        $stmt->execute(array($identifiant, $motdepasse));
-        $res = $stmt->fetchAll();
-        if ($stmt->rowCount()) {
-            $admin = $stmt->fetch(PDO::FETCH_OBJ);
-            $this->id = $admin->id;
-            $this->autorisation();
-            return 1;
-        } else {
-            $this->id = null;
-            return 0;
-        }
-        */
-        /*
-$stmt = $db->prepare("INSERT INTO table(`hexvalue`, `password`) VALUES(HEX(?), PASSWORD(?))");
-$stmt->execute(array($name, $password));
-
-        $query = sprintf("select * from $this->table where identifiant='%s' and motdepasse=PASSWORD('%s')", $this->escape_string($identifiant), $this->escape_string($motdepasse));
-        
-        if ($this->getVars($query)) {
-            $this->autorisation();
-            return 1;
-            
-        } else {
-            
-            return 0;
-            
-        }
-        */
-    }
-
-        /*
-    function charger($identifiant, $motdepasse)
-    {
-        $query = sprintf("select * from $this->table where email='%s' and motdepasse=PASSWORD('%s')", $this->escape_string($email), $this->escape_string($motdepasse));
-        
-        $pdo = StaticConnection::$pdo;
-        $hash = password_hash($motdepasse, PASSWORD_);
-        $q = "select * from {$this->table} where identifiant=? AND motdepasse=? LIMIT 1;";
-        $stmt = $pdo->prepare($q);
-        $stmt->bindValue(1, $identifiant);
-        $stmt->bindValue(2, $hash);
+    function charger($identifiant, $motdepasse=false) {
+        $pdo = $this->getPDO();
+        $stmt = $pdo->prepare("SELECT id FROM administrateur WHERE motdepasse = PASSWORD(?) AND identifiant=?");
+        $stmt->bindParam(1, $motdepasse);
+        $stmt->bindParam(2, $identifiant);
         $stmt->execute();
-        $res = $stmt->fetchAll();
-         * $stmt = $pdo->prepare("SELECT description FROM {$tn} WHERE id=?");
-        $stmt->bindValue(1, $id);
-        $stmt->execute();
-        if ($stmt->rowCount()) {
-            $admin = $stmt->fetch(PDO::FETCH_OBJ);
-            $this->id = $admin->id;
-            $this->autorisation();
+        if($stmt->rowCount()) {
+            $id = $stmt->fetchColumn(0);
+            $this->charger_id($id);
             return 1;
-        } else {
-            $this->id = null;
-            return 0;
         }
+        return 0;
     }
-
-         */
     function charger_id($id)
     {
         if (parent::charger_id($id)) {

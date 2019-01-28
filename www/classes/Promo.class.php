@@ -48,7 +48,7 @@ class Promo extends Baseobj{
                 if ($code !== false) $this->charger($code);
         }
 
-        function charger($code){
+        function charger($code, $lang=false){
                 return $this->getVars("SELECT * FROM $this->table WHERE code=\"$code\" AND (datefin>=CURDATE() OR datefin='0000-00-00') AND actif='1' AND (limite=0 OR limite>utilise)");
 
         }

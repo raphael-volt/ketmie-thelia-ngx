@@ -34,34 +34,13 @@ class StaticConnection
      * @var PDO
      */
     public static $pdo = null;
-
+/**
+ * 
+ * @return PDO
+ */
     public static function getHandle()
     {
         if (self::$db_handle == - 1) {
-            $ee = null;
-            /*
-             * try {
-             * // Retourne l'identifiant de connexion MySQL en cas de succès ou FALSE si une erreur survient.
-             * self::$db_handle = mysql_connect(
-             * THELIA_BD_HOST,
-             * THELIA_BD_LOGIN,
-             * THELIA_BD_PASSWORD);
-             *
-             * } catch (Exception $e) {
-             * $ee = $e->getTraceAsString();
-             * }
-             *
-             * mysql_query("SET NAMES UTF8", self::$db_handle);
-             *
-             * if (! self::$db_handle && $_REQUEST['erreur'] != 1) {
-             * header('HTTP/1.1 503 Service Temporarily Unavailable');
-             * header('Status: 503 Service Temporarily Unavailable');
-             *
-             * die("Connexion à la base de données impossible");
-             * }
-             *
-             * mysql_select_db(THELIA_BD_NOM, self::$db_handle) or die('Echec de selection de la base de données.');
-             */
             try {
                 $dsn = "mysql:host=" . THELIA_BD_HOST . "; dbname=" . THELIA_BD_NOM . ";";
                 $pdo = new PDO($dsn, THELIA_BD_LOGIN, THELIA_BD_PASSWORD);
@@ -70,14 +49,15 @@ class StaticConnection
                 self::$pdo = $pdo;
                 self::$db_handle = 1;
             } catch (PDOException $e) {
-                // header('HTTP/1.1 503 Service Temporarily Unavailable');
-                // header('Status: 503 Service Temporarily Unavailable');
-                
                 die("Connexion à la base de données impossible<br/><pre>" . $e->getTraceAsString() . "</pre>");
             }
         }
-        
         return self::$db_handle;
+    }
+    
+    public static function getPDO() {
+        self::getHandle();
+        return self::$pdo;
     }
 }
 
@@ -103,6 +83,7 @@ class Cnx
      */
     public function getPDO()
     {
+        StaticConnection::getHandle();
         return StaticConnection::$pdo;
     }
 
@@ -118,6 +99,17 @@ class Cnx
         $pdo = $this->getPDO();
         try {
             $stmt = $pdo->query($query);
+        } catch (PDOException $e) {
+            if ($exception === true)
+                throw new Exception($e->getMessage(), $e->getCode(), $e);
+        }
+        return $stmt;
+    }
+    
+    public function prepare($query) {
+        $pdo = $this->getPDO();
+        try {
+            $stmt = $pdo->prepare($query);
         } catch (PDOException $e) {
             if ($exception === true)
                 throw new Exception($e->getMessage(), $e->getCode(), $e);
@@ -166,7 +158,7 @@ class Cnx
      */
     public function get_result($dbhandle, $row = 0, $field = 0)
     {
-        $result = $dbhandle->fetchColumn($field);
+        $result = $dbhandle->fetchColumn(intval($field));
         if ($result === false) {
             $result = 0;
         }

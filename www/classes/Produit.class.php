@@ -54,7 +54,7 @@ class Produit extends Baseobjclassable{
 			 $this->charger($ref);
 	}
 
-	public function charger($ref){
+	public function charger($ref, $lang=false){
 		return $this->getVars("select * from $this->table where ref=\"$ref\"");
 	}
 

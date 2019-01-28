@@ -42,7 +42,7 @@ class Zone extends Baseobj{
         }
 
 
-        function charger($id){
+        function charger($id, $lang=false){
                 return $this->getVars("select * from $this->table where id=\"$id\"");
         }
 }

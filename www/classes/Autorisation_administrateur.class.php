@@ -41,7 +41,7 @@ class Autorisation_administrateur extends Baseobj{
                 parent::__construct();
         }
 
-        function charger($autorisation, $administrateur){
+        function charger($autorisation, $administrateur=false){
                 return $this->getVars("select * from $this->table where autorisation=\"$autorisation\" and administrateur=\"$administrateur\"");
         }
 

@@ -40,7 +40,7 @@ class Message extends Baseobj{
 			 $this->charger($nom);
 	}
 
-	public function charger($nom){
+	public function charger($nom, $lang=false){
 		return $this->getVars("select * from $this->table where nom=\"$nom\"");
 	}
 

@@ -39,7 +39,7 @@ class Autorisation_modules extends Baseobj{
                 parent::__construct();
         }
 
-        function charger($module, $administrateur){
+        function charger($module, $administrateur=false){
                 return $this->getVars("select * from $this->table where module=\"$module\" and administrateur=\"$administrateur\"");
         }
 }

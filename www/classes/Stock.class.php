@@ -42,7 +42,7 @@ class Stock extends Baseobj{
                   $this->charger($declidisp, $produit);
         }
 
-        function charger($declidisp, $produit){
+        function charger($declidisp, $produit=false){
                 return $this->getVars("select * from $this->table where declidisp=\"$declidisp\" and produit=\"$produit\"");
         }
 }

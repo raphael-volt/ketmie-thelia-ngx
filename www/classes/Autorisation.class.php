@@ -39,7 +39,7 @@ class Autorisation extends Baseobj{
                 parent::__construct();
         }
 
-        function charger($nom){
+        function charger($nom, $lang=false){
                 return $this->getVars("select * from $this->table where nom=\"$nom\"");
         }
 }

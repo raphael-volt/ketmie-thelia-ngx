@@ -108,7 +108,7 @@ class Baseobjdesc extends Baseobj {
     * @return boolean/int retourne false si un problème survient. Le nombre de résultat sinon.
     * (attention, Cette fonction peut retourner FALSE, mais elle peut aussi retourner une valeur équivalent à FALSE. Veuillez lire la section sur les booléens (http://fr2.php.net/manual/fr/language.types.boolean.php) pour plus d'informations. Utilisez l'opérateur === (http://fr2.php.net/manual/fr/language.operators.comparison.php) pour tester la valeur de retour exacte de cette fonction.)
     */
-	public static function exist_key($key, $value, $table, $lang)
+	public static function exist_key($key, $value, $table, $lang=null)
     {
         return parent::exist_key($key, $value, $table, $lang);
     }

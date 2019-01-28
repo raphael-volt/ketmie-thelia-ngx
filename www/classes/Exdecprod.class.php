@@ -46,7 +46,7 @@ class Exdecprod extends Baseobj{
                   $this->charger($produit, $declidisp);
         }
 
-        function charger($produit, $declidisp){
+        function charger($produit, $declidisp=false){
                 return $this->getVars("select * from $this->table where produit=\"$produit\" and declidisp=\"$declidisp\"");
         }
 

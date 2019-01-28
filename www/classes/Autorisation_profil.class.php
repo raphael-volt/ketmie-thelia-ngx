@@ -41,7 +41,7 @@ class Autorisation_profil extends Baseobj{
                 parent::__construct();
         }
 	
-	function charger($autorisation, $profil){
+	function charger($autorisation, $profil=false){
                 return $this->getVars("select * from $this->table where autorisation=\"$autorisation\" and profil=\"$profil\"");
         }
 }

@@ -40,7 +40,7 @@ class Rubcaracteristique extends Baseobj{
 			 $this->charger($rubrique, $caracteristique);
 	}
 
-	public function charger($rubrique, $caracteristique){
+	public function charger($rubrique, $caracteristique=false){
 		return $this->getVars("select * from $this->table where rubrique=".intval($rubrique)." and caracteristique=".intval($caracteristique));
 	}
 }

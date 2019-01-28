@@ -213,7 +213,9 @@ class ActionsModules extends ActionsBase {
 			try {
 				$instance = $this->instancier($module->nom);
 
-				if (method_exists($instance, $methode)) $instance->$methode($arg1, $arg2);
+				if (method_exists($instance, $methode)) {
+				    $instance->$methode($arg1, $arg2);
+				}
 			} catch (Exception $e) {}
 		}
 	}

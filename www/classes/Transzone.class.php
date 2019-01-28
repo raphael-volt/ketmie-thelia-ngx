@@ -40,7 +40,7 @@ class Transzone extends Baseobj{
                   $this->charger_id($id);
         }
 
-        function charger($transport, $zone){
+        function charger($transport, $zone=false){
                 return $this->getVars("select * from $this->table where transport=\"$transport\" and zone=\"$zone\"");
         }
 }

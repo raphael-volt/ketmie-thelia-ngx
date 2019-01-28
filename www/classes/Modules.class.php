@@ -51,7 +51,7 @@ class Modules extends Baseobjclassable {
                   $this->charger_id($id);
         }
 
-        public function charger($nom){
+        public function charger($nom=null, $lang=false){
             return $this->getVars("select * from $this->table where nom=\"$nom\"");
         }
 

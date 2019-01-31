@@ -133,7 +133,7 @@ WHERE p.id=?";
 		$q = "SELECT price FROM bo_carac WHERE id=?";
 		$stmt = $pdo->prepare($q);
 		$pdo->bindInt($stmt, 1, $id);
-		$carac = $pdo->fetch($stmt, BO_Carac, true);
+		$carac = $pdo->fetch($stmt, BO_Carac::class, true);
 		
 		if($carac)
 		{

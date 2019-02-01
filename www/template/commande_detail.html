@@ -1,0 +1,39 @@
+#PARAM_FOND_securise=1
+<!DOCTYPE html>
+<html>
+<head>
+#INCLURE "template/custom/head.html"
+</head>
+<body>
+	<header>
+	#INCLURE "template/header.html"
+	</header>
+	<THELIA_cmd type="COMMANDE" ref="#COMMANDE_REF" client="#CLIENT_ID">
+	<div id="content">
+		<ul class="panel h42 top15">
+			<li class="titleBar">::detailcommande:: #REF</li>
+			<li class="content nopad">
+	#FILTRE_carac(commandeTable||#ID)
+			</li>
+			<li class="buttonBar">
+			<form action="#URLPREC" method="post">
+               	<button type="submit">::pageprecedente::</button>		                	
+            </form>
+			<T_verifpay>
+           	<THELIA_verifpay type="COMMANDE" ref="#REF" statut="paye">			 
+	            <form action="#VARIABLE(urlsite)/client/pdf/facture.php" method="get">
+	               	<input type="hidden" name="ref" value="#REF"/>
+		            <button type="submit">::facturepdf::</button>		                	
+	            </form>
+           	</THELIA_verifpay>
+           	</T_verifpay>
+	            <button type="submit" disabled="disabled">::facturepdf::</button>		                	
+           	<//T_verifpay>
+			</li>
+		</ul>
+	</THELIA_cmd>
+	</div>
+#INCLURE "template/custom/footer.html"
+#INCLURE "template/ajax/form/connectForm.html"
+</body>
+</html>

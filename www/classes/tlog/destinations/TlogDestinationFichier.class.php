@@ -51,7 +51,7 @@
 				if (! is_file($file_path)) {
 					$dir = dirname($file_path);
 					if(! is_dir($dir)) {
-						mkdir($dir, 0777, true);
+					    mkdir($dir, 0777, true);
 					}
 				}
 

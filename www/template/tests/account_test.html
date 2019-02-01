@@ -1,0 +1,337 @@
+#PARAM_FOND_securise=1
+<!doctype html>
+<html lang="fr">
+<!-- moncomte.html -->
+<head>
+#INCLURE "template/custom/head.html"
+<script type="text/javascript">
+var btnID = "#accountSubmit";
+var formID = "#formAdrTest";
+var mailValidated = false;
+var submitFlag = false;
+function disableChildren(obj) 
+{
+    obj.children().each(
+    	function(i, val) 
+	    {
+	         disable($(this));
+	         disableChildren($(this));
+	    }
+    );
+}
+function disable(obj)
+{
+	obj.attr('tabindex','-1');	
+}
+function validateAccountForm()
+{
+	if( ! $(formID).valid())
+	{
+		if(true)
+		{
+			$(btnID).attr("disabled", "disabled");
+		}
+	};
+}
+function accountSubmitHandler(event)
+{
+	$(btnID).prop("disabled", true);
+	var url = "";
+	var request = null;
+	var form = $(this);
+	if(! mailValidated)
+	{
+		event.preventDefault();
+		url = "#URLFOND(ajax/email-available)";
+		request = $.ajax(
+		{
+			url: url,
+			type: "POST",
+			data: {id:#CLIENT_ID, email:$(formID + " .srcmail").val()}
+		});
+		request.done(function( msg ) 
+		{
+			var b = msg == "1";
+			if(msg == "1")
+			{
+				mailValidated = true;
+				$(formID).submit();
+			}
+			else
+			{
+				$("#mailError").dialog({
+					dialogClass: "connect-panel-ui",
+					draggable: false,
+					resizable: false,
+					modal: true
+				});
+			}
+			$(btnID).prop("disabled", false);
+		});
+	}
+	else
+	{
+		// event.preventDefault();
+		var url = form.attr("action");
+		// alert(url);
+		// $(formID).submit();
+		return true;
+	}
+	return false;
+}
+$(document).ready(
+	function()
+	{
+		$("select").selectmenu();
+		$(".coutryDD").selectmenu().selectmenu("menuWidget").addClass("overflowDD");
+		$("#mailErrorCloseBtn").click(function()
+		{
+			$("#mailError").dialog("close");
+		});
+		
+		$(formID).submit(accountSubmitHandler);
+		
+		$("#updateCoords").dialog({
+			dialogClass: "connect-panel-ui",
+			draggable: false,
+			resizable: false,
+			modal: true
+		});
+		
+		$.validator.addMethod(
+				"cMinlength", 
+				$.validator.methods.minlength,
+				$.validator.format("{0} caractères minimum!"));
+		$.validator.addMethod(
+				"cMail", 
+				function(value, element) 
+				{
+				   return /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value);     
+				},
+				"email invalide");
+		$.validator.addClassRules("email", 
+		{
+			cRequired: true,
+			cMail: true
+		});	
+		$.validator.addMethod(
+				"cRequired", 
+				$.validator.methods.required,
+				"champs requis");
+		$.validator.addMethod(
+				"mailEquals", 
+				function(value, element)
+				{
+					var src = $(formID + " .srcmail").val();
+					return src == value;
+				},
+				"les emails sont différents!");
+		
+		$.validator.addClassRules("eqmail", 
+		{
+			cRequired: true,
+			mailEquals: true
+		});
+		$.validator.addClassRules("len3", 
+		{
+			cRequired: true,
+			cMinlength: 3
+		});
+		$.validator.addMethod(
+				"cDigits", 
+				$.validator.methods.digits,
+				"uniquement des nombres");
+
+		$.validator.addClassRules("numField", 
+		{
+			cRequired: true,
+			cDigits: true
+		});
+		$(formID).validate({
+			errorElement: "p",
+			errorPlacement: function(error, element) 
+			{
+				error.prependTo(element.parent("td").prev("td"));
+			},
+			success: function(label)
+			{
+				$(btnID).removeAttr("disabled");
+			},
+			onkeyup: validateAccountForm,
+			focusCleanup: validateAccountForm,
+			onfocusout: validateAccountForm,
+			onclick: validateAccountForm,
+			focusInvalid: validateAccountForm
+		});
+		
+	});
+</script>
+<style type="text/css">
+.error
+{
+	color: red;
+}
+.w300
+{
+	width:300px;
+	text-align: center;
+}
+.w300 p
+{
+	padding: 10px;
+	color: white;
+	font-size: 14px;
+}
+.center
+{
+	text-align: center;
+}
+
+</style>
+</head>
+<body>
+#FILTRE_ketmiemenu(spip||0)
+<br class="clearFloat"/>
+#INCLURE "template/custom/panier_box.html"
+<div id="main">
+	#FILTRE_ketmiemenu(thelia_prod||0)
+       <div id="content" class="thelia_main">
+<div id="updateCoords" class="popup" title="::comptemodifier::">
+	<div class="popupDiv">
+		<form action="#URLFOND(moncompte)" id="formAdrTest" class="formAdr" method="post">
+      		<input type="hidden" name="action" value="modifiercompte"/>
+      		<table class="connectForm">
+      		<tr>
+	          	<td class="formLabel">
+					<label>::civilite::*</label>
+	          	</td>
+	          	<td>
+					<select name="raison">
+						<THELIA_raison type="RAISON">
+						<TEST_raison variable="#LONG" test="egal" valeur="#CLIENT_RAISON">
+				            <option value="#ID" selected="selected">#LONG</option>
+					     </TEST_raison>
+				            <option value="#ID">#LONG</option>
+					     <//TEST_raison>
+						</THELIA_raison>
+		            </select>
+	          	</td>
+				<td class="formLabel">
+					<label>::adresse::*</label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="adresse1" class="len3" value="#CLIENT_ADRESSE1"/>		
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::nom::*</label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="nom" class="len3" value="#CLIENT_NOM"/>
+	          	</td>
+				<td class="formLabel">
+					<label>::complementadresse::</label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="adresse2" value="#CLIENT_ADRESSE2"/>	
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::prenom::*</label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="prenom" class="len3" value="#CLIENT_PRENOM"/>
+	          	</td>
+   				<td class="formLabel">
+					<label>::complementadresse::</label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="adresse3" value="#CLIENT_ADRESSE3"/>	
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::telfixe:: * </label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="telfixe" class="numField"  value="#CLIENT_TELFIXE"/>		
+	          	</td>
+	          	<td class="formLabel">
+					<label>::cp::*</label>
+	          	</td>
+	          	<td>	
+		            <input type="text" name="cpostal"  class="numField" value="#CLIENT_CPOSTAL"/>
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::telport::</label>
+	          	</td>
+	          	<td>
+		            <input type="number" name="telport" class="numField" value="#CLIENT_TELPORT"/>		
+	          	</td>
+	          	<td class="formLabel">
+					<label>::ville::*</label>
+	          	</td>
+	          	<td>
+		            <input type="text" name="ville" class="len3" value="#CLIENT_VILLE"/>		
+	          	</td>
+          	</tr>
+          	<tr>
+          		<td class="formLabel">
+          			<label>::email::</label>
+          		</td>
+          		<td>
+          			<input type="text" name="email1" class="email srcmail" value="#CLIENT_EMAIL"/>
+          		</td>
+	       		<td class="formLabel">
+					<label>::pays::*</label>
+	          	</td>
+	          	<td>
+					<select name="pays" id="pays" class="coutryDD">
+					<THELIA_pays type="PAYS" zdefinie="1">	
+						<TEST_raison variable="#TITRE" test="egal" valeur="#CLIENT_PAYS">
+						<option value="#ID" selected="selected">#TITRE</option>
+						</TEST_raison>
+						<option value="#ID">#TITRE</option>
+						<//TEST_raison>
+					<option value="#ID">#TITRE</option>
+					</THELIA_pays>
+					</select>
+	          	</td>
+          	</tr>
+          	<tr>
+          		<td class="formLabel">
+          			<label>::confirmationemail::</label>
+          		</td>
+          		<td>
+          			<input type="text" class="email eqmail" name="email2" value="#CLIENT_EMAIL"/>
+          		</td>
+          	</tr>
+          </table>
+          <div class="popupBtnBox rightForm">
+          	  <button type="button" id="closeCoords">::annuler:: | ::fermer::</button>
+	          <button type="submit" id="accountSubmit">::modifier::</button>
+          </div>
+      	</form>
+    </div>
+    </div>
+       </div>
+</div>
+</body>
+<!-- 
+fionnvolt@gmail.com
+PASSWORD(654321)
+ -->
+ <div id="mailError" class="popup" title="Erreur">
+	<div class="popupDiv w300">
+		<p>Impossible de modifier votre email car il est utilisé par un autre compte!</p>
+		<p>Modifiez votre emial et réessayez.</p>
+	</div>
+	<div class="popupBtnBox center">
+		<button type="button" id="mailErrorCloseBtn">OK</button>
+	</div>
+</div>
+</html>

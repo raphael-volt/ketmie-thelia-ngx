@@ -42,25 +42,6 @@ class PDOTest extends TestCase
     }
     /**
      *
-     * 
-    public function testBindPassword()
-    {
-        $ctx = new Cnx();
-        $pdo = $ctx->getPDO();
-        // SELECT * FROM `administrateur` WHERE motdepasse = PASSWORD('devadmin') AND identifiant = 'devadmin'
-        $stmt = $pdo->prepare("SELECT * FROM administrateur WHERE motdepasse = PASSWORD(:pwd) AND identifiant = :id");
-        $stmt->bindParam(":id", "devadmin", PDO::PARAM_STR);
-        $stmt->bindParam(":pwd", "devadmin", PDO::PARAM_STR);
-        $stmt->execute();
-        $admin = null;
-        if($stmt->rowCount()) {
-            $admin = $stmt->fetch(PDO::FETCH_CLASS, Administrateur::class);
-        }
-        $this->assertNotNull($admin);
-    }
-     */
-    /**
-     *
      * @depends testCNX_FetchObject
      */
     public function testBindPassword()
@@ -70,19 +51,12 @@ class PDOTest extends TestCase
         $devadmin = "devadmin";
         
         $cur = new stdClass();
-        $cur->pwd = $devadmin;
+        $cur->pwd = "dev1234";
         $cur->login = $devadmin;
         
         $stmt = $pdo->prepare("SELECT id FROM administrateur WHERE identifiant = ? AND motdepasse = PASSWORD(?)");
         $stmt->bindParam(1, $cur->login);
         $stmt->bindParam(2, $cur->pwd);
-        $stmt->execute();
-        $this->assertGreaterThan(0, $stmt->rowCount());
-        
-        $crypt = mysqlPassword($devadmin);
-        $stmt = $pdo->prepare("SELECT id FROM administrateur WHERE identifiant = ? AND motdepasse = ?");
-        $stmt->bindParam(1, $devadmin);
-        $stmt->bindParam(2, $crypt);
         $stmt->execute();
         $this->assertGreaterThan(0, $stmt->rowCount());
     }

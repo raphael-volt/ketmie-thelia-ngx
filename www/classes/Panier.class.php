@@ -83,21 +83,6 @@ class Panier {
 						}
 					}
 				}
-				else 
-				{
-					/*
-					$pdo = PDOThelia::getInstance();
-					$q = "SELECT cp.price FROM produit AS p 
-LEFT JOIN caracval as cv ON cv.produit=p.id
-LEFT JOIN carac_price AS cp ON cp.caracteristique=cv.caracteristique
-WHERE p.id=?";
-					$stmt = $pdo->prepare($q);
-					$pdo->bindInt($stmt, 1, $article->produit->id);
-					$res = $pdo->fetchColumn($stmt, 0, true);
-					if($res !== null)
-						$article->produit = $res;
-					*/
-				}
 				$this->tabarticle[] = $article;
 				$this->nbart++;
 			}
@@ -133,7 +118,7 @@ WHERE p.id=?";
 		$q = "SELECT price FROM bo_carac WHERE id=?";
 		$stmt = $pdo->prepare($q);
 		$pdo->bindInt($stmt, 1, $id);
-		$carac = $pdo->fetch($stmt, BO_Carac, true);
+		$carac = $pdo->fetch($stmt, BO_Carac::class, true);
 		
 		if($carac)
 		{

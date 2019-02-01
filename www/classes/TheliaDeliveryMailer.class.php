@@ -3,6 +3,46 @@
 class TheliaDeliveryMailer extends TheliaMailerBase
 {
 	private static $callStatic = false;
+	private function getLivraisonTextTemplate() {
+	    return <<<EOL
+Livraison
+-------------------------------------------------------
+Transporteur : __COMMANDE_TRANSPORT__
+Nom : __COMMANDE_LIVRRAISON__ __COMMANDE_LIVRPRENOM__ __COMMANDE_LIVRNOM__
+Adresse : __ADRESSE_LIVRAISON__
+__COMMANDE_LIVRCPOSTAL__ __COMMANDE_LIVRVILLE__
+Pays : __COMMANDE_LIVRPAYS__
+=======================================================
+EOL;
+	    
+	}
+	private function getLivraisonHtmlTemplate() {
+	    return <<<EOL
+        <table style="border:1px solid #333333; margin:0 0 8px 0; padding:0; border-spacing:4px">
+            <caption style="text-align:left; white-space:nowrap; font-size:14px; margin:0 0 4px 0">
+                <h3>Livraison</h3>
+            </caption>
+            <tbody>
+                <tr>
+                    <td style="font-weight:initial; text-align:right; vertical-align:top;">Transporteur : </td>
+                    <td style="font-weight:bold">__COMMANDE_TRANSPORT__</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:initial; text-align:right; vertical-align:top;">Nom : </td>
+                    <td style="font-weight:bold">__COMMANDE_LIVRRAISON__ __COMMANDE_LIVRPRENOM__ __COMMANDE_LIVRNOM__</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:initial; text-align:right; vertical-align:top;">Adresse : </td>
+                    <td style="font-weight:bold">__ADRESSE_LIVRAISON__<br />__COMMANDE_LIVRCPOSTAL__ __COMMANDE_LIVRVILLE__</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:initial; text-align:right; vertical-align:top;">Pays : </td>
+                    <td style="font-weight:bold">__COMMANDE_LIVRPAYS__</td>
+                </tr>
+            </tbody>
+        </table>
+EOL;
+	}
 	
 	public static function sendMails(Commande $commande)
 	{
@@ -18,10 +58,10 @@ class TheliaDeliveryMailer extends TheliaMailerBase
 		self::$callStatic = false;
 		
 		$res["admin"] = $mail->Send();
-		if(intval(Variable::lire("proddebug")) == 1)
+		if(ENV_PROD == 0)
 		{
-			printInLog($res);
 		}
+			printInLog($res);
 		ActionsModules::instance()->appel_module("confirmation", $commande);
 		$_SESSION["navig"]->panier = new Panier();
 		session_write_close();
@@ -44,25 +84,7 @@ class TheliaDeliveryMailer extends TheliaMailerBase
 		$this->commande = $commande;
 		$client = new Client($commande->client);
 		parent::__construct($client, $messageNom);
-		$this->_mysubject = "$this->nomsite | commande n° {$this->commande->ref}";
-	}
-
-	protected function createCSS()
-	{
-		$thumsize = intval(Variable::lire("thumbsize"));
-		$rowsize = $thumsize + 10;
-		
-		TheliaMailCSSController::addStyle("table-detail", "margin:0 0 8px 0; border:1px solid #333333;border-collapse: collapse");
-		TheliaMailCSSController::addStyle("detail-head", "background-color: #DDDDDD; border:1px solid #333333;");
-		TheliaMailCSSController::addStyle("detail-th", "padding: 4px; border:1px solid #333333;");
-		TheliaMailCSSController::addStyle("cellprod-img", "width:{$rowsize}px; height:{$rowsize}px; border:1px solid #333333;border-right:none;text-align:center;");
-		TheliaMailCSSController::addStyle("cellprod-title", "border:1px solid #333333;border-left:none; padding:4px; vertical-align: top;");
-		TheliaMailCSSController::addStyle("cellprod-ref", "border:1px solid #333333; padding:4px; vertical-align: top;");
-		TheliaMailCSSController::addStyle("cellprod", "text-align: right; border:1px solid #333333; padding:4px; vertical-align: top;");
-		TheliaMailCSSController::addStyle("cellprod-right", "text-align: right; padding:4px;border-right:1px solid #333333;");
-		TheliaMailCSSController::addStyle("cellprod-right-last", "text-align: right; padding:4px;border:1px solid #333333; background-color: #F0F0F0;");
-		
-		parent::createCSS();
+		$this->_mailSubject = $this->nomsite . " | commande " . $this->commande->ref;
 	}
 	
 	protected $clientPays;
@@ -106,14 +128,17 @@ class TheliaDeliveryMailer extends TheliaMailerBase
 		$query = "SELECT * FROM " . Venteprod::TABLE. " WHERE commande=?";
 		$venteprods = $this->pdo->prepare($query);
 		$this->pdo->bindInt($venteprods, 1, $commande->id);
-		$venteprods = $this->pdo->fetchAll($venteprods, Venteprod, true);
+		$venteprods = $this->pdo->fetchAll($venteprods, Venteprod::class, true);
 		$clientRaison = $this->getClientRaison();
-		
+	   
+		if($transport->nom != "retraitatelier") {
+		    $this->htmlTemplate = str_replace("__TRANSPORT__", $this->getLivraisonHtmlTemplate(), $this->htmlTemplate);
+		    $this->textTemplate = str_replace("__TRANSPORT__", $this->getLivraisonTextTemplate(), $this->textTemplate);
+		}
 		if($this->paiementDesc)
 		{
-			
-			$this->messageDesc->description = str_replace("__PAIEMENT_INFO__", $this->paiementDesc->description, $this->messageDesc->description);
-			$this->messageDesc->descriptiontext = str_replace("__PAIEMENT_INFO__", $this->paiementDesc->descriptiontext, $this->messageDesc->descriptiontext);
+		    $this->htmlTemplate = str_replace("__PAIEMENT_INFO__", $this->paiementDesc->description, $this->htmlTemplate);
+		    $this->textTemplate = str_replace("__PAIEMENT_INFO__", $this->paiementDesc->descriptiontext, $this->textTemplate);
 		}
 		
 		parent::replaceVariables();
@@ -121,13 +146,13 @@ class TheliaDeliveryMailer extends TheliaMailerBase
 		$total = $commande->total();
 		$totcmdport = $commande->port + $total;
 		
-		$this->messageDesc->description = $this->substiCommande(
-				$this->messageDesc->description,
+		$this->htmlTemplate = $this->substiCommande(
+		        $this->htmlTemplate,
 				$commande, $adresse, $paiementdesc->titre, $transportdesc->titre, 
 				$venteprods, $total, $totcmdport);
 		
-		$this->messageDesc->descriptiontext = $this->substiCommande(
-				$this->messageDesc->descriptiontext, 
+		$this->textTemplate = $this->substiCommande(
+		        $this->textTemplate, 
 				$commande, $adresse, $paiementdesc->titre, $transportdesc->titre, 
 				$venteprods, $total, $totcmdport, false);
 		
@@ -149,7 +174,7 @@ class TheliaDeliveryMailer extends TheliaMailerBase
 		$corps = str_replace("__COMMANDE_LIVRRAISON__", $this->livAddressRaison, $corps);
 		$corps = str_replace("__COMMANDE_LIVRNOM__", $address->nom, $corps);
 		$corps = str_replace("__COMMANDE_LIVRPRENOM__", $address->prenom, $corps);
-		$corps = str_replace("__ADRESSE_LIVRAISON__", $this->getAddress($address->adresse1, $address->adresse2, $address->adresse3, $isHtml ? "<br/>":"\n"), $corps);
+		$corps = str_replace("__ADRESSE_LIVRAISON__", $this->getAddress($address->adresse1, $address->adresse2, $address->adresse3, $isHtml ? "<br/>":"\r\n"), $corps);
 		$corps = str_replace("__COMMANDE_LIVRCPOSTAL__", $address->cpostal, $corps);
 		$corps = str_replace("__COMMANDE_LIVRVILLE__", $address->ville, $corps);
 		$corps = str_replace("__COMMANDE_LIVRPAYS__", $this->livAddressPays, $corps);
@@ -184,11 +209,12 @@ WHERE p.ref=?;";
 					$pdo->bindString($stmt, 1, $row->ref);
 					$url = $pdo->fetchColumn($stmt, 0, true);
 					$url = redim("produit", $url, $thumsize, $thumsize);
+					$url = "$this->urlsite/$url";
 					$temp = str_replace("__VENTEPROD_URL__", $url, $cut[1]);
 					$temp = str_replace("__VENTEPROD_TITRE__", $row->titre, $temp);
 				}
 				else 
-					$temp = str_replace("__VENTEPROD_TITRE__", $row->titre, $cut[1]);
+				    $temp = str_replace("__VENTEPROD_TITRE__", $this->br2nl($row->titre), $cut[1]);
 					
 				$temp =  str_replace("__VENTEPROD_REF__", $row->ref, $temp);
 				$temp =  str_replace("__VENTEPROD_CHAPO__", $row->chapo, $temp);
@@ -203,5 +229,8 @@ WHERE p.ref=?;";
 			
 		}
 		return $corps;
+	}
+	private function br2nl($data) {
+	    return preg_replace("/\<br\s*\/?\>/i", "\n", $data);
 	}
 }

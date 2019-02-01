@@ -1,0 +1,45 @@
+<TEST_action variable="#ENV{action}" test="nonvide">
+#PARAM_FOND_nopageret=1 </TEST_action>
+<//TEST_action>
+#SET{urlSite,#VARIABLE(urlsite)}
+<!DOCTYPE html>
+<html>
+
+<head>
+#INCLURE "template/custom/head.html"
+</head>
+
+<body>
+	<header> #INCLURE "template/header.html" </header>
+	<div id="content">
+		<ul class="panel h42 top15">
+			<li class="titleBar">::contenu::</li>
+			<li class="content nopad"><T_CONTENU_PANIER>
+				#FILTRE_carac(panierTable||panier||1) </li>
+			<li class="buttonBar">
+				<form action="#URLSOMMAIRE" method="get">
+					#FILTRE_ajaxform(urlGet||#URLPAGERET)
+					<button type="submit">::pageprecedente::</button>
+				</form>
+				<form action="#VARIABLE(urlsite)" method="get">
+					<input type="hidden" name="fond" value="adresse" />
+					<button type="submit">::finalisercommande::</button>
+				</form>
+			</li>
+			<THELIA_CONTENU_PANIER type="PANIER"> </THELIA_CONTENU_PANIER>
+			</T_CONTENU_PANIER>
+			<p class="bold sizeX noProd">::paniervide::</p>
+			</li>
+			<li class="buttonBar">
+				<form action="#URLSOMMAIRE" method="get">
+					#FILTRE_ajaxform(urlGet||#URLPAGERET)
+					<button type="submit">::pageprecedente::</button>
+				</form>
+			</li>
+			<//T_CONTENU_PANIER>
+		</ul>
+	</div>
+	#INCLURE "template/custom/footer.html" #INCLURE
+	"template/ajax/form/connectForm.html"
+</body>
+</html>

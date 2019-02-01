@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<plugin>
+	<nom>Filtre ajaxForm</nom>
+ 	<version>1.1</version>
+ 	<prefix>ajaxform</prefix>
+	<type>filtre perso</type>
+ 	<auteur>Raphael</auteur>
+ 	<thelia>1.5.1</thelia>
+ 	<description>Controlleur ajax</description>
+ 	<etat>production</etat>
+</plugin>

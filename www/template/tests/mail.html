@@ -1,0 +1,66 @@
+<!--
+#PARAM_FOND_nopageret=1
+#FILTRE_tarifbo(mailtest||#ENV{id})
+
+-->
+<style type="text/css">
+#ketmiemail {background-color: #FFFFFF; color: #333333; width: 480px; text-align:justify; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-size-adjust:none; padding:8px;}
+#ketmiemail div, #ketmiemail h1, #ketmiemail h2, #ketmiemail h3, #ketmiemail p {margin: 0px; padding: 0px;}
+#ketmiemail table {border: 1px solid #333333; margin:0 0 8px 0; padding: 0}
+#ketmiemail table {border: 1px solid #333333; margin:0 0 8px 0; padding: 0; border-spacing: 4px}
+#ketmiemail table tbody th, #ketmiemail table tbody td {padding: 0px 0;}
+#ketmiemail h1 img {border: 0px none;}
+#ketmiemail table caption {text-align:left; white-space: nowrap; font-size: 14px; margin:0 0 4px 0}
+#ketmiemail a, #ketmiemail a:visited, #ketmiemail a:focus {color: inherit; outline: 0px none; text-decoration: underline;}
+#ketmiemail h1 {text-align: center}
+#ketmiemail h2 {font-size: 16px; font-weight: bold; margin:8px 0 4px 0;}
+#ketmiemail table tbody tr td {font-weight: bold}
+#ketmiemail table tbody tr td.right {font-weight: initial; text-align:right; vertical-align: top}
+</style>
+<div style="background-color: #FFFFFF; color:#333333; width:480px; text-align:justify; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-size-adjust:none; padding:8px;">
+<h1 id="header" style="margin:0; padding:0"><img style="border:0px none;" src="__LOGO_SITE__"/></h1>
+<h2 style="font-size:16px; font-weight:bold; margin:8px 0 4px 0;">Création de compte</h2>
+<table id="info1" style="border:1px solid #333333; margin:0 0 8px 0; padding:0; border-spacing:4px">
+	<caption style="text-align:left; white-space:nowrap; font-size:14px; margin:0 0 4px 0">Vous avez créé un compte sur <a style="color:inherit;outline: 0px none;text-decoration:underline;" href="__URLSITE__">__NOMSITE__</a>.</caption>
+	<tbody>	
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">votre identifiant : </td><td style="font-weight:bold;">__EMAIL__</td></tr>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">votre mot de passe : </td><td style="font-weight:bold;">__MOTDEPASSE__</td></tr>
+	</tbody>
+</table>
+<table style="border:1px solid #333333; margin:0 0 8px 0; padding:0; border-spacing:4px">
+	<caption style="text-align:left; white-space:nowrap; font-size:14px; margin:0 0 4px 0">Récapitulatif de votre compte :</caption>
+	<tbody>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">Adresse : </td><td style="font-weight:bold;">__ADRESSE__</td></tr>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">Code postal : </td><td style="font-weight:bold;">__CPOSTAL__</td></tr>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">Ville : </td><td style="font-weight:bold;">__VILLE__</td></tr>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">Pays : </td><td style="font-weight:bold;">__PAYS__</td></tr>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">Téléphone : </td><td style="font-weight:bold;">__TELEPHONE__</td></tr>
+		<tr><td style="font-weight:initial; text-align:right; vertical-align:top;">email : </td><td style="font-weight:bold;">__EMAIL__</td></tr>
+	</tbody>
+</table>
+<p style="margin:0; padding:0;" id="liencompte">Vous pouvez à présent vous connecter sur <a style="color:inherit;outline: 0px none;text-decoration:underline;" href="__URLSITE__">__URLSITE__</a>.</p>
+</div>
+
+<div class="mail-body">
+<h1 class="mail-header"><img style="border:0px none;" src="__LOGO_SITE__"/></h1>
+<h2 class="mail-title">Création de compte</h2>
+<table class="table-base">
+<caption>Vous avez créé un compte sur <a class="link" href="__URLSITE__">__NOMSITE__</a>.</caption>
+<tbody>	
+<tr><td class="right">votre identifiant : </td><td><span class="mail-span">__EMAIL__</span></td></tr>
+<tr><td class="right">votre mot de passe : </td><td>__MOTDEPASSE__</td></tr>
+</tbody>
+</table>
+<table class="table-base">
+<caption>Récapitulatif de votre compte :</caption>
+<tbody>
+<tr><td class="right">Adresse : </td><td>__ADRESSE__</td></tr>
+<tr><td class="right">Code postal : </td><td>__CPOSTAL__</td></tr>
+<tr><td class="right">Ville : </td><td>__VILLE__</td></tr>
+<tr><td class="right">Pays : </td><td>__PAYS__</td></tr>
+<tr><td class="right">Téléphone : </td><td>__TELEPHONE__</td></tr>
+<tr><td class="right">email : </td><td><span class="mail-span">__EMAIL__</span></td></tr>
+</tbody>
+</table>
+<p class="default">Vous pouvez à présent vous connecter sur <a class="link" href="__URLSITE__">__URLSITE__</a>.</p>
+</div>

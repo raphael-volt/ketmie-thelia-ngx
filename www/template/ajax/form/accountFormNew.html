@@ -1,0 +1,132 @@
+<ul id="accountFormNew" class="panel popUp h30">
+	<li class="titleBar">::creationcompte::</li>
+	<li class="content">
+		<form action="#URLFOND(ajax/creercompte)" class="formAdr" method="post">
+			<input type="hidden" name="entreprise" value=""/>
+			<input type="hidden" name="siret" value=""/>
+			<input type="hidden" name="intracom" value=""/>
+      		<table class="connectForm formLayout">
+          	<tr>
+	          	<td class="formLabel">
+					<label for="civilite">::civilite:: *</label>
+	          	</td>
+	          	<td>
+					<select name="raison" tabindex="2">
+					<THELIA_raison type="RAISON">
+						<option value="#ID" #DEFAUT>#LONG</option>
+					</THELIA_raison>
+				    </select>
+	          	</td>
+				<td class="formLabel">
+					<label>::adresse:: *</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="7" type="text" name="adresse1" class="required len3"/>		
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::nom:: *</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="3" type="text" name="nom" class="required len3"/>
+	          	</td>
+				<td class="formLabel">
+					<label>::complementadresse:: 1</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="8" type="text" name="adresse2"/>	
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label for="prenom">::prenom:: *</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="4" type="text" name="prenom" class="required len3"/>
+	          	</td>
+   				<td class="formLabel">
+					<label>::complementadresse:: 2</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="9" type="text" name="adresse3"/>	
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::tel:: 1 *</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="5" type="text" name="telfixe" class="required numField"/>		
+	          	</td>
+	          	<td class="formLabel">
+					<label>::cp:: *</label>
+	          	</td>
+	          	<td>	
+		            <input tabindex="10" type="text" name="cpostal"  class="required numField"/>
+	          	</td>
+          	</tr>
+          	<tr>
+	          	<td class="formLabel">
+					<label>::tel:: 2</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="6" type="text" name="telport" class="numField"/>		
+	          	</td>
+	          	<td class="formLabel">
+					<label>::ville:: *</label>
+	          	</td>
+	          	<td>
+		            <input tabindex="11" type="text" name="ville" class="required len3"/>		
+	          	</td>
+          	</tr>
+          	<tr>
+          		<td class="formLabel"></td>
+          		<td></td>
+	       		<td class="formLabel">
+					<label>::pays:: *</label>
+	          	</td>
+	          	<td>
+					<select tabindex="12" name="pays" class="countryDD">
+				    <THELIA_pays type="PAYS" select="#PAYS" zdefinie="1" >
+				        <option value="#ID" #DEFAUT>#TITRE</option>
+				    </THELIA_pays>
+        			</select>
+	          	</td>
+          	</tr>
+          	<tr>
+          		<td class="formLabel">
+          			<label>::monemail:: *</label>
+          		</td>
+          		<td>
+          			<input tabindex="13" type="text" name="email1" class="email emailSrc"/>
+          		</td>
+          		<td class="formLabel">
+          			<label>::monmdp:: *</label>
+          		</td>
+          		<td>
+          			<input tabindex="15" name="motdepasse1" type="password" class="pwd pwdSrc"/>
+          		</td>
+          	</tr>
+          	<tr>
+          		<td class="formLabel">
+          			<label>::confirmationemail:: *</label>
+          		</td>
+          		<td>
+          			<input tabindex="14" type="text" class="email emailValid" name="email2"/>
+          		</td>
+          		<td class="formLabel">
+          			<label>::confirmationmdp:: *</label>
+          		</td>
+          		<td>
+          			<input tabindex="16" name="motdepasse2" type="password" class="pwd pwdValid"/>
+          		</td>
+          	</tr>
+          </table>
+        </form>
+	</li>
+	<li class="buttonBar">
+		<button type="button" class="cancelBtn">::annuler:: | ::fermer::</button>
+		<button type="submit" class="submitBtn">::valider::</button>
+	</li>
+</ul>

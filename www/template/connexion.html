@@ -1,0 +1,67 @@
+#PARAM_FOND_nopageret=1
+<!DOCTYPE html>
+<html>
+<head>
+#INCLURE "template/custom/head.html"
+<style type="text/css">
+#content > ul
+{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+#content > ul > li:first-child
+{
+  flex-grow: 0;
+}
+#content > ul > li:last-child
+{
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+.flex-center table tr td
+{
+  padding: 5px 4px;
+}
+.flex-center table tr td:first-child
+{
+  text-align: right;
+}
+.flex-center table td >button
+{
+  width: 100%;
+}
+
+.content.flex-center
+{
+  display: flex;
+  justify-content: center;
+}
+</style>
+</head>
+<body>
+	<header>
+	#INCLURE "template/header.html"
+	</header>
+	<div id="content" class="top15">
+		<ul class="panel h42 full-height">
+			<li class="titleBar">::identif::</li>
+			<li class="content flex-center">
+				<table>
+					<tr>
+						<td>::dejaclient::</td>
+						<td><button class="connectLink" type="button" id="selfConnectBtn">::selfconnexion::</button></td>
+					</tr>
+					<tr>
+						<td>::nvclient::</td>
+						<td><button class="newAccountLink" type="button" id="selfConnectBtn">::selfaccount::</button></td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+	</div>
+#INCLURE "template/custom/footer.html"
+#INCLURE "template/ajax/form/connectForm.html"
+</body>
+</html>

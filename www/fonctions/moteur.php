@@ -24,20 +24,9 @@
  */
 
 // Entry point
-// define("E_STRICT", E_ALL);
 /* Moteur */
 require_once (__DIR__ . "/../fonctions/error_reporting.php");
-// ini_set('display_errors', '1');
-// ini_set('display_startup_errors', '1');
-// error_reporting(E_STRICT);
-// die("<pre>" . print_r(array($_POST, $_GET), true));
-error_reporting(E_ERROR);
 require __DIR__ . "/autoload.php";
-/*
- * if (! isset($_GET['fond'])) {
- * $_GET['fond'] = "api/arbo";
- * }
- */
 /* Inclusions nécessaires avant ouverture de la session */
 $modules = ActionsModules::instance()->lister(false, true);
 

@@ -47,6 +47,11 @@ RUN export COMPOSER_ALLOW_SUPERUSER=1 \
     && composer global require phpunit/php-invoker
 ENV PATH /root/.composer/vendor/bin:$PATH
 
+# Test watcher
+COPY shared/phpunit.watch.sh /usr/local/bin/watch-phpunit
+RUN chmod u+x,g+x /usr/local/bin/watch-phpunit
+RUN echo "alias watch-phpunit='/usr/local/bin/watch-phpunit'" >> /root/.bashrc
+
 # Apache Configuration
 RUN a2enmod rewrite
 RUN a2enmod headers

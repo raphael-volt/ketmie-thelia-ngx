@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+#INCLURE "template/custom/head.html" #SET{count,0}
+<THELIA_prod type="PRODUIT" nouveaute="1" classement="date">
+#SET{count,#__COMPTEUR__} </THELIA_prod>
+<script>
+		$(document).ready(function(){
+			new ListController("#newsPanel", "#VARIABLE(urlsite)", #VARIABLE(numnews), "custom/nouveautes", #GET{count});
+		})
+	</script>
+</head>
+<body>
+	<header> #INCLURE "template/header.html" </header>
+	<div id="content" class="top15 flexHome">
+		<ul class="panel h42" id="col1">
+			<li class="titleBar">#VARIABLE(nomsite)</li>
+			<li class="content">#SET{rid,#FILTRE_menu(lien||home)} <THELIA_rub
+					type="RUBRIQUE" id="#GET{rid}"> #DESCRIPTION </THELIA_rub>
+			</li>
+		</ul>
+		<ul id="newsPanel" class="panel h42 nearBar">
+			<li class="titleBar">
+				<button disabled="disabled" class="prevBtn">
+					<img src="template/css/images/icon-btn-prev.png" />
+				</button> <span>::nouveautes::</span>
+				<button disabled="disabled" class="nextBtn">
+					<img src="template/css/images/icon-btn-next.png" />
+				</button>
+			</li>
+			<li class="content">#INCLURE "template/custom/nouveautes.html"</li>
+		</ul>
+	</div>
+	#INCLURE "template/custom/footer.html" #INCLURE
+	"template/ajax/form/connectForm.html"
+</body>
+</html>

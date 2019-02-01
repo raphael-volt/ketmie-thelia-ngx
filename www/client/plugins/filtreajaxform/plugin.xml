@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Migration automatique depuis le plugin.xml original, sauvegardé dans plugin.xml.save-->
+<plugin>
+  <descriptif lang="fr">
+    <titre>Filtre ajaxForm</titre>
+    <chapo>Controlleur ajax</chapo>
+    <description></description>
+    <postscriptum></postscriptum>
+  </descriptif>
+  <version>1.1</version>
+  <auteur>
+    <nom>Raphael</nom>
+    <societe></societe>
+    <email></email>
+    <web></web>
+  </auteur>
+  <type>filtre perso</type>
+  <prerequis/>
+  <thelia>1.5.1</thelia>
+  <etat>production</etat>
+  <documentation></documentation>
+  <urlmiseajour></urlmiseajour>
+</plugin>

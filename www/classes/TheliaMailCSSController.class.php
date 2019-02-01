@@ -1,22 +1,6 @@
 <?php
 class TheliaMailCSSController
 {
-	/*
-	private static $styles = array(
-			"mail-body"=>"background-color: #FFFFFF; color:#333333; width:480px; text-align:justify; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-size-adjust:none; padding:8px;",
-			"mail-header"=>"margin:0; padding:0",
-			"mail-title"=>"font-size:16px; font-weight:bold; margin:8px 0 4px 0;",
-			"table-base"=>array(
-					"border-collapse: collapse; border:1px solid #333333; margin:0 0 8px 0; padding:0; border-spacing:0px",
-					array("//caption","text-align:left; white-space:nowrap; font-size:14px; margin:0 0 4px 0"),
-					array("//td","font-weight:bold;border-collapse: collapse; border:1px solid #333333; margin:0 0 8px 0; padding:0; border-spacing:0px"),
-					array("//td[@class='right']","border-collapse: collapse; border:1px solid #333333; margin:0 0 8px 0; padding:0; border-spacing:0px; font-weight:initial; text-align:right; vertical-align:top;")
-			),
-			"default"=>"margin:0; padding:0;",
-			"mail-span"=>"color:#333333",
-			"link"=>"color:inherit;outline: 0px none;text-decoration:underline;"
-	);
-	 */
 	private static $styles = array(
 			"mail-body"=>"background-color: #FFFFFF; color:#333333; width:480px; text-align:justify; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-size-adjust:none; padding:8px;",
 			"mail-header"=>"margin:0; padding:0",

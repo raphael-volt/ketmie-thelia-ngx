@@ -1,0 +1,93 @@
+#PARAM_FOND_nopageret=1
+<!DOCTYPE html>
+<html>
+<head>
+#INCLURE "template/custom/head.html"
+<script>
+formController.redirect = "#FILTRE_menu(cleanUrl||#URLPREC)";
+formController.redirectOnConnected = "#FILTRE_menu(cleanUrl||#URLPREC)";
+function setButtonDisabled()
+{
+	var button = $(".buttonBar button");
+	if($("#mailForm").valid())
+	{
+		button.removeAttr("disabled");
+	}
+	else
+	{
+		button.attr("disabled", "disabled");
+	}
+}
+$(document).ready(function()
+{
+	$("#mailForm").validate({
+		errorElement: "span",
+		errorPlacement:function(error, element) 
+		{
+			error.prependTo(element.parent());
+		},
+		onfocusout:setButtonDisabled,
+		onkeyup:setButtonDisabled
+	})
+});
+</script>
+<style>
+
+#content > ul
+{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+#content > ul > li:first-child
+{
+  flex-grow: 0;
+}
+#content > ul > li:last-child
+{
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+.content.flex-center
+{
+  display: flex;
+  justify-content: center;
+}
+</style>
+</head>
+<body>
+	<header>
+	#INCLURE "template/header.html"
+	</header>
+	<div id="content" class="top15">
+		<ul class="panel h42 full-height">
+			<li class="titleBar">::compte::</li>
+			<li class="content flex-center">
+				<form id="mailForm" action="#URLFOND(mdpoublieok)" method="post">
+					<input type="hidden" name="action" value="chmdp" />
+					<ul class="panel h30">
+						<li class="titleBar">::mdp1:: ::mdpperduououblie::</li>
+						<li class="content">
+					        <table class="margin15 formLayout">
+								<tr>
+									<td colspan="2">::mailnotfound::</td>
+								</tr>
+								<tr>
+									<td class="formLabel"><label>::votreemail::</label></td>
+									<td><input class="email" name="email" type="text"/></td>
+								</tr>
+							</table>    
+						</li>
+						<li class="buttonBar">
+							<button disabled="disabled" type="submit">::valider::</button>
+						</li>
+					</ul>
+		        </form>
+			</li>
+		</ul>
+	</div>
+#INCLURE "template/custom/footer.html"
+#INCLURE "template/ajax/form/connectForm.html"
+</body>
+</html>

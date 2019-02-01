@@ -1,0 +1,103 @@
+#PARAM_FOND_nopageret=1 #PARAM_FOND_securise=1 #PARAM_FOND_panier=1
+#PARAM_FOND_transport=1
+<!DOCTYPE html>
+<html>
+<head>#INCLURE "template/custom/head.html"
+<script type="text/javascript">
+formController.redirect = "#FILTRE_menu(cleanUrl||#URLCOURANTE)";
+formController.clientId = #CLIENT_ID;
+var pVal = -1;
+$(document).ready(function()
+{
+	var position = {my:"left top", at:"left bottom", position:"flip"};
+	var options = {
+			change:function(event){ $(this).closest("form").submit();}, 
+			position:position
+		}
+	$(".selPrice-button").selectmenu(options);
+	$(".selNum-button").selectmenu(options);
+	options = {
+			change:function(event, ui)
+			{
+				pVal = Number(ui.item.value);
+				$("#type_paiement").val(pVal);
+				var btn = $("#nextButton");
+				if(pVal == -1)
+				{
+					btn.attr("disabled","disabled");
+				}
+				else
+				{
+					if(btn.attr("disabled") == "disabled")
+						btn.removeAttr("disabled");
+				}
+				
+			}, 
+			position:position};
+	$("#paiement-select").selectmenu(options);
+	//type_paiement
+	<TEST_paiement variable="#ENV{type_paiement}" test="nonvide">
+	pVal = #ENV{type_paiement};
+	$("#paiement-select").val(pVal);
+	$("#type_paiement").val(pVal);
+	$("#paiement-select").selectmenu("refresh");
+	$("#nextButton").removeAttr("disabled");
+	</TEST_paiement>	
+	<//TEST_paiement>
+	$("li.content").find("form").submit(function(event)
+	{
+		// event.preventDefault();
+		var input = '<input type="hidden" name="type_paiement" value="'+pVal+'"/>';//$("<input>").attr("type", "hidden").val(pVal);
+		// console.log(input);
+		$(this).append($(input));
+	});
+	invalidateWindowSize();
+	$(".ctn-item").click(function (event) {
+		if (event.target == this) {
+			$(this).toggleClass("active")
+			if (!$(this).hasClass("active")) {
+				$(this).find(".active").removeClass("active")
+			}
+		}
+	})
+	$(document).click(function (event) {
+		if (!$(event.target).parents("#menu").length == 1) {
+			$("#menu").find(".active").removeClass("active")
+		}
+	});
+});
+</script>
+</head>
+<body>
+	<header> #INCLURE "template/header.html" </header>
+	<div id="content">
+		<ul id="commandState" class="hBox nowrap top15">
+			<li><span>::facturationlivraison::</span></li>
+			<li class="selection"><span>::verifcommande::</span></li>
+			<li><span>::paiementsecurise::</span></li>
+		</ul>
+		<div id="content">
+			<ul class="panel h42 top15">
+				<li class="titleBar">::recapitulatifcommande::</li>
+				<li class="content nopad">
+					#FILTRE_carac(panierTable||commande||1||<select id="paiement-select">
+						<option value="-1" selected="selected">::choisissez::</option>
+						<THELIA_PAIEMENT type="PAIEMENT">
+						<option value="#ID">#TITRE</option>
+						</THELIA_PAIEMENT>
+				</select>)
+				</li>
+				<li class="buttonBar">
+					<form action="#VARIABLE(urlsite)" method="get" id="paiementForm">
+						<input type="hidden" name="fond" value="commande" /> 
+						<input type="hidden" name="action" value="paiement" /> 
+						<input type="hidden" id="type_paiement" name="type_paiement" value="-1" />
+						<button type="submit" disabled="disabled" id="nextButton">::nextstep::</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</div>
+	#INCLURE "template/custom/footer.html"
+</body>
+</html>

@@ -1,0 +1,102 @@
+<ul id="accountForm" class="panel popUp h30">
+	<li class="titleBar">::comptemodifier::</li>
+	<li class="content">
+		<form action="#URLFOND(ajax/modifiercompte)" method="post">
+			<input type="hidden" name="client_id" value="#CLIENT_ID" />
+			<table class="connectForm formLayout">
+				<tr>
+					<td class="formLabel">
+						<label for="civilite">::civilite:: *</label>
+					</td>
+					<td>
+						<select name="raison" tabindex="2">
+							<THELIA_raison type="RAISON">
+								<option value="#ID" #SELECTED>#LONG</option>
+							</THELIA_raison>
+						</select>
+					</td>
+					<td class="formLabel">
+						<label>::adresse:: *</label>
+					</td>
+					<td>
+						<input tabindex="7" type="text" name="adresse1" class="required len3" value="#CLIENT_ADRESSE1" />
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+						<label>::nom:: *</label>
+					</td>
+					<td>
+						<input tabindex="3" type="text" name="nom" class="required len3" value="#CLIENT_NOM" />
+					</td>
+					<td class="formLabel">
+						<label>::complementadresse:: 1</label>
+					</td>
+					<td>
+						<input tabindex="8" type="text" name="adresse2" value="#CLIENT_ADRESSE2" />
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+						<label for="prenom">::prenom:: *</label>
+					</td>
+					<td>
+						<input tabindex="4" type="text" name="prenom" class="required len3" value="#CLIENT_PRENOM" />
+					</td>
+					<td class="formLabel">
+						<label>::complementadresse:: 2</label>
+					</td>
+					<td>
+						<input tabindex="9" type="text" name="adresse3" value="#CLIENT_ADRESSE3" />
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+						<label>::tel:: 1 *</label>
+					</td>
+					<td>
+						<input tabindex="5" type="text" name="telfixe" class="required numField" value="#CLIENT_TELFIXE" />
+					</td>
+					<td class="formLabel">
+						<label>::cp:: *</label>
+					</td>
+					<td>
+						<input tabindex="10" type="text" name="cpostal" class="required numField" value="#CLIENT_CPOSTAL" />
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+						<label>::tel:: 2</label>
+					</td>
+					<td>
+						<input tabindex="6" type="text" name="telport" class="numField" value="#CLIENT_TELPORT" />
+					</td>
+					<td class="formLabel">
+						<label>::ville:: *</label>
+					</td>
+					<td>
+						<input tabindex="11" type="text" name="ville" class="required len3" value="#CLIENT_VILLE" />
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel"></td>
+					<td></td>
+					<td class="formLabel">
+						<label>::pays:: *</label>
+					</td>
+					<td>
+						<select tabindex="12" name="pays" class="countryDD">
+							<THELIA_pays type="PAYS" zdefinie="1">
+								<option value="#ID" #SELECTED>#TITRE</option>
+							</THELIA_pays>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</li>
+	<li class="buttonBar">
+		<button type="button" class="cancelBtn">::annuler:: | ::fermer::</button>
+		<button type="submit" class="submitBtn">::valider::</button>
+	</li>
+</ul>

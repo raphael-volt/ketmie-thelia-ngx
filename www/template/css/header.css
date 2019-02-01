@@ -1,0 +1,36 @@
+
+#header-link {
+	margin-top: 20px;
+	display: block;
+	width: 960px;
+	height: 200px;
+	position: relative;
+}
+
+#header-link>#header-text {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 10px;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: flex-end;
+	align-items: flex-end;
+
+}
+
+#header-text>div>span {
+	font-size: 22px;
+	font-family: Flati;
+	line-height: 1em;
+}
+
+#header-text>div:first-child {
+	transform: scaleX(3.15) translateX(-58px);
+}
+.head-logo {
+	fill: #FFF;
+}

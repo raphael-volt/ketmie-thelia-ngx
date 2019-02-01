@@ -19,7 +19,7 @@ class TheliaAdminMailer extends TheliaDeliveryMailer
 		
 	}
 	
-	public function AddAddress($address, $nom)
+	public function AddAddress($address, $name="")
 	{
 		return parent::AddAddress($this->admin->email, $this->admin->nom);
 	}

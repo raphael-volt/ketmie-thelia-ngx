@@ -1,0 +1,50 @@
+<div id="connectPanel" class="panelBorder popup2">
+	<p class="titleBar">::connexion::</p>
+	<div class="popupDiv">
+	 	<p class="emailmdperr">::emailmdperr::</p>
+	    <form action="#URLFOND(ajax/ajaxconnexion)" method="post" 
+	    id="connexionForm" class="formAdr">
+			<table class="connectForm">
+			    <tr>
+			    	<td class="formLabel">
+						<label>::monemail::</label>
+			        </td>
+			        <td>
+						<input name="email" type="text"/>
+					</td>
+				</tr>
+			    <tr>
+			    	<td class="formLabel">
+			        	<label>::monmdp::</label>
+					</td>
+			        <td>
+				        <input name="motdepasse" type="password"/>
+			        </td>
+				</tr>
+				<tr>
+					<td class="td-captcha" colspan="2">
+						<a id="refresh" href="#" title="Rafraichir"></a>
+						<span id="captchaBox">
+							<img id="captcha" src="" alt=""/>
+						</span>						
+					</td>
+				</tr>
+				<tr>
+					<td class="formLabel">
+						<label>Code de validation</label>
+					</td>
+					<td>
+						<input name="captcha" type="text"/>
+				    </td>
+				</tr>
+			    <tr>
+			    	<td colspan="2" align="right"><a href="#URLFOND(mdpoublie)">::mdpperduoublie::</a></td>
+				</tr>
+		    </table>
+		    <div class="popupBtnBox rightForm">
+		    	<button type="button" class="cancelBtn">::fermer::</button>
+	        	<button type="submit" class="submitBtn">::valider::</button>
+		    </div>
+		</form>
+	</div>
+</div>

@@ -34,7 +34,7 @@
 		function __construct($ref, $quantite, $perso="", $parent = -1){
 
 				$this->perso = new Perso();
-
+                
 				$this->produit = new Produit();
 				$this->produit->charger($ref);
 				$this->produitdesc = new Produitdesc();
@@ -42,22 +42,22 @@
 			    $this->quantite = $quantite;
 			    $this->perso = $perso;
 			    $this->parent = $parent;
-
-				for($i=0;$i<count($perso); $i++){
-					$declinaison = new Declinaison();
-					$declinaison->charger($perso[$i]->declinaison);
-
-					if($declinaison->isDeclidisp()){
-						$stock = new Stock();
-						$stock->charger($perso[$i]->valeur, $this->produit->id);
-						if($stock->surplus != 0){
-							$this->produit->prix += $stock->surplus;
-							$this->produit->prix2 += $stock->surplus;
-
-						}
-					}
-
-				}
+			    if(is_array($perso)) 
+    				for($i=0;$i<count($perso); $i++){
+    					$declinaison = new Declinaison();
+    					$declinaison->charger($perso[$i]->declinaison);
+    
+    					if($declinaison->isDeclidisp()){
+    						$stock = new Stock();
+    						$stock->charger($perso[$i]->valeur, $this->produit->id);
+    						if($stock->surplus != 0){
+    							$this->produit->prix += $stock->surplus;
+    							$this->produit->prix2 += $stock->surplus;
+    
+    						}
+    					}
+    
+    				}
 		}
 
 	}

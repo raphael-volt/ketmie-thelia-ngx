@@ -1,0 +1,63 @@
+#INCLURE "template/meta.html"
+<title>#VARIABLE(nomsite)</title>
+<link rel="icon" type="image/png" href="template/css/images/logo-100.png" />
+<link rel="stylesheet" href="template/js/libs/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="template/css/globals.css" type="text/css">
+<link rel="stylesheet" href="template/css/header.css" type="text/css">
+<link rel="stylesheet" href="template/css/nav.css" type="text/css">
+<link rel="stylesheet" href="template/css/containers.css" type="text/css">
+<link rel="stylesheet" href="template/css/components.css" type="text/css">
+<link rel="stylesheet" href="template/css/panels.css" type="text/css">
+<link rel="stylesheet" href="template/css/imgGrid.css" type="text/css" />
+<link rel="stylesheet" href="template/css/imgPopUp.css" type="text/css">
+
+<script type="text/javascript" src="template/js/libs/jquery.js"></script>
+<script type="text/javascript" src="template/js/libs/jquery-ui.js"></script>
+
+<script type="text/javascript" src="template/js/Modal.js"></script>
+<script type="text/javascript" src="template/js/ImgPopUp.js"></script>
+<script type="text/javascript" src="template/js/AjaxFormController.js"></script>
+<script type="text/javascript" src="template/js/AjaxListController.js"></script>
+
+<script type="text/javascript" src="template/js/main-layout.js"></script>
+<script type="text/javascript" src="template/js/menu.js"></script>
+
+<script type="text/javascript" src="template/js/libs/jquery.validate.js"></script>
+<script type="text/javascript" src="template/js/validatorInit.js"></script>
+
+<script type="text/javascript">
+var formController = new AjaxFormController()
+formController.redirect = "#FILTRE_menu(cleanUrl||#URLCOURANTE)"
+$(document).ready(function()
+{
+
+    $(".connectLink").click(function(event)
+	{
+		event.preventDefault()
+		formController.showConnection()
+		return false
+	})
+	
+	$(".newAccountLink").click(function(event)
+	{
+		event.preventDefault()
+		formController.createAccount("#VARIABLE(urlsite)/?fond=ajax/form/accountFormNew")
+		return false
+    })
+    
+    $("select").selectmenu()
+	var options = {
+		change : function(event) {
+			$(this).closest("form").submit();
+		},
+		position : {
+			my : "left top",
+			at : "left bottom",
+			position : "flip"
+		}
+	}
+	$(".selPrice-button").selectmenu(options)
+	$(".selNum-button").selectmenu(options)
+	
+})
+</script>

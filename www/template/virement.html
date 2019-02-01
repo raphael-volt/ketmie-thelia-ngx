@@ -1,0 +1,37 @@
+#PARAM_FOND_securise=1 #PARAM_FOND_reset=1 #PARAM_FOND_nopageret=1
+<!DOCTYPE html>
+<html>
+<head>
+#INCLURE "template/custom/head.html"
+</head>
+<body>
+	<header>
+	#INCLURE "template/header.html"
+	</header>
+	<div id="content">
+		<ul id="commandState" class="hBox nowrap top15">
+		    <li><span>::facturationlivraison::</span></li>
+		    <li><span>::verifcommande::</span></li>
+		    <li class="selection"><span>::paiementsecurise::</span></li>
+		</ul>
+		<ul class="panel h42 top15">
+			<li class="titleBar">::reglementvirement::</li>
+			<li class="content">
+				<p>::remerciement::</p>
+				<p>::emailrecapitulatif:: #CLIENT_EMAIL.</p>
+				<p>Vous y trouverez les informations pour effectuer votre virement.</p>
+				<p>::validationcommande::</p>
+				<br/>
+				<THELIA_cmd type="COMMANDE" ref="#COMMANDE_REF">	
+				<p>::refcommande:: : #REF</p>
+				<p>::date:: : #DATE</p>
+				<p>TOTAL : #TOTCMDPORT ::euro::</p>
+				<br/>
+				</THELIA_cmd>
+				<p><a href="#URLPAGERET">::retourboutique::</a></p>	
+			</li>
+		</ul>
+	</div>
+#INCLURE "template/custom/footer.html"
+</body>
+</html>

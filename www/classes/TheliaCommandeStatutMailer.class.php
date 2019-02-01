@@ -10,7 +10,7 @@ class TheliaCommandeStatutMailer extends TheliaMailerBase
 	{
 		$this->commande = $commande;
 		parent::__construct(new Client($commande->client), "statut_commande");
-		$this->_mysubject = str_replace("__COMMANDE__", $commande->ref, $this->_mysubject);	
+		$this->_intitile = str_replace("__COMMANDE__", $commande->ref, $this->_intitile);	
 	}
 	
 	protected function replaceVariables()

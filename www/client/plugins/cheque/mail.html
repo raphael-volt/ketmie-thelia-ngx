@@ -1,0 +1,120 @@
+<div class="mail-body">
+<style>
+html{font-family:Arial;}
+</style>
+<h1 class="mail-header"><img style="border:0px none;" src="__LOGO_SITE__"/></h1>
+<h2 class="mail-title">Confirmation de commande</h2>
+<h3 class="mail-title">N° __COMMANDE_REF__ du <span style="font-size:80%">__COMMANDE_DATE__</span></h3>
+__PAIEMENT_INFO__
+<table class="table-detail">
+<caption>Détail de la commande</caption>
+<thead class="detail-head">
+<tr>
+<th colspan="2" class="detail-th">Désignation</th> 
+<th class="detail-th">Référence</th> 
+<th class="detail-th">P.U. ::euro::</th> 
+<th class="detail-th">Qté</th>
+</tr>
+</thead>
+<tbody>
+<VENTEPROD>
+<tr>
+<td class="cellprod-img"><span></span></td>
+<td class="cellprod-title">__VENTEPROD_TITRE__</td>
+<td class="cellprod-ref">__VENTEPROD_REF__</td>
+<td class="cellprod">__VENTEPROD_PRIXU__</td>
+<td class="cellprod">__VENTEPROD_QUANTITE__</td>
+</tr>
+</VENTEPROD>
+<tr>
+<td class="cellprod-right" colspan="4">Montant total avant remise  ::euro::</td>
+<td class="cellprod-right">__COMMANDE_TOTAL__</td>
+</tr>
+<tr>
+<td class="cellprod-right" colspan="4">Remise  ::euro::</td>
+<td class="cellprod-right">__COMMANDE_REMISE__</td>
+</tr>
+<tr>
+<td class="cellprod-right" colspan="4">Port  ::euro::</td>
+<td class="cellprod-right">__COMMANDE_PORT__</td>
+</tr>
+<tr>
+<td class="cellprod-right-last" colspan="4">Montant total de la commande ::euro::</td>
+<td class="cellprod-right-last">__COMMANDE_TOTALPORT__</td>
+</tr>
+</tbody>
+</table>
+<table class="table-base">
+<caption>Livraison</caption>
+<tbody>
+<tr><td class="right">Transporteur : </td><td>__COMMANDE_TRANSPORT__</td></tr>
+<tr><td class="right">Nom : </td><td>__COMMANDE_LIVRRAISON__ __COMMANDE_LIVRPRENOM__ __COMMANDE_LIVRNOM__</td></tr>
+<tr><td class="right">Adresse : </td><td>__ADRESSE_LIVRAISON__<br/>__COMMANDE_LIVRCPOSTAL__ __COMMANDE_LIVRVILLE__</td></tr>
+<tr><td class="right">Pays : </td><td>__COMMANDE_LIVRPAYS__</td></tr>
+</tbody>
+</table>
+<table class="table-base">
+<caption>Facturation</caption>
+<tbody>
+<tr><td class="right">paiement par : </td><td>__COMMANDE_PAIEMENT__</td></tr>
+<tr><td class="right">N° de client : </td><td>__CLIENT_REF__</td></tr>
+<tr><td class="right">Nom : </td><td>__CIVILITE__  __PRENOM__ __NOM__</td></tr>
+<tr><td class="right">Adresse : </td><td>__ADRESSE__<br/>__CPOSTAL__ __VILLE__</td></tr>
+<tr><td class="right">Pays : </td><td>__PAYS__</td></tr>
+</tbody>
+</table>
+<p class="default">Le suivi de votre commande est disponible dans la rubrique mon compte sur <a href="__URLSITE__">__URLSITE__</a></p>
+</div>
+
+
+Confirmation de commande
+N° __COMMANDE_REF__ du __COMMANDE_DATE__
+
+__PAIEMENT_INFO__
+
+Détail de la commande
+-------------------------------------------------------
+<VENTEPROD>
+Article : __VENTEPROD_TITRE__
+Référence : __VENTEPROD_REF__
+Quantité : __VENTEPROD_QUANTITE__
+Prix unitaire TTC : __VENTEPROD_PRIXU__ EUR
+-------------------------------------------------------
+</VENTEPROD>
+Montant total avant remise ::euro:: : __COMMANDE_TOTAL__
+Remise  ::euro:: : __COMMANDE_REMISE__
+Port ::euro:: : __COMMANDE_PORT__</td>
+Montant total de la commande ::euro:: : __COMMANDE_TOTALPORT__
+=======================================================
+
+Livraison
+-------------------------------------------------------
+Transporteur : __COMMANDE_TRANSPORT__
+Nom : __COMMANDE_LIVRRAISON__ __COMMANDE_LIVRPRENOM__ __COMMANDE_LIVRNOM__
+Adresse : __ADRESSE_LIVRAISON__
+__COMMANDE_LIVRCPOSTAL__ __COMMANDE_LIVRVILLE__
+Pays : __COMMANDE_LIVRPAYS__
+=======================================================
+
+Facturation
+-------------------------------------------------------
+paiement par : __COMMANDE_PAIEMENT__
+N° de client : __CLIENT_REF__
+Nom : __CIVILITE__  __PRENOM__ __NOM__
+__ADRESSE__
+__CPOSTAL__ __VILLE__
+Pays : __PAYS__
+=======================================================
+
+Le suivi de votre commande est disponible dans la rubrique mon compte sur __URLSITE__
+
+
+Vous avez choisi le mode paiement par virement. 
+Voici les informations requises pour effectuer la transaction :
+-------------------------------------------------------
+Destinataire : Stéphanie Mousquey
+Libellé : Commande __COMMANDE_REF__
+RIB : 15589 22802 02989255740 15
+IBAN : FR76 1558 9228 0202 9892 5574 015
+=======================================================
+BIC : CMBRFR2BARK

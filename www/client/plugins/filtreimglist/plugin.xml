@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <descriptif lang="fr">
+    <titre>Filtre IMGList</titre>
+    <chapo>chapo</chapo>
+    <description>description</description>
+    <postscriptum>postscriptum</postscriptum>
+  </descriptif>
+  <version>1.2</version>
+  <auteur>
+    <nom>Raphael</nom>
+    <societe></societe>
+    <email></email>
+    <web></web>
+  </auteur>
+  <type>filtre perso</type>
+  <prerequis/>
+  <thelia>1.5.1</thelia>
+  <etat>production</etat>
+  <documentation></documentation>
+  <urlmiseajour></urlmiseajour>
+</plugin>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+#INCLURE "template/custom/head.html"
+<TEST_contact variable="#RUBRIQUE_LIEN" test="egal" valeur="contact">
+<script src="template/js/libs/crypto/rollups/aes.js" type="text/javascript" ></script>
+</TEST_contact>
+<//TEST_contact>
+<script type="text/javascript">
+<TEST_contact variable="#RUBRIQUE_LIEN" test="egal" valeur="contact">
+var CryptoJSAesJson = {
+	    stringify: function (cipherParams) {
+	        var j = {ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64)};
+	        if (cipherParams.iv) j.iv = cipherParams.iv.toString();
+	        if (cipherParams.salt) j.s = cipherParams.salt.toString();
+	        return JSON.stringify(j);
+	    },
+	    parse: function (jsonStr) {
+	        var j = JSON.parse(jsonStr);
+	        var cipherParams = CryptoJS.lib.CipherParams.create({ciphertext: CryptoJS.enc.Base64.parse(j.ct)});
+	        if (j.iv) cipherParams.iv = CryptoJS.enc.Hex.parse(j.iv)
+	        if (j.s) cipherParams.salt = CryptoJS.enc.Hex.parse(j.s)
+	        return cipherParams;
+	    }
+	};
+var secureImgFlag = true;
+
+function refreshSecureImage()
+{
+	var im = $("#captcha");
+	im.fadeOut(300, function()
+	{
+		$(this).one("load", function(){$("#captcha").fadeIn();});
+		$(this).attr("src", "/securimage/securimage_show.php?sid=" + Math.random());
+	});
+}
+function validateSecureImg(value, element)
+{
+	return secureImgFlag;
+}
+$(document).ready(function()
+{
+	var messagePopUp = $("#messagePopUp");
+	var data = {type:"GET", url:"contacts.php", data:{json:1}};
+	var request = $.ajax(data);
+	request.done(
+		function(data)
+		{
+			data = jQuery.parseJSON(data);
+			var name;
+			var prop;
+			var selector;
+			var passphrase = "#VARIABLE(passphrase)";
+			for(name in data)
+			{
+				for(prop in data[name])
+				{
+					selector = "span." + name + "." + prop;
+					var decrypted = JSON.parse(CryptoJS.AES.decrypt(data[name][prop], passphrase, {format: CryptoJSAesJson}).toString(CryptoJS.enc.Utf8));
+					$(selector).text(decrypted);
+				}
+			}
+		}
+	);
+	var validateForm = function()
+	{
+		if($("#emailForm").valid())
+			$("#sendMailBtn").removeAttr("disabled");
+		else
+			$("#sendMailBtn").attr("disabled", "disabled");
+			
+	};
+	$.validator.addMethod(
+			"secureImg",
+			validateSecureImg,
+			"Code de validation invalide");
+	$.validator.addClassRules("secureimage", 
+			{
+				cRequired: true,
+				secureImg: true
+			});	
+	$("#emailForm").validate({
+		errorElement: "span",
+		errorPlacement: function(error, element) 
+		{
+			error.prependTo(element.parent());
+		},
+		success:function()
+		{
+			$("#sendMailBtn").removeAttr("disabled");
+		},
+		onkeyup:validateForm,
+		focusCleanup:validateForm,
+		onfocusout:validateForm,
+		onclick:validateForm,
+		focusInvalid:validateForm
+	});
+	
+	$("#sendMailBtn").click(
+		function(event)
+		{
+			event.preventDefault();
+			var params = {
+					url:$("#emailForm").attr("action"),
+					type:"POST",
+					data:$("#emailForm").serializeArray()
+			};
+			var request = $.ajax(params);						
+			request.done(
+					function(result)
+					{
+						if(result=="success")
+						{
+							$("#emailForm textarea").val("");
+							$("#emailForm .secureimage").val("");
+							$("#sendMailBtn").attr("disabled", "disabled");
+							refreshSecureImage();
+							formController.alert(messagePopUp);
+						}
+						else
+						{
+							secureImgFlag = false;
+							$("#emailForm").valid();
+							secureImgFlag = true;
+						}
+					}
+			);
+			return false;
+		}
+	);
+	$("#refresh").click(
+		function(event)
+		{
+			event.preventDefault();
+			refreshSecureImage();
+			return false;
+		}
+	);
+	formController.setupTabindexes($("#emailForm"));
+}
+
+</TEST_contact>
+<//TEST_contact>
+</script>
+</head>
+<body>
+	<header>
+	#INCLURE "template/header.html"
+	</header>
+	<div id="content" class="top15">
+		<ul class="panel h42 full-height">
+			<li class="titleBar">#RUBRIQUE_NOM</li>
+			<li class="content rubDesc">
+			<TEST_contact variable="#RUBRIQUE_LIEN" test="egal" valeur="contact">
+	#INCLURE "template/custom/contact.html"
+			</TEST_contact>
+				<TEST_grid variable="#RUBRIQUE_LIEN" test="egal" valeur="grid">
+				#RUBRIQUE_DESCRIPTION
+				#FILTRE_menu(grid||#RUBRIQUE_ID)
+				</TEST_grid>
+					<TEST_contenu variable="#RUBRIQUE_DESCRIPTION" test="different" valeur="">
+					#RUBRIQUE_DESCRIPTION
+					</TEST_contenu>
+					<//TEST_contenu>
+					#FILTRE_imglist(rubrique||#RUBRIQUE_ID||950||180||5)
+				<//TEST_grid>
+			<//TEST_contact>
+			</li>
+		</ul>
+	</div>
+#INCLURE "template/custom/footer.html"
+#INCLURE "template/ajax/form/connectForm.html"
+
+<TEST_contact variable="#RUBRIQUE_LIEN" test="egal" valeur="contact">
+<ul class="panel popUp h30" id="messagePopUp">
+	<li class="titleBar">Information</li>
+	<li class="content">
+		<p class="sizeM bold margin15">Votre message a été envoyé</p></li>
+	<li class="buttonBar">
+		<form action="#URLCOURANTE">
+			<button class="submitBtn">OK</button>
+		</form>
+	</li>
+</ul>
+</TEST_contact>
+<//TEST_contact>
+</body>
+</html>

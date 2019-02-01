@@ -58,11 +58,11 @@ class TheliaMailerBase extends PHPMailer
     protected function getMessageDescById($id)
     {}
 
-    protected $_intitile = "";
+    protected $_mailSubject = "";
 
     protected function _getSubject()
     {
-        return $this->_intitile;
+        return $this->_mailSubject;
     }
 
     protected function getMessageDesc($messageNom)
@@ -103,7 +103,7 @@ WHERE m.nom=?";
             $this->htmlTemplate = str_replace("__MESSAGE__", $messageDesc->description, $this->htmlTemplate);
             $this->textTemplate = $messageDesc->descriptiontext;
             $this->title = $messageDesc->titre;
-            $this->_intitile = $this->substiSite($messageDesc->intitule);
+            $this->_mailSubject = $messageDesc->intitule;
         }
         $this->throwExceptionIfMessagedescIsNull();
     }
@@ -139,7 +139,7 @@ WHERE m.nom=?";
         $this->throwExceptionIfMessagedescIsNull();
         
         $client = $this->client;
-        $this->IsMail();
+        $this->IsHTML(true);
         $this->CharSet = "UTF-8";
         $this->FromName = $this->nomsite;
         $this->From = Variable::lire("emailfrom");
@@ -154,10 +154,9 @@ WHERE m.nom=?";
     {
         try {
             $this->setupMail();
-            if ($this->debug)
-                if (ENV_PROD == 1) {
-                    return parent::Send();
-                }
+            if (ENV_PROD == 1) {
+                return parent::Send();
+            }
             return $this->hasArray(true, true);
         } catch (Exception $e) {
             return $e;

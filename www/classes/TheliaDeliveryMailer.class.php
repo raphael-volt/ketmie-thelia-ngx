@@ -60,8 +60,8 @@ EOL;
 		$res["admin"] = $mail->Send();
 		if(ENV_PROD == 0)
 		{
-			printInLog($res);
 		}
+			printInLog($res);
 		ActionsModules::instance()->appel_module("confirmation", $commande);
 		$_SESSION["navig"]->panier = new Panier();
 		session_write_close();
@@ -84,7 +84,7 @@ EOL;
 		$this->commande = $commande;
 		$client = new Client($commande->client);
 		parent::__construct($client, $messageNom);
-		$this->_intitile = "$this->nomsite | commande n° {$this->commande->ref}";
+		$this->_mailSubject = $this->nomsite . " | commande " . $this->commande->ref;
 	}
 	
 	protected $clientPays;

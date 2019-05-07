@@ -381,9 +381,12 @@ ORDER BY classement";
         }
         return $doc->saveXML($ariane);
     }
-
-    private function createMenu()
-    {
+    /**
+     * 
+     * @param boolean $checkRub
+     * @return RubDesc
+     */
+    public function getArbo($checkRub=false){
         $pdo = PDOThelia::getInstance();
         $query = "SELECT d.titre as label, d.description as content, r.id, r.parent as pid, r.lien, r.classement AS child_index FROM rubrique AS r
 LEFT JOIN rubriquedesc AS d ON d.rubrique=r.id
@@ -400,11 +403,13 @@ ORDER BY rubrique, classement";
         $produits = $pdo->query($query);
         $produits = $produits->fetchAll(PDO::FETCH_CLASS, ProdDesc::class);
         $prodDict = array();
-        foreach ($produits as $prod) {
-            $prod instanceof ProdDesc;
-            $prodDict[$prod->rubrique][] = $prod;
-            if ($prod->id == $this->currentProd)
-                ProdDesc::$current = $prod;
+        if($checkRub) {    
+            foreach ($produits as $prod) {
+                $prod instanceof ProdDesc;
+                $prodDict[$prod->rubrique][] = $prod;
+                if ($prod->id == $this->currentProd)
+                    ProdDesc::$current = $prod;
+            }
         }
         $root = new RubDesc();
         $root->id = 0;
@@ -412,7 +417,7 @@ ORDER BY rubrique, classement";
         $rubs = array(
             0 => $root
         );
-        if ($this->currentRub == 0) {
+        if($checkRub && $this->currentRub == 0) {
             foreach ($result as $r) {
                 $r instanceof RubDesc;
                 if ($r->lien == RubDesc::HOME) {
@@ -429,27 +434,32 @@ ORDER BY rubrique, classement";
             }
             if (! empty($r->content) && strlen($r->content))
                 $r->content = true;
-            else
-                $r->content = false;
+                else
+                    $r->content = false;
         }
         foreach ($rubs as $id => $r) {
             $r instanceof RubDesc;
             if ($r == $root)
                 continue;
-            $p = $rubs[$r->pid];
-            $p instanceof RubDesc;
-            $r->parent = $p;
-            $i = $r->child_index - 1;
-            $p->children[$i] = $r;
+                $p = $rubs[$r->pid];
+                $p instanceof RubDesc;
+                $r->parent = $p;
+                $i = $r->child_index - 1;
+                $p->children[$i] = $r;
         }
         foreach ($rubs as $id => $r) {
             $r instanceof RubDesc;
             if ($r == $root)
                 continue;
-            if (array_key_exists($r->id, $prodDict)) {
-                $r->children = array_merge($r->children, $prodDict[$r->id]);
-            }
+                if (array_key_exists($r->id, $prodDict)) {
+                    $r->children = array_merge($r->children, $prodDict[$r->id]);
+                }
         }
+        return $root;
+    }
+    private function createMenu()
+    {
+        $root = $this->getArbo(true);
         if (RubDesc::$current) {
             $r = RubDesc::$current;
             $r->on = true;

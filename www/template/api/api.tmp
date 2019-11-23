@@ -1,27 +1,16 @@
 <?php
 require_once (dirname(realpath(__FILE__)) . '/../../../classes/filtres/FiltreCustomBase.class.php');
-
-require_once dirname(realpath(__FILE__)) . '/CardController.class.php';
-require_once dirname(realpath(__FILE__)) . '/Request.class.php';
-require_once dirname(realpath(__FILE__)) . '/HTTPReponseHelper.class.php';
-require_once dirname(realpath(__FILE__)) . '/ProductHelper.class.php';
-
-function cleanText($text) {
-    $text = htmlentities($text);
-    $text = nl2br($text);
-    return preg_replace('/(\r\n|\n|\r)/', '', $text);
-}
+require_once __DIR__ . '/ProductHelper.php';
 
 class Filtreapi extends FiltreCustomBase
 {
 
+    private $createErrorMap;
     /**
      *
      * @var ProductHelper
      */
     private $productHelper;
-
-    private $createErrorMap;
 
     public function __construct()
     {
@@ -84,10 +73,62 @@ ORDER BY c.classement";
         return $arbo;
     }
 
-    public function catalog()
+    private function catalog()
     {
-        $menu = new Filtremenu();
-        $root = $menu->getArbo();
+        $pdo = PDOThelia::getInstance();
+        $query = "SELECT d.titre as label, d.description as content, r.id, r.parent as pid, r.lien, 
+r.classement AS child_index FROM rubrique AS r
+LEFT JOIN rubriquedesc AS d ON d.rubrique=r.id
+ORDER BY parent, child_index";
+        
+        $result = $pdo->query($query);
+        $result = $result->fetchAll(PDO::FETCH_CLASS, RubDesc::class);
+        $query = "SELECT d.titre as label, p.id, p.ref, p.rubrique FROM " . Produit::TABLE . " as p 
+LEFT JOIN " . Produitdesc::TABLE . " as d ON p.id=d.produit 
+WHERE ligne=1 ORDER BY rubrique, classement";
+        $produits = $pdo->query($query);
+        $produits = $produits->fetchAll(PDO::FETCH_CLASS, ProdDesc::class);
+        
+        $prodDict = array();
+        foreach ($produits as $prod) {
+            $prod instanceof ProdDesc;
+            $prodDict[$prod->rubrique][] = $prod;
+            if ($prod->id == $this->currentProd)
+                ProdDesc::$current = $prod;
+        }
+        $root = new RubDesc();
+        $root->id = 0;
+        $root->pid = 0;
+        $rubs = array(
+            0 => $root
+        );
+        
+        foreach ($result as $r) {
+            $rubs[$r->id] = $r;
+            $r instanceof RubDesc;
+            if (! empty($r->content) && strlen($r->content))
+                $r->content = true;
+            else
+                $r->content = false;
+        }
+        foreach ($rubs as $id => $r) {
+            $r instanceof RubDesc;
+            if ($r == $root)
+                continue;
+            $p = $rubs[$r->pid];
+            $p instanceof RubDesc;
+            $r->parent = $p;
+            $i = $r->child_index - 1;
+            $p->children[$i] = $r;
+        }
+        foreach ($rubs as $id => $r) {
+            $r instanceof RubDesc;
+            if ($r == $root)
+                continue;
+            if (array_key_exists($r->id, $prodDict)) {
+                $r->children = array_merge($r->children, $prodDict[$r->id]);
+            }
+        }
         return $root->toJson()->children;
     }
 
@@ -118,14 +159,6 @@ ORDER BY c.classement";
      *
      * @return Client|NULL
      */
-    private function getCurrentCustomerId()
-    {
-        $client = $this->getCurrentCustomer();
-        if ($client)
-            return $client->id;
-        return null;
-    }
-
     private function getCurrentCustomer()
     {
         if (isset($_SESSION["navig"]) && $_SESSION['navig']->connecte == 1 && property_exists($_SESSION["navig"], "client")) {
@@ -152,7 +185,7 @@ ORDER BY c.classement";
 
     /**
      *
-     * @param mixed $post
+     * @param unknown $post
      * @return NULL|Client
      */
     private function login($post)
@@ -227,13 +260,11 @@ ORDER BY c.classement";
         
         return true;
     }
-
     /**
-     *
+     * 
      * @param stdClass $json
      */
-    private function updateCustomer($json)
-    {
+    private function updateCustomer($json) {
         $client = new Client();
         $client->charger_id($_SESSION['navig']->client->id);
         foreach ($json as $key => $value) {
@@ -245,43 +276,33 @@ ORDER BY c.classement";
         ActionsModules::instance()->appel_module("apresmodifcompte", $client);
         return true;
     }
-
     /**
      *
      * @param stdClass $json
      */
-    private function createCustomer($json)
-    {
+    private function createCustomer($json) {
+        
         $test = new Client();
+        $props = $test->bddvars;
         $valid = true;
-        $props = array(
-            "raison",
-            "nom",
-            "prenom",
-            "email",
-            "motdepasse",
-            "adresse1",
-            "cpostal",
-            "ville",
-            "pays"
-        );
+        $skipProps = array("id", "ref", "datecrea", "siret", "intracom", "parrain", "type", "pourcentage", "lang");
         $this->createErrorMap->missingProperties = array();
+        $this->createErrorMap->skipProperties = array();
         foreach ($props as $prop) {
-            if (! property_exists($json, $prop)) {
-                $valid = false;
+            if(array_search($prop, $skipProps) !== false) {
+                $this->createErrorMap->skipProperties[] = $prop;
+                continue;
+            }
+            if(! property_exists($json, $prop)) {
                 $this->createErrorMap->missingProperties[] = $prop;
+                $valid = false;
+                // break;
             }
         }
-        if (! property_exists($json, "telfix") && ! property_exists($json, "telport")) {
-            $this->createErrorMap->missingProperties[] = "telfix|telport";
-            $valid = false;
-        }
-        if (! $valid)
+        if(! $valid)
             return null;
-        if ($test->existe($json->email)) {
-            $this->createErrorMap->emailExists = true;
+        if ($test->existe($json->email))
             return null;
-        }
         
         $client = new Client();
         foreach ($json as $key => $value) {
@@ -298,44 +319,6 @@ ORDER BY c.classement";
         return $client;
     }
 
-    private function createAddress($address)
-    {
-        $result = new Adresse();
-        foreach ($address as $key => $value) {
-            $result->{$key} = $value;
-        }
-        $result->client = $this->getCurrentCustomerId();
-        if ($result->client == null)
-            return null;
-        $result->id = $result->add();
-        return $result;
-    }
-
-    private function updateAddress($address)
-    {
-        if (! property_exists($address, "id"))
-            return null;
-        $id = $address->id;
-        $result = new Adresse();
-        $result->charger_id($id);
-        foreach ($address as $key => $value) {
-            $result->{$key} = $value;
-        }
-        $result->maj();
-        return true;
-    }
-
-    private function deleteAddress($address)
-    {
-        if (! property_exists($address, "id"))
-            return null;
-        $id = $address->id;
-        $result = new Adresse();
-        $result->charger_id($id);
-        $result->delete();
-        return true;
-    }
-
     private function getCountries()
     {
         $pdo = PDOThelia::getInstance();
@@ -347,70 +330,17 @@ ORDER BY titre";
         $stmt->setFetchMode(PDO::FETCH_OBJ);
         return $stmt->fetchAll();
     }
+    
+    
 
-    private function getTransports() {
-        $modules = new Modules();
-        
-        $query = "SELECT id FROM $modules->table WHERE type='2' and actif='1' order by classement";
-        $pdo = PDOThelia::getInstance();
-        $stmt = $pdo->query($query);
-        $stmt->setFetchMode(PDO::FETCH_OBJ);
-        $resul = $stmt->fetchAll();
-        $transzone = new Transzone();
-        foreach ($resul as $row) {
-            
-            $modules = new Modules();
-            $modules->charger_id($row->id);
-            
-            try {
-                $instance = ActionsModules::instance()->instancier($modules->nom);
-                $row->port = round(port($row->id, $pays->id, $cpostal), 2);
-                $row->titre = $instance->getTitre();
-                $row->chapo = cleanText($instance->getChapo());
-                $row->description = cleanText($instance->getDescription());
-                
-            } catch (Exception $ex) {
-                $row->titre = $row->chapo = $row->description = '';
-            }
-            
-            // Chercher le logo
-            $exts = array('png', 'gif', 'jpeg', 'jpg');
-            $logo = false;
-            foreach ($exts as $ext) {
-                $tmp = ActionsModules::instance()->lire_chemin_base() . "/$row->nom/logo.$ext";
-                if (file_exists($tmp)) {
-                    $row->logo = ActionsModules::instance()->lire_url_base() . "/$row->nom/logo.$ext";
-                    break;
-                }
-            }
-        }
-        return $resul;
-    }
     public function calcule($match)
     {
-        $isPost = $_SERVER['REQUEST_METHOD'] == 'POST';
         $match = parent::calcule($match);
         $response = new Response(true);
         $action = $this->paramsUtil->action;
         $result = new stdClass();
         try {
             switch ($action) {
-                case 'transports':
-                    {
-                        $result = $this->getTransports();
-                        break;
-                    }
-                    
-                case 'card':
-                    {
-                        $result = null;
-                        $card = new CardController();
-                        $map = 0;
-                        if ($this->paramsUtil->getNumParameters() > 1)
-                            $map = $this->paramsUtil->parameters[1];
-                        $response = $card->setRequestParameters($this->paramsUtil->parameters[0], $isPost ? $this->getPostJson() : null, $map);
-                        break;
-                    }
                 case 'countries':
                     {
                         $result = $this->getCountries();
@@ -418,7 +348,9 @@ ORDER BY titre";
                     }
                 case 'session':
                     {
+                        
                         $result->session_id = session_id();
+                        
                         break;
                     }
                 case "catalog":
@@ -447,34 +379,34 @@ ORDER BY titre";
                         $method = $this->paramsUtil->parameters[0];
                         
                         switch ($method) {
-                            case "create":
-                                {
-                                    $response->success = false;
+                            case "create": {
+                                $response->success = false;
+                                
+                                $json = $this->getPostJson();
+                                
+                                if ($json == null) {
+                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                    $this->createErrorMap->reason = "missing post data";
                                     
-                                    $json = $this->getPostJson();
-                                    
-                                    if ($json == null) {
-                                        $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                        $this->createErrorMap->reason = "missing post data";
-                                        $result = $this->createErrorMap;
-                                        // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                        break;
-                                    }
-                                    
-                                    $json = $this->createCustomer($json);
-                                    if ($json == null) {
-                                        $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                        $this->createErrorMap->reason = "createCustomer FAIL";
-                                        $result = $this->createErrorMap;
-                                        // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                        break;
-                                    }
-                                    
-                                    $result = $response->baseobj($json);
-                                    unset($result->motdepasse);
-                                    $response->success = true;
+                                    $result = $this->createErrorMap;
+                                    // $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
                                     break;
                                 }
+                                
+                                $json = $this->createCustomer($json);
+                                if ($json == null) {
+                                    $this->createErrorMap->error = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                    $this->createErrorMap->reason = "create customer fail";
+                                    
+                                    $result = $this->createErrorMap;//HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
+                                    break;
+                                }
+                                
+                                $result = $response->baseobj($json);
+                                unset($result->motdepasse);
+                                $response->success = true;
+                                break;
+                            }
                             case "update":
                                 {
                                     $response->success = false;
@@ -522,7 +454,7 @@ ORDER BY titre";
                                         $response->success = true;
                                     } else {
                                         $response->success = false;
-                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
+                                        $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$FORBIDDEN);                                        
                                     }
                                     break;
                                 }
@@ -540,59 +472,8 @@ ORDER BY titre";
                                 }
                             case 'address':
                                 {
-                                    if ($isPost) {
-                                        $response->success = false;
-                                        if (! $this->isConnected()) {
-                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$UNAUTHORIZED);
-                                            break;
-                                        }
-                                        $json = $this->getPostJson();
-                                        if ($json == null) {
-                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                            break;
-                                        }
-                                        if (property_exists($json, "method")) {
-                                            $method = $json->method;
-                                            if (property_exists($json, "address")) {
-                                                $address = $json->address;
-                                                switch ($method) {
-                                                    case "create":
-                                                        {
-                                                            $result = $this->createAddress($address);
-                                                            break;
-                                                        }
-                                                    case "delete":
-                                                        {
-                                                            
-                                                            $result = $this->deleteAddress($address);
-                                                            break;
-                                                        }
-                                                    case "update":
-                                                        {
-                                                            
-                                                            $result = $this->updateAddress($address);
-                                                            break;
-                                                        }
-                                                    default:
-                                                        {
-                                                            $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                                            break;
-                                                        }
-                                                }
-                                                if (! $result) {
-                                                    $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                                } else {
-                                                    $response->success = true;
-                                                }
-                                            } else {
-                                                $result = HTTPReponseHelper::getErrorJson(HTTPReponseHelper::$BAD_REQUEST);
-                                                break;
-                                            }
-                                        }
-                                    } else {
-                                        $result = $this->getCustomerAddress();
-                                        $response->success = $this->isConnected();
-                                    }
+                                    $result = $this->getCustomerAddress();
+                                    $response->success = $this->isConnected();
                                     break;
                                 }
                             default:
@@ -606,10 +487,220 @@ ORDER BY titre";
             $result = HTTPReponseHelper::getErrorJson(500, $e->getMessage());
             $response->success = false;
         }
-        if ($result)
-            $response->body = $result;
-        
+
+        $response->body = $result;
         return $response->serialize();
     }
 }
 
+class Response
+{
+
+    public $body;
+
+    public $success;
+
+    function __construct($success = false, $body = null)
+    {
+        $this->success = $success;
+        $this->body = $body;
+    }
+
+    /**
+     *
+     * @param Baseobj $obj
+     */
+    static function baseobj($obj)
+    {
+        $o = new stdClass();
+        $props = $obj->bddvars;
+        foreach ($props as $p) {
+            if (property_exists($obj, $p))
+                $o->{$p} = $obj->{$p};
+        }
+        return $o;
+    }
+
+    function serialize()
+    {
+        $body = $this->body;
+        if ($body instanceof Baseobj) {
+            $body = self::baseobj($body);
+        }
+        $obj = new stdClass();
+        $obj->success = $this->success;
+        $obj->body = $body;
+        return json_encode($obj); // , JSON_PRETTY_PRINT);
+    }
+}
+
+class HTTPReponseHelper
+{
+
+    static $OK = 200;
+
+    static $BAD_REQUEST = 400;
+
+    static $UNAUTHORIZED = 401;
+
+    static $PAYMENT_REQUIRED = 402;
+
+    static $METHOD_NOT_ALLOWED = 402;
+
+    static $FORBIDDEN = 403;
+
+    static function getErrorJson($code, $message = null, $stringify = false)
+    {
+        $e = new stdClass();
+        if (! $message) {
+            $message = self::getMessage($code);
+        }
+        $e->code = $code;
+        $e->message = $message;
+        if ($stringify)
+            return json_encode($e);
+        return $e;
+    }
+
+    static function getResultError($code, $message = null)
+    {
+        return new Response(false, self::getErrorJson($code, $message));
+    }
+
+    static function getResult($success, $body = null)
+    {
+        return new Response($success, $body);
+    }
+
+    static function getMessage($code)
+    {
+        $text = 'Unknown http status code "' . $code . '"';
+        switch ($code) {
+            case 100:
+                $text = 'Continue';
+                break;
+            case 101:
+                $text = 'Switching Protocols';
+                break;
+            case 200:
+                $text = 'OK';
+                break;
+            case 201:
+                $text = 'Created';
+                break;
+            case 202:
+                $text = 'Accepted';
+                break;
+            case 203:
+                $text = 'Non-Authoritative Information';
+                break;
+            case 204:
+                $text = 'No Content';
+                break;
+            case 205:
+                $text = 'Reset Content';
+                break;
+            case 206:
+                $text = 'Partial Content';
+                break;
+            case 300:
+                $text = 'Multiple Choices';
+                break;
+            case 301:
+                $text = 'Moved Permanently';
+                break;
+            case 302:
+                $text = 'Moved Temporarily';
+                break;
+            case 303:
+                $text = 'See Other';
+                break;
+            case 304:
+                $text = 'Not Modified';
+                break;
+            case 305:
+                $text = 'Use Proxy';
+                break;
+            case 400:
+                $text = 'Bad Request';
+                break;
+            case 401:
+                $text = 'Unauthorized';
+                break;
+            case 402:
+                $text = 'Payment Required';
+                break;
+            case 403:
+                $text = 'Forbidden';
+                break;
+            case 404:
+                $text = 'Not Found';
+                break;
+            case 405:
+                $text = 'Method Not Allowed';
+                break;
+            case 406:
+                $text = 'Not Acceptable';
+                break;
+            case 407:
+                $text = 'Proxy Authentication Required';
+                break;
+            case 408:
+                $text = 'Request Time-out';
+                break;
+            case 409:
+                $text = 'Conflict';
+                break;
+            case 410:
+                $text = 'Gone';
+                break;
+            case 411:
+                $text = 'Length Required';
+                break;
+            case 412:
+                $text = 'Precondition Failed';
+                break;
+            case 413:
+                $text = 'Request Entity Too Large';
+                break;
+            case 414:
+                $text = 'Request-URI Too Large';
+                break;
+            case 415:
+                $text = 'Unsupported Media Type';
+                break;
+            case 500:
+                $text = 'Internal Server Error';
+                break;
+            case 501:
+                $text = 'Not Implemented';
+                break;
+            case 502:
+                $text = 'Bad Gateway';
+                break;
+            case 503:
+                $text = 'Service Unavailable';
+                break;
+            case 504:
+                $text = 'Gateway Time-out';
+                break;
+            case 505:
+                $text = 'HTTP Version not supported';
+                break;
+            default:
+                break;
+        }
+        return $text;
+    }
+
+    static function setHeader($code, $message = null)
+    {
+        if ($message == null)
+            $message = self::getMessage($code);
+        $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+        
+        header('HTTP/1.0 ' . $code . ' ' . $text);
+        
+        $GLOBALS['http_response_code'] = $code;
+    }
+}

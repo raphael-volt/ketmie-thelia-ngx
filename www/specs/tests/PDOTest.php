@@ -1,6 +1,5 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\TestResult;
 
 function mysqlPassword($raw) {
     return '*'.strtoupper(hash('sha1',pack('H*',hash('sha1', $raw))));
@@ -11,8 +10,7 @@ class PDOTest extends TestCase
 
     public function testPDO_FetchObject()
     {
-        $ctx = new Cnx();
-        $pdo = $ctx->getPDO();
+        $pdo = PDOHook::getPDO();
         $this->assertNotNull($pdo);
         $stmt = $pdo->query("select * from variable");
         $n = $stmt->rowCount();
@@ -31,7 +29,7 @@ class PDOTest extends TestCase
      */
     public function testCNX_FetchObject()
     {
-        $ctx = new Cnx();
+        $ctx = PDOHook::getCnx();
         $stmt = $ctx->query("select * from variable");
         $n = $stmt->rowCount();
         $i = 0;
@@ -40,27 +38,41 @@ class PDOTest extends TestCase
         }
         $this->assertGreaterThan(0, $i);
     }
+    
     /**
      *
      * @depends testCNX_FetchObject
      */
+   
     public function testBindPassword()
     {
-        $ctx = new Cnx();
-        $pdo = $ctx->getPDO();
-        $devadmin = "devadmin";
-        
-        $cur = new stdClass();
-        $cur->pwd = "dev1234";
-        $cur->login = $devadmin;
-        
+        $pdo = PDOHook::getPDO();
         $stmt = $pdo->prepare("SELECT id FROM administrateur WHERE identifiant = ? AND motdepasse = PASSWORD(?)");
-        $stmt->bindParam(1, $cur->login);
-        $stmt->bindParam(2, $cur->pwd);
+        $stmt->bindParam(1, UserHook::$ADMIN_LOGIN);
+        $stmt->bindParam(2, UserHook::$ADMIN_PWD);
         $stmt->execute();
         $this->assertGreaterThan(0, $stmt->rowCount());
     }
     
+    /**
+     *
+     * @depends testBindPassword
+     */
+    public function testAdmin()
+    {
+        $user = UserHook::getDevAdmin();
+        $this->assertNotNull($user->id);
+    }
+    
+    /**
+     *
+     * @depends testAdmin
+     */
+    public function testUser()
+    {
+        $user = UserHook::getDevUser();
+        $this->assertNotNull($user->id);
+    }
     
     
 }

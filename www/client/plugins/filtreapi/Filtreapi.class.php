@@ -84,7 +84,7 @@ ORDER BY c.classement";
         return $arbo;
     }
 
-    private function catalog()
+    public function catalog()
     {
         $pdo = PDOThelia::getInstance();
         $query = "SELECT d.titre as label, d.description as content, r.id, r.parent as pid, r.lien, 

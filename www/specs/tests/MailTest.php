@@ -1,17 +1,31 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+require_once 'specs/tests/hooks/CommandeHook.class.php';
+
 /**
  * MailTest test case.
  */
 class MailTest extends TestCase
 {
+    /**
+     * 
+     * @var Client
+     */
+    private static $user;
+    
+    /**
+     *
+     * @var CommandHook
+     */
+    private static $commandeHook;
+    
 
     /**
      *
      * @var mixed MailTest
      */
-    private $mailTest;
+    private static $mailTest;
 
     /**
      * Prepares the environment before running a test.
@@ -22,7 +36,7 @@ class MailTest extends TestCase
         
         // TODO Auto-generated MailTestTest::setUp()
         
-        $this->mailTest = new MailTest(/* parameters */);
+        self::$mailTest = new MailTest(/* parameters */);
     }
 
     /**
@@ -52,6 +66,7 @@ class MailTest extends TestCase
         $user = new Client();
         $res = $user->charger("dev@ketmie.com", "dev1234");
         $this->assertEquals(1, $res);
+        self::$user = $user;
         /*
         $postData = array(
             'email' => 'dev@ketmie.com',
@@ -69,6 +84,15 @@ class MailTest extends TestCase
         $this->assertNotFalse($output);
         curl_close($ch);
         */
+    }
+    /**
+     * @depends testConnect
+     */
+    public function testPanier() {
+        $cmd = new CommandHook();
+        self::$commandeHook = $cmd;
+        $cmd->createPanier(self::$user);
+        $this->assertTrue(true);
     }
     
     /*

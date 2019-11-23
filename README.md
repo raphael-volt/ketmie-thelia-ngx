@@ -81,7 +81,14 @@ phpunit -c specs/suite.xml
 cd /shared/
 ./phpunit.watch.sh
 ```
-
+```bash
+watch-phpunit [-c <config> | -b <bootstrap> -f <file>] [-w <dir-or-file-to-watch> default:/var/www/html]
+    # Examples
+    watch-phpunit -b autoload.php -f specs/tests/MyTest.php
+    watch-phpunit -c suite.xml
+    watch-phpunit -c suite.xml -w index.php
+    watch-phpunit -c suite.xml -w specs/tests
+```
 ## Usefull commands
 
 Get host IP address

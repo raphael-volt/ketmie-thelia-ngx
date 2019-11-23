@@ -1,5 +1,27 @@
 <?php
 
+/**
+ * @todo
+ Produits par caracteristique
+ 
+ SELECT d.titre, p.id, p.ref, cv.caracteristique FROM caracval as cv 
+ LEFT JOIN produit as p ON p.id=cv.produit 
+ LEFT JOIN produitdesc as d ON p.id=d.produit 
+ WHERE cv.caracteristique = 6
+ 
+ 
+ SET description par caracteristique
+ 
+ UPDATE produitdesc as p
+ LEFT JOIN caracval as cv ON p.produit = cv.produit
+ SET p.description = "Hauteur 5, 6 et 7cm."
+ WHERE cv.caracteristique = 6
+ 
+ * 
+ * 
+ * @author raphael
+ *
+ */
 class BODecli
 {
 
@@ -20,6 +42,32 @@ class BODecli
         foreach ($row as $key => $value) {
             $this->{key} = $value;
         }
+    }
+
+    function getName()
+    {
+        $name = "";
+        switch ($this->size) {
+            case 5:
+                $name = "petite";
+                break;
+            case 6:
+                $name = "moyenne";
+                break;
+            case 7:
+                $name = "grande";
+                break;
+            
+            default:
+                ;
+                break;
+        }
+        return $name;
+    }
+
+    function getLabel()
+    {
+        return $this->getName() . " | {$this->price} €";
     }
 }
 
@@ -332,7 +380,7 @@ class Filtrecarac extends FiltreCustomBase
         
         return implode(PHP_EOL, $result);
     }
-    
+
     private function getBOProdView($id_produit, $caracdisp)
     {
         $xml = XMLUtils::getDom('<div class="produit-select"/>');
@@ -344,12 +392,18 @@ class Filtrecarac extends FiltreCustomBase
         $this->setClass($node, "radio-list on");
         
         $xmls[] = XMLUtils::appendXML($doc, $xml, $dict["boinfo1"]);
+        $prod = new Produitdesc($id_produit);
+        $content = $prod->description;
+        if (strlen($content)) {
+            $xmls[] = XMLUtils::appendXML($doc, $xml, $prod->description);
+        }
         $xmls[] = XMLUtils::appendXML($doc, $xml, $dict["boinfo2"]);
+        
         $xmls[] = $node;
         foreach ($caracs as $c) {
             $this->addRadioNode($doc, $node, $c);
         }
-        for ($i = 0; $i < count($xmls); $i++)
+        for ($i = 0; $i < count($xmls); $i ++)
             $xmls[$i] = $doc->saveXML($xmls[$i]);
         
         return implode(PHP_EOL, $xmls);
@@ -376,7 +430,7 @@ class Filtrecarac extends FiltreCustomBase
         $node instanceof DOMElement;
         $parent->appendChild($node);
         $node->setAttribute("value", $carac->id);
-        $label = $carac->size . " cm | " . $carac->price . " €";
+        $label = $carac->getLabel();
         $node->appendChild($doc->createTextNode($label));
         if ($selected)
             $node->setAttribute("selected", "selected");
@@ -406,7 +460,8 @@ class Filtrecarac extends FiltreCustomBase
         $node->setAttribute("value", $carac->id);
         if ($selected)
             $node->setAttribute("checked", "checked");
-        $label = $carac->size . " cm | " . $carac->price . " €";
+        $label = $carac->getLabel();
+        
         $node = $doc->createElement("label");
         $node->appendChild($doc->createTextNode($label));
         $node instanceof DOMElement;
@@ -569,7 +624,7 @@ ORDER BY cdd.titre, bo.size;";
      * @param DOMDocument $doc
      * @return DOMElement li element
      */
-    private function getPanierTableDesc(Article $art, DOMDocument $doc, $thumbsize)
+    private function getPanierTableDesc(Article $art, Venteprod $vp, DOMDocument $doc, $thumbsize)
     {
         $li = $doc->createElement("li");
         $a = $li->appendChild($doc->createElement("a"));
@@ -583,9 +638,37 @@ ORDER BY cdd.titre, bo.size;";
             $img->setAttribute("src", $href);
             $span->appendChild($img);
         }
-        $span = $a->appendChild($this->createElement("span", $doc, $art->produitdesc->titre));
+        $rows = preg_split("/<br\W*?\/>/", $vp->titre, -1, PREG_SPLIT_NO_EMPTY);
+        $n = count($rows);
+        if(!$n) {
+            $rows = array($vp->titre);
+        }
+        $t = $rows[0];
+        if($n > 1){
+            array_shift($rows);
+            $t .= " (" . implode(", ", $rows) . ")";
+        }
+        $span = $a->appendChild($this->createElement("span", $doc, $t));
+        
         $this->setClass($span, "title");
+        
         return $li;
+    }
+
+    /**
+     * 
+     * @param int $id_produit
+     * @return NULL|Caracval
+     */
+    function isBoDecli($id_produit)
+    {
+        $result = null;
+        $carac = $this->getCarac($id_produit);
+        
+        if ($carac && $carac->caracteristique == BO_CARACTERISTIQUE) {
+            $result = $carac;
+        }
+        return $result;
     }
 
     /**
@@ -649,8 +732,7 @@ ORDER BY cdd.titre, bo.size;";
     private function getBoSelector(DOMDocument $doc, Perso $perso, $id_prod)
     {
         $pdo = PDOThelia::getInstance();
-        if($this->carcdispStmt == null)
-        {
+        if ($this->carcdispStmt == null) {
             $this->carcdispStmt = $pdo->prepare("SELECT caracdisp FROM bo_carac WHERE id=?");
         }
         $pdo->bindInt($this->carcdispStmt, 1, $perso->valeur);
@@ -664,6 +746,7 @@ ORDER BY cdd.titre, bo.size;";
         }
         return $node;
     }
+
     private function getPanierTable($fond, $editable, $form = null)
     {
         $urlsite = Variable::lire("urlsite");
@@ -806,7 +889,7 @@ ORDER BY cdd.titre, bo.size;";
             $vp = $vps[$i];
             $vp instanceof Venteprod;
             $art = new Article($vp->ref, $vp->quantite);
-            $ulA->appendChild($this->getPanierTableDesc($art, $doc, $thumbsize));
+            $ulA->appendChild($this->getPanierTableDesc($art, $vp, $doc, $thumbsize));
             $ulP->appendChild($this->createElement("li", $doc, $this->price_format($vp->prixu) . " $euro"));
             $ulQ->appendChild($this->createElement("li", $doc, $vp->quantite));
             
@@ -955,7 +1038,9 @@ ORDER BY cdd.titre, bo.size;";
                     }
                     if ($perso->declinaison == BO_DECLINAISON) {
                         $carac = $this->getBoDecli($perso->valeur);
-                        $dectexte .= "taille : $carac->size cm";
+                        $bo = new BODecli();
+                        $bo->size = $carac->size;
+                        $dectexte .= "taille : " . $bo->getName();
                         // self::addLog("BO_DECLINAISON");
                         continue;
                     }

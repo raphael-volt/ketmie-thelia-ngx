@@ -49,24 +49,14 @@ EOL;
 		self::$callStatic = true;
 		$mail = new TheliaDeliveryMailer($commande);
 		self::$callStatic = false;
-		$res = array();
-		$res["client"] = $mail->Send();
+		$mail->Send();
 		$url = urlfond($mail->fond);
 		
 		self::$callStatic = true;
 		$mail = new TheliaAdminMailer($commande);
 		self::$callStatic = false;
 		
-		$res["admin"] = $mail->Send();
-		if(ENV_PROD == 0)
-		{
-		}
-			printInLog($res);
-		ActionsModules::instance()->appel_module("confirmation", $commande);
-		$_SESSION["navig"]->panier = new Panier();
-		session_write_close();
-		header("Location: " . $url);
-		exit;
+		$mail->Send();
 	}
 	/**
 	 * @var Commande

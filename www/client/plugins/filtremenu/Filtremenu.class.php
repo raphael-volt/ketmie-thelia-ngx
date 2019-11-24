@@ -447,6 +447,84 @@ ORDER BY rubrique, classement";
                 $i = $r->child_index - 1;
                 $p->children[$i] = $r;
         }
+        if($checkRub) {
+            foreach ($rubs as $id => $r) {
+                $r instanceof RubDesc;
+                if ($r == $root)
+                    continue;
+                if (array_key_exists($r->id, $prodDict)) {
+                    $l = $prodDict[$r->id];
+                    foreach ($l as $value) {
+                        $r->children[] = $value;
+                    }
+                }
+            }
+            
+        }
+        return $root;
+    }
+    
+    public function __getArbo($checkRub=false){
+        $pdo = PDOThelia::getInstance();
+        $query = "SELECT d.titre as label, d.description as content, r.id, r.parent as pid, r.lien, r.classement AS child_index FROM rubrique AS r
+LEFT JOIN rubriquedesc AS d ON d.rubrique=r.id
+WHERE ligne=1
+ORDER BY parent, child_index";
+        
+        $result = $pdo->query($query);
+        $result = $result->fetchAll(PDO::FETCH_CLASS, RubDesc::class);
+        
+        $query = "SELECT d.titre as label, p.id, p.ref, p.rubrique FROM " . Produit::TABLE . " as p
+LEFT JOIN " . Produitdesc::TABLE . " as d ON p.id=d.produit
+WHERE ligne=1
+ORDER BY rubrique, classement";
+        $produits = $pdo->query($query);
+        $produits = $produits->fetchAll(PDO::FETCH_CLASS, ProdDesc::class);
+        $prodDict = array();
+        if($checkRub) {
+            foreach ($produits as $prod) {
+                $prod instanceof ProdDesc;
+                $prodDict[$prod->rubrique][] = $prod;
+                if ($prod->id == $this->currentProd)
+                    ProdDesc::$current = $prod;
+            }
+        }
+        $root = new RubDesc();
+        $root->id = 0;
+        $root->pid = 0;
+        $rubs = array(
+            0 => $root
+        );
+        if($checkRub && $this->currentRub == 0) {
+            foreach ($result as $r) {
+                $r instanceof RubDesc;
+                if ($r->lien == RubDesc::HOME) {
+                    $this->currentRub = intval($r->id);
+                    break;
+                }
+            }
+        }
+        foreach ($result as $r) {
+            $rubs[$r->id] = $r;
+            $r instanceof RubDesc;
+            if ($r->id == $this->currentRub) {
+                RubDesc::$current = $r;
+            }
+            if (! empty($r->content) && strlen($r->content))
+                $r->content = true;
+                else
+                    $r->content = false;
+        }
+        foreach ($rubs as $id => $r) {
+            $r instanceof RubDesc;
+            if ($r == $root)
+                continue;
+                $p = $rubs[$r->pid];
+                $p instanceof RubDesc;
+                $r->parent = $p;
+                $i = $r->child_index - 1;
+                $p->children[$i] = $r;
+        }
         foreach ($rubs as $id => $r) {
             $r instanceof RubDesc;
             if ($r == $root)

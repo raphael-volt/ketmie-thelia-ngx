@@ -71,7 +71,7 @@ class Panier {
 					foreach ($article->perso as $perso) 
 					{
 						$perso instanceof Perso;
-						if($perso->declinaison == 5)
+						if($perso->declinaison == BO_DECLINAISON)
 						{
 							$prix = $this->getPriceByBoCaracId($perso->valeur);
 							if($prix === false)

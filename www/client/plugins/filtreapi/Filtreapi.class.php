@@ -87,7 +87,7 @@ ORDER BY c.classement";
     public function catalog()
     {
         $menu = new Filtremenu();
-        $root = $menu->getArbo();
+        $root = $menu->getArbo(true);
         return $root->toJson()->children;
     }
 

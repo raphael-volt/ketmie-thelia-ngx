@@ -38,3 +38,4 @@ function _require($path) {
     }
 }
 _require($_d);
+require_once 'client/plugins/filtreapi/ProcessPaiement.class.php';

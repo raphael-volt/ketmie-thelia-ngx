@@ -624,8 +624,23 @@ ORDER BY cdd.titre, bo.size;";
      * @param DOMDocument $doc
      * @return DOMElement li element
      */
-    private function getPanierTableDesc(Article $art, Venteprod $vp, DOMDocument $doc, $thumbsize)
+    private function getPanierTableDesc(Article $art, DOMDocument $doc, $thumbsize)
     {
+        /*
+         * $dectexte = array();
+         * foreach ($article->perso as $perso) {
+         * $perso instanceof Perso;
+         * if ($perso->declinaison == BO_DECLINAISON) {
+         * $carac = self::getBoDecli($perso->valeur);
+         * $bo = new BODecli();
+         * $bo->size = $carac->size;
+         * $dectexte[] = "taille : " . $bo->getName();
+         * continue;
+         * }
+         *
+         * }
+         */
+        $vp = $this->getVenteprod($art);
         $li = $doc->createElement("li");
         $a = $li->appendChild($doc->createElement("a"));
         $href = urlfond("produit", "id_produit={$art->produit->id}&id_rubrique={$art->produit->rubrique}");
@@ -638,13 +653,15 @@ ORDER BY cdd.titre, bo.size;";
             $img->setAttribute("src", $href);
             $span->appendChild($img);
         }
-        $rows = preg_split("/<br\W*?\/>/", $vp->titre, -1, PREG_SPLIT_NO_EMPTY);
+        $rows = preg_split("/<br\W*?\/>/", $vp->titre, - 1, PREG_SPLIT_NO_EMPTY);
         $n = count($rows);
-        if(!$n) {
-            $rows = array($vp->titre);
+        if (! $n) {
+            $rows = array(
+                $vp->titre
+            );
         }
         $t = $rows[0];
-        if($n > 1){
+        if ($n > 1) {
             array_shift($rows);
             $t .= " (" . implode(", ", $rows) . ")";
         }
@@ -656,7 +673,7 @@ ORDER BY cdd.titre, bo.size;";
     }
 
     /**
-     * 
+     *
      * @param int $id_produit
      * @return NULL|Caracval
      */
@@ -747,6 +764,46 @@ ORDER BY cdd.titre, bo.size;";
         return $node;
     }
 
+    private function getVenteprod(Article $art)
+    {
+        $vp = new Venteprod();
+        $dectexte = array();
+        $desc = new Produitdesc();
+        $desc->charger_id($art->produit->id);
+        $vp->titre = $desc->titre;
+        if (count($art->perso)) {
+            foreach ($art->perso as $perso) {
+                $perso instanceof Perso;
+                if ($perso->declinaison == BO_DECLINAISON) {
+                    $carac = self::getBoDecli($perso->valeur);
+                    $bo = new BODecli();
+                    $bo->size = $carac->size;
+                    $dectexte[] = "taille : " . $bo->getName();
+                    continue;
+                }
+                $declinaison = new Declinaison();
+                $declinaisondesc = new Declinaisondesc();
+                
+                $declinaison->charger($perso->declinaison);
+                $declinaisondesc->charger($declinaison->id);
+                
+                // recup valeur declidisp ou string
+                if ($declinaison->isDeclidisp($perso->declinaison)) {
+                    $declidisp = new Declidisp();
+                    $declidispdesc = new Declidispdesc();
+                    $declidisp->charger($perso->valeur);
+                    $declidispdesc->charger_declidisp($declidisp->id);
+                    $dectexte[] = $declinaisondesc->titre . " : " . $declidispdesc->titre;
+                } else
+                    $dectexte[] = $declinaisondesc->titre . " : " . $perso->valeur;
+            }
+            if(count($dectexte)) {
+                $vp->titre .= " (".implode(', ', $dectexte).")";
+            }
+        }
+        return $vp;
+    }
+
     private function getPanierTable($fond, $editable, $form = null)
     {
         $urlsite = Variable::lire("urlsite");
@@ -772,7 +829,8 @@ ORDER BY cdd.titre, bo.size;";
         for ($i = 0; $i < $n; $i ++) {
             $art = $panier->tabarticle[$i];
             $art instanceof Article;
-            $ulA->appendChild($this->getPanierTableDesc($art, $doc, $thumbsize));
+            $elmt = $this->getPanierTableDesc($art, $doc, $thumbsize);
+            $ulA->appendChild($elmt);
             $perso = null;
             if ($art->perso && count($art->perso)) {
                 $perso = $art->perso[0];

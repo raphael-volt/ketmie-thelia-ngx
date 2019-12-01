@@ -32,7 +32,7 @@ class Requete extends Cnx{
         function __construct(){
                 parent::__construct();
         }
-
+        
         function charger($nom, $lang=false){
                 $varid = $this->bddvars[0];
                 return $this->getVars("select * from `$this->table` where `$varid`=\"" . $this->$varid . "\"");

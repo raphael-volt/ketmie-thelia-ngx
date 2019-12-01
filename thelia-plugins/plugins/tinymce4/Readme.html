@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<title>Module Thelia : TinyMCE 4 &amp; ResponsiveFilemanager 9</title>
+	<meta charset="UTF-8" />
+	<meta name="robots" content="noindex, follow" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css" />
+	<style type="text/css">
+	
+	body { font-family: Verdana, Arial, sans-serif; font-size: 12px; margin: 0em 4em; cursor: default; }
+	hr { border: 1px solid #ccc; }
+	h1 { font-size: 2em; }
+	pre, code { font-size: 1.1em; font-family: Courier, monospace; font-weight: bold; }
+	ins { text-decoration: none; border-bottom: 1px dotted #000; }
+	a { color: #000; cursor:pointer; }
+	#accordion { font-size: 1em; }
+	.use { }
+	.sample-source { padding: 0em 1em; margin-bottom: 1em; }
+	.view-source { width: 100%; height: 20em; font-family: Courier, monospace !important; resize: vertical; }
+	#infos { margin: 1.5em 0em; padding: 0em 0.7em; }
+	#infos .ui-icon { float: left; margin-right: 0.3em; }
+	#infos .copy { float: right; }
+	
+	@media(max-width:900px) {
+		body { font-size: 11px; margin: 0em 1.5em; }
+		h1 { font-size: 1.5em; }
+		#infos { font-size: 0.9em; }
+		#infos .copy { display: none; }
+	}
+	
+	</style>
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/i18n/jquery-ui-i18n.min.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	<script>
+	
+	$(function() {
+		$('#accordion').accordion({
+			heightStyle: 'content',
+			collapsible: true,
+			active: ($(document).width() > 900 ? 0 : 99)
+		});
+		$('.sample-source').each(function() {
+			var $div = $(this);
+			$div.siblings('.view-source').val($.trim($div.html()));
+		});
+	});
+	
+	</script>
+</head>
+<body>
+	<h1>Module Thelia : TinyMCE 4 &amp; Responsive Filemanager 9</h1>
+	<div id="accordion">
+		<h2>Installer &amp; Configurer</h2>
+		<div>
+			<p>
+				Ajouter le module dans <strong>Configuration</strong> &raquo; <strong>Activation des plugins</strong> de l'administration Thelia.
+			</p>
+			<p>
+				Attention: Si vous utilisez <strong>TinyMCE Plus</strong>, n'oubliez pas de le <strong>D&eacute;sactiver</strong>. En revanche, il n'est pas n&eacute;cessaire de le supprimer.
+			</p>
+			<hr />
+			<p>
+				<strong>R&eacute;glages du TinyMCE 4</strong><br />
+				Fichier: <code>/client/plugins/tinymce4/tinymce4_admin_title.php</code><br />
+				Documentation: <a href="http://www.tinymce.com/wiki.php/Configuration" target="_blank">http://www.tinymce.com/wiki.php/Configuration</a><br />
+			</p>
+			<hr />
+			<p>
+				<strong>R&eacute;glages de Responsive Filemanager 9</strong><br />
+				Fichier: <code>/client/plugins/tinymce4/filemanage/config/config.php</code><br />
+				Documentation: <a href="http://www.responsivefilemanager.com" target="_blank">http://www.responsivefilemanager.com</a><br />
+			</p>
+			<p>
+				<strong style="color:red;">R&eacute;glages de Photo Editor by Aviary</strong><br />
+				Responsive Filemanager dispose de l'&eacute;diteur d'images Aviary. Pour l'utiliser, vous devez &ecirc;tre en ligne <em>(et non sur un http://localhost/)</em> et vous devez vous enregistrer sur le site <a href="http://developers.aviary.com" target="_blank">Aviary.com</a> <em>(il semblerait que cette derni&egrave;re &eacute;tape soit facultative)</em>.<br />
+				L'offre gratuite est limit&eacute;e à une r&eacute;solution 800x600 maximum - ce qui est plus que suffisant ;)<br />
+				Une fois enregistr&eacute;, vous devez saisir vos cl&eacute;s d'enregistrement dans le fichier <code>config.php</code> de Responsive Filemanager (section <code>AVIARY config</code>).<br />
+			</p>
+		</div>
+		<h2>Packages utilis&eacute;s</h2>
+		<div>
+			<ul>
+				<li><a href="http://www.tinymce.com" target="_blank">TinyMCE</a> version 4.0.12</li>
+				<li><a href="http://www.responsivefilemanager.com" target="_blank">Responsive Filemanager</a> version 9.3.2</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div id="infos" class="ui-state-highlight ui-corner-all">
+		<p>
+			<span class="ui-icon ui-icon-info"></span>
+			<strong>Auteurs</strong>
+			<a href="http://www.ab-d.fr" target="_blank">Beno&icirc;t ASSELIN</a>, contact(at)ab-d.fr ;
+			<a href="http://www.site-web-creation.net" target="_blank">Jean-Luc VAN ZANTEN</a>, contact(at)site-web-creation.net
+			<span class="copy">&copy; 2014 Rev.0119</span>
+		</p>
+	</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+  <descriptif lang="fr">
+    <titre>Gestion des prix des déclinaisons</titre>
+    <chapo></chapo>
+    <description>Modification automatique du prix produits déclinés.</description>
+    <postscriptum></postscriptum>
+  </descriptif>
+  <version>1.0</version>
+  <auteur>
+    <nom>r_volt</nom>
+    <societe></societe>
+    <email>raphael@ketmie.com</email>
+    <web></web>
+  </auteur>
+  <type>classique</type>
+  <prerequis/>
+  <thelia>1.5.0</thelia>
+  <etat>alpha</etat>
+  <documentation>@TODO OR NOT</documentation>
+  <urlmiseajour></urlmiseajour>
+</plugin>

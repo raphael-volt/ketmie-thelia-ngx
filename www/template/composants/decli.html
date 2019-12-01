@@ -1,0 +1,45 @@
+<style>
+.first {
+color: blue;
+}
+</style>
+<dl>
+<dt>Détails des déclinaisons</dt>
+<dd>
+<ol>
+	<dl>
+	<THELIA_decli type="DECLINAISON">
+		<dt>#TITRE</dt>
+		<dd>
+		<table>
+		<tr>
+			<th>nom</th>
+			<th>prix</th>
+			<th>ref</th>
+		</tr>
+		<T_dpx>
+		<THELIA_dpx type="DECLIPRIX" declinaison="#ID" index="1">
+		<tr class="#FILTRE_egalite(#INDEX||0||first)">
+			<td>#TITRE</td>
+			<td>#PRIX</td>
+			<td>#REF</td>
+		</tr>
+		</THELIA_dpx>
+		</T_dpx>
+		#SET{first,0}
+		<THELIA_disp type="DECLIDISP" declinaison="#ID">
+		<tr class="#FILTRE_egalite(#GET{first}||0||first)">
+			#SET{first,1}
+			<td>#TITRE</td>
+			<td>-</td>
+			<td>-</td>
+		</tr>
+		</THELIA_disp>
+		<//T_dpx>
+		</table>
+		</dd>
+	</THELIA_decli>
+	</dl>
+</ol>
+</dd>
+</dl>

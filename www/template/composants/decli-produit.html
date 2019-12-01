@@ -1,0 +1,18 @@
+<THELIA_p type="PRODUIT" id="#ENV{id}">
+#SET{prix, #PRIX}
+<THELIA_decli type="DECLINAISON" rubrique="#RUBRIQUE" produit="#ID">
+#SET{prix, #FILTRE_dpx(min||#ID)}
+<T_dpx>
+<THELIA_dpx type="DECLIPRIX" index="1" produit="#ENV{id}" declinaison="#ID">
+
+<TEST_min variable="#INDEX" test="egal" valeur="0"> 
+
+</TEST_min>
+<//TEST_min>
+</THELIA_dpx>
+</T_dpx>
+<//T_dpx>
+</THELIA_decli>
+<p>#TITRE #GET{prix}</p>
+</THELIA_p>
+<p>FIN DECLI-PRODUIT</p>

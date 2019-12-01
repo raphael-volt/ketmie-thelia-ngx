@@ -41,6 +41,7 @@ class ProdImgRow
 }
 class ProdImg
 {
+    const NO_IMG = "no-image.png";
 	public static function validate($items, $reqWidth=NAN, $reqHeight=NAN, $dirname="produit")
 	{
 		$dir = THELIA_DIR . "/client/gfx/photos/$dirname";
@@ -151,15 +152,15 @@ class ProdImg
 	
 	public function validateSource($dirname)
 	{
-		$filename = "$dirname/$this->fichier";
+	    $filename = "$dirname/$this->fichier";
+	    if(! $this->fichier || ! file_exists($filename)) {
+	        $this->fichier = self::NO_IMG;
+	        $dirname = THELIA_DIR . "/client/gfx/photos/global";
+	    }
 		if($this->src == $filename)
 			return $this->getValidated();
-		$this->src = $filename;
-		if(! file_exists($filename))
-		{
-			$this->fichier = "no-image.png";
-			$dirname = THELIA_DIR . "/client/gfx/photos/global";
-		}
+		$this->src = $filename;	        
+		
 		$size = getimagesize("$dirname/$this->fichier");
 		if($size === false)
 		{
@@ -338,7 +339,10 @@ class Filtreimglist extends FiltreCustomBase
 			$p->setRequestedHeight($width);
 		
 		$this->_setImgLink($a, $p);
-		$src = redim("produit", $p->fichier, $width);
+		if($p->fichier != ProdImg::NO_IMG)
+    		$src = redim("produit", $p->fichier, $width);
+		else 
+		    $src = self::redimNoImg($width);
 		$this->_appendImageItem($a, $doc, $p, $src);
 		
 		$n = count($prodImgList);
@@ -377,7 +381,6 @@ ORDER BY p.classement;";
 		$stmt = $pdo->prepare($query);
 		$pdo->bindInt($stmt, 1, $id_rubrique);
 		$prodImgList = $pdo->fetchAll($stmt, ProdImg::class, true);
-		// die("<pre>" . print_r($prodImgList, true));
 		$n = count($prodImgList);
 		if(!$n)
 			return "";
@@ -425,16 +428,41 @@ ORDER BY p.classement;";
 		}
 		return $ul;
 	}
-	
+	/*
+	 * Redimensionnement et traitement d'une image
+	 */
+	static function redimNoImg($dest_width="", $dest_height="") {
+	    $opacite="";
+	    $nb="";
+	    $miroir="";
+	    $exact=0;
+	    $couleurfond="ffffff";
+	    
+	    $fichier = ProdImg::NO_IMG;
+	    $dirname = THELIA_DIR . "/client/gfx/photos/global";
+	    $nomorig = "$dirname/$fichier";
+	    $nomcache  = "client/cache/" . $type . "/" . $dest_width . "_" . $dest_height . "_" . $opacite . "_" . $nb . "_" . $miroir . "_" . $exact . "_" . $couleurfond . "_" . $nsimple[1] . "." . $nsimple[2];
+	    $pathcache = THELIA_DIR . "/$nomcache";
+	    if (file_exists($pathcache)
+	        ||
+	        traiter_et_cacher_image($nomorig, $pathcache, $dest_width, $dest_height, $opacite, $nb, $miroir, $exact, $couleurfond)) {
+	            
+	            return $nomcache;
+	        }
+	    
+	    return "";
+	}
 	private function _appendRubriqueImgItem(DOMElement $parent, DOMDocument $doc, ProdImg $p, $id_rubrique)
 	{
 		$li = $parent->appendChild($doc->createElement("li"));
 		$a = $li->appendChild($doc->createElement("a"));
-			
 		$href = urlfond("produit", "id_produit={$p->id}&id_rubrique={$id_rubrique}");
 		$a->setAttribute("href", $href);
 			
-		$src = redim("produit", $p->fichier, "", $p->requestedHeight);
+		if($p->fichier == ProdImg::NO_IMG){
+		  $src = self::redimNoImg("", $p->requestedHeight);   
+		}
+		else $src = redim("produit", $p->fichier, "", $p->requestedHeight);
 		
 		$this->_appendImageItem($a, $doc, $p, $src);
 		$a->appendChild($doc->createElement("span", $p->id));
@@ -482,6 +510,9 @@ ORDER BY p.classement;";
 			$s = self::IMG_MAX_H / $oriHeight;
 		}
 		$rw = floor($s * $oriWidth);
+		if($fichier == ProdImg::NO_IMG) {
+		    return self::redimNoImg($rw);
+		}
 		return "image.php?name={$fichier}&width={$rw}&type={$type}";
 	}
 	private function _setImgLink(DOMElement $a, ProdImg $p)

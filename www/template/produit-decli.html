@@ -1,0 +1,116 @@
+<h1>Exemple boucle DECLIPRIX</h1>
+<table>
+	<tr>
+		<th>Titre</th>
+		<th>Prix</th>
+		<th>Ref</th>
+		<th>Id</th>
+		<th>Stock</th>
+	</tr>
+	
+<THELIA_PROD type="PRODUIT" id="#PRODUIT_ID"> #SET{pid,
+#ID}
+<tr><td colspan="5">Par declidisp</td></tr>
+<THELIA_decli type="DECLINAISON" rubrique="#RUBRIQUE" produit="#ID">
+	<tr>
+		<td>#TITRE</td>
+	</tr>
+	<tr>	
+	<THELIA_declidisp type="DECLIDISP" classement="manuel" declinaison="#ID" produit="#PRODUIT">
+		<td>#TITRE</td>
+		<T_dpx> 
+		<THELIA_dpx type="DECLIPRIX" declidisp="#ID"> 
+		<td>#PRIX</td>
+		<td>#REF</td>
+		<td>#DECLIDISP</td>
+		<td></td>
+		</THELIA_dpx> 
+		</T_dpx> 
+	<td colspan="4">pas de decliprix</td>
+	<//T_dpx>
+	</tr>
+	</THELIA_declidisp>
+<tr><td colspan="5">Par declinaison</td></tr>
+	<tr><td>#TITRE</td></tr>
+	<tr>
+	#SET{min, "0"} 
+	#SET{max, "0"}
+	<THELIA_ldpx type="DECLIPRIX" declinaison="#ID" prixmin="1" prixmax="1"> 
+	
+	<TEST_min variable="#PXMIN" test="nonvide"> 
+		#SET{min, #PXMIN} 
+	</TEST_min>
+	<//TEST_min>
+	<TEST_max variable="#PXMAX" test="nonvide"> 
+		#SET{max, #PXMAX} 
+	</TEST_max>
+	<//TEST_max>
+		<tr>
+		<td>#TITRE</td>
+		<td>#PRIX</td>
+		<td>#DECLIDISP</td>
+		<td>#REF</td>
+		<td></td>
+		</tr>
+	</THELIA_ldpx>
+		<tr>
+		<td colspan="5">min:#GET{min} max:#GET{max}</td>
+		</tr>
+<tr><td colspan="5">Par produit</td></tr>	
+<tr>
+	<td>#TITRE</td>
+</tr>
+<THELIA_pdpx type="DECLIPRIX" declinaison="#ID" produit="#GET{pid}">
+<tr>
+		<td>#TITRE</td>
+		<td>#PRIX</td>
+		<td>#DECLIDISP</td>
+		<td>#REF</td>
+		<td>#STOCK</td>
+</tr>
+</THELIA_pdpx>
+<tr>
+<td colspan="5">
+<p>Test json</p>
+<pre>
+{
+	"titre":"#TITRE",
+	"declinaisons": [
+<THELIA_js type="DECLIPRIX" declinaison="#ID">
+		{
+			"titre":"#TITRE",
+			"prix":"#PRIX",
+			"declidisp":"#DECLIDISP",
+			"ref":"#REF"
+		},
+</THELIA_js>
+	]
+}
+</pre>
+</td>
+</tr>
+ 
+</THELIA_decli> 
+</THELIA_PROD>
+
+<THELIA_D type="DECLINAISON">
+	<tr>
+		<td>#TITRE</td>
+		<T_dpx2>
+	<THELIA_dpx2 type="DECLIPRIX" declinaison="#ID">
+	</tr> 
+	<tr>
+		<td>#TITRE</td>
+		<td>#PRIX</td>
+		<td>#DECLIDISP</td>
+		<td>#REF</td>
+		<td></td>
+	</tr>
+	</THELIA_dpx2>	
+	</T_dpx2>
+	<td colspan="4">pas de decliprix</td>
+	</tr> 
+	<//T_dpx2>
+</tr>
+</THELIA_D>
+</table>

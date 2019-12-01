@@ -1,4 +1,4 @@
-#SET{isBo,#FILTRE_carac(isBo||#PRODUIT_ID)}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,6 +24,10 @@ $(document).ready(function()
 	<//TEST_isBo>
 	<//TEST_popup>
 });
+
+function setPrix(value) {
+	document.getElementById('price-display').innerHTML = value;
+}
 </script>
 </head>
 <body>
@@ -33,6 +37,7 @@ $(document).ready(function()
 	</header>
 	<div id="content" class="top15">
 	<THELIA_PROD type="PRODUIT" id="#PRODUIT_ID">
+		#SET{prod, #ID} #SET{prix, #PRIX}
 		<div class="produitDesc">
 		#FILTRE_imglist(produit||#PRODUIT_ID||475||100||5)
 		<ul class="panel h42">
@@ -56,15 +61,56 @@ $(document).ready(function()
 				<//TEST_nav>
 			</li>
 			<li class="content">
+			
+			
+			
 			<form id="prodForm" action="#AJOUTER_PARAMETRE(#URLCOURANTE,panier=1)" method="post">
 				<input type="hidden" name="action" value="ajouter"/>
 				<input type="hidden" name="ref" value="#REF"/>
 				<input type="hidden" name="quantite" value="1"/>
-				#FILTRE_carac(produit||#ID)
-				#SET{price,#FILTRE_carac(produitPrice||#ID)}
-				#FILTRE_vide(#GET{price}||
-				<p class="bold sizeX">Prix : #GET{price} ::euro::</p>)
+				
+				<ul>
+				<THELIA_decli type="DECLINAISON" rubrique="#RUBRIQUE" produit="#ID">
+					<li><span>#TITRE</span>
+					<ul>
+					<T_dpx>
+					<THELIA_dpx type="DECLIPRIX" declinaison="#ID" produit="#PRODUIT" index="1">
+					<TEST_index variable="#INDEX" test="egal" valeur="0">
+					#SET{prix, #PRIX}
+					</TEST_index><//TEST_index>
+						<li class="radioBox dpx">
+						    <input #FILTRE_egalite(#INDEX||0||checked="checked") id="declidisp_#DECLIDISP" 
+						     onchange="setPrix('#PRIX');"  type="radio" name="declinaison#DECLINAISON" value="#DECLIDISP">
+						    <label for="declidisp_#DECLIDISP">#TITRE | #PRIX €</label>
+					  	</li>
+					</THELIA_dpx>
+					</T_dpx>
+					#SET{check, 0}
+					<THELIA_disp type="DECLIDISP" classement="manuel" declinaison="#ID" produit="#PRODUIT">
+						<li class="radioBox">
+						    <input #FILTRE_egalite(#GET{check}||0||checked="checked") id="declidisp_#ID" 
+						    	type="radio" name="declinaison#DECLINAISON" value="#ID">
+						    <label for="declidisp_#ID">#TITRE</label>
+					  	</li>
+					  	#SET{check, 1}
+                    </select>
+					</THELIA_disp>
+					<//T_dpx>
+					</ul>
+					</li>
+				</THELIA_decli>
+				</ul>
+				
+			
+			
+				
+				<!-- FILTRE_carac(produit||#ID)
+				SET{price,#FILTRE_carac(produitPrice||#ID)}
+				 -->
+				<p class="bold sizeX">Prix : <span id="price-display">#GET{prix}</span> ::euro::</p>
 			</form>
+			
+			
 			</li>
 			<li class="buttonBar">
 				<div class="panelButtonBar">

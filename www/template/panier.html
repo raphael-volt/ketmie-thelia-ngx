@@ -1,7 +1,6 @@
 <TEST_action variable="#ENV{action}" test="nonvide">
 #PARAM_FOND_nopageret=1 </TEST_action>
 <//TEST_action>
-#SET{urlSite,#VARIABLE(urlsite)}
 <!DOCTYPE html>
 <html>
 
@@ -14,8 +13,89 @@
 	<div id="content">
 		<ul class="panel h42 top15">
 			<li class="titleBar">::contenu::</li>
-			<li class="content nopad"><T_CONTENU_PANIER>
-				#FILTRE_carac(panierTable||panier||1) </li>
+			<li class="content nopad">
+			<T_panier>
+				
+			<table>
+			<thead>
+			<tr>
+			<th>Article</th>
+			<th>Options</th>
+			<th>Prix unitaire</th>
+			<th>Quantité</th>
+			<th>Total</th>
+			<th>Supprimer</th>
+			</tr>
+			</thead>
+			<tbody>
+			<THELIA_panier type="PANIER">
+			#SET{article, #ARTICLE}
+			<tr>
+			<td>
+			<THELIA_prod type="PRODUIT" id="#PRODUIT">
+			<a href="#URL" class="image">
+			<T_IMAGE>
+				<THELIA_IMAGE type="IMAGE" num="1" produit="#ID" hauteur="140">
+					<img src="#IMAGE" alt="#PRODTITRE" title="#PRODTITRE"/>
+				</THELIA_IMAGE>
+			</T_IMAGE>
+					<img src="./template/_gfx/no-image.png" alt="Pas d'image disponible" />
+			<//T_IMAGE>
+			<span>'#GET{article}' #TITRE</span>
+			</a>
+			</THELIA_prod>
+			</td>
+			
+			<td>
+			<THELIA_p type="PRODUIT"  id="#PRODUIT">#SET{rubrique, #RUBRIQUE}</THELIA_p>
+			<table>
+			<tbody>
+			<THELIA_decli type="DECLINAISON" produit="#PRODUIT" rubrique="#GET{rubrique}">
+			#SET{fid, decliform_#GET{article}_#ID}
+            <tr><td>#TITRE</td>
+            <td>
+            <form action="#URLPANIER" method="post" name="#GET{fid}" id="#GET{fid}">
+                      <input type="hidden" name="article" value="#GET{article}" />
+                      <input type="hidden" name="action" value="modifier" />
+	            <select class="form-select" name="declinaison#ID" size="1">
+					#FILTRE_dpx(declioption||#GET{article}||#ID)
+				</select>
+            </form>
+            </td>
+			</THELIA_decli>
+			</tbody>
+			</table>
+			
+			</td>		
+			<td>#PRIXU</td>	
+			<td>
+				<form action="#URLPANIER" method="post" name="formQuantite#ARTICLE" id="formQuantite#ARTICLE">
+                      <input type="hidden" name="article" value="#ARTICLE" />
+                      <input type="hidden" name="action" value="modifier" />
+                      <select class="form-select" name="quantite" size="1">
+                      #SET{q, #QUANTITE}
+						<REPETER_num debut="1" fin="5" increment="1">
+							<option value="#INDEX" #FILTRE_egalite(#INDEX||#GET{q}||selected)>#INDEX</option>
+						</REPETER_num>
+                      </select>
+                </form>
+			</td>
+			<td>
+				#TOTAL			
+			</td>
+			<td>
+				<form action="#URLPANIER" method="post" name="formSupp#ARTICLE" id="formSupp#ARTICLE">
+                      <input type="hidden" name="article" value="#ARTICLE" />
+                      <input type="hidden" name="action" value="supprimer" />
+                      <button type="submit">Supprimer</button>
+	            </form>
+			</td>
+			</tr>
+			</THELIA_panier>
+			</tbody>
+			</table>
+				
+			</li>
 			<li class="buttonBar">
 				<form action="#URLSOMMAIRE" method="get">
 					#FILTRE_ajaxform(urlGet||#URLPAGERET)
@@ -26,17 +106,16 @@
 					<button type="submit">::finalisercommande::</button>
 				</form>
 			</li>
-			<THELIA_CONTENU_PANIER type="PANIER"> </THELIA_CONTENU_PANIER>
-			</T_CONTENU_PANIER>
+			</T_panier>
+			<li class="content nopad">
 			<p class="bold sizeX noProd">::paniervide::</p>
 			</li>
-			<li class="buttonBar">
 				<form action="#URLSOMMAIRE" method="get">
 					#FILTRE_ajaxform(urlGet||#URLPAGERET)
 					<button type="submit">::pageprecedente::</button>
 				</form>
 			</li>
-			<//T_CONTENU_PANIER>
+			<//T_panier>
 		</ul>
 	</div>
 	#INCLURE "template/custom/footer.html" #INCLURE

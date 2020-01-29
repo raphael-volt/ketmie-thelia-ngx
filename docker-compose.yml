@@ -10,8 +10,6 @@ services:
       - ./www:/var/www/html:rw
       - ./shared:/shared:rw
       - ./shared/ketmie.ini:/usr/local/etc/php/conf.d/ketmie.ini
-    environment:
-      XDEBUG_CONFIG: remote_host=192.168.1.19
     links:
       - ketmie_mysql
     restart: 'no'

@@ -10,3 +10,5 @@ ketmie.code-workspace
 /.metadata/
 web-app/
 /.angulardoc.json
+shared/mysql/
+shared/xdebug/

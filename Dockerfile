@@ -1,9 +1,10 @@
-FROM php:7-apache
+FROM php:7.2-apache
 
 LABEL maintainer "Raphaël Volt <raphael@ketmie.com>"
 
 
 RUN apt-get update && apt-get install -y \
+    wget \
     nano \
     gettext \
     bzip2 \
@@ -18,9 +19,8 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     inotify-tools
 
-# Install composer
-RUN curl -fsSL https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
+# Imagemagick
+RUN yes '' | pecl install -f imagick
 
 # Install php extensions
 RUN docker-php-ext-install bcmath
@@ -34,18 +34,15 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr
 RUN docker-php-ext-install gd
 RUN docker-php-ext-install gettext
 RUN docker-php-ext-install intl
+RUN docker-php-ext-enable imagick
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-# Imagemagick
-RUN apt-get install --yes --force-yes libmagickwand-dev libmagickcore-dev
-RUN yes '' | pecl install -f imagick
-RUN docker-php-ext-enable imagick
 
-# PHPUNIT
-RUN export COMPOSER_ALLOW_SUPERUSER=1 \
-    && composer global require phpunit/phpunit ^6.5 \
-    && composer global require phpunit/php-invoker
-ENV PATH /root/.composer/vendor/bin:$PATH
+# PHPUNIT https://phar.phpunit.de/phpunit-8.5.2.phar
+RUN wget -O phpunit-8.phar https://phar.phpunit.de/phpunit-8.5.2.phar
+RUN chmod +x phpunit-8.phar
+RUN mv phpunit-8.phar /usr/local/bin/phpunit
+RUN phpunit --version
 
 # Test watcher
 COPY shared/phpunit.watch.sh /usr/local/bin/watch-phpunit
@@ -63,9 +60,5 @@ RUN openssl req -subj '/CN=example.com/O=My Company Name LTD./C=US' -new -newkey
 
 # Change file mod and owner
 RUN usermod -u 1000 www-data
-RUN chown -R www-data:www-data /var/www/html/
-RUN chmod -R 0775 /var/www/html/
-
-RUN mkdir /shared
-RUN chown -R www-data:www-data /shared
-RUN chmod -R 0775 /shared
+# RUN chown -R www-data:www-data /var/www/html/
+# RUN chmod -R 0775 /var/www/html/

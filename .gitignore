@@ -12,3 +12,4 @@ web-app/
 /.angulardoc.json
 shared/mysql/
 shared/xdebug/
+shared/phpunit-8.5.2.phar

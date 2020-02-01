@@ -13,3 +13,7 @@ web-app/
 shared/mysql/
 shared/xdebug/
 shared/phpunit-8.5.2.phar
+
+!/www/client/
+/www/client/*
+!/www/client/plugins/
